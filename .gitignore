@@ -1,0 +1,8 @@
+__pycache__
+*.pyc
+*.swp
+tuning.py
+venv/
+sandbox/static/vendor/
+sandbox/static/.webassets-cache/
+sandbox/static/generic

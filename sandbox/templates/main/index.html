@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{%- block title_part -%}Index{%- endblock title_part -%}
+
+{%- block styles -%}
+  {% assets filters='cssmin', output='generic/css/main/index.css',
+            'css/base.css' %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {% endassets %}
+{%- endblock styles -%}
+
+{%- block page_body -%}
+  <div>
+    Сайт в стадии разработки.
+  </div>
+{%- endblock page_body -%}
