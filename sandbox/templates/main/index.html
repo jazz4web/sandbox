@@ -3,6 +3,7 @@
 {%- block title_part -%}Index{%- endblock title_part -%}
 
 {%- block styles -%}
+  {{ super() }}
   {% assets filters='cssmin', output='generic/css/main/index.css',
             'css/base.css' %}
     <link rel="stylesheet" href="{{ ASSET_URL }}">

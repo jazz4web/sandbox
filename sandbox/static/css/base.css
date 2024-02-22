@@ -1,6 +1,71 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
 body {
   font-family: Tahoma, Geneva, sans-serif;
   font-size: 14pt;
   color: dimgray;
-  background-color: ivory;
+  background-color: beige;
+  margin-bottom: 100px;
+}
+
+#navigation {
+  margin: 6px 6px 0;
+  border: 1px solid linen;
+  background-image: linear-gradient(to top, ghostwhite, snow);
+  box-shadow: 0 0 4px gainsboro;
+  font-size: 12pt;
+  color: gainsboro;
+}
+
+.navbar-brand {
+  padding-top: 10px;
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100px;
+  background-image: linear-gradient(to bottom, dimgray, darkslategray);
+}
+
+.footer-block {
+  height: 35px;
+}
+
+.footer-left {
+  width: 5%;
+  float: left;
+  margin-top: 5px;
+}
+
+.footer-center {
+  width: 90%;
+  float: left;
+  padding-top: 2px;
+}
+
+#footer-link {
+  color: white;
+  font-style: italic;
+  text-decoration: none;
+  text-shadow: 0 0 4px ivory;
+}
+
+#footer-link:hover {
+  cursor: pointer;
+  text-shadow: 0 0 0 ivory;
+}
+
+.footer-right {
+  width: 5%;
+  float: left;
+  margin-top: 5px;
+}
+
+.footer-bottom {
+  clear: both;
 }
