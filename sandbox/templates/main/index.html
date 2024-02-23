@@ -2,15 +2,21 @@
 
 {%- block title_part -%}Index{%- endblock title_part -%}
 
+{%- block metas -%}
+  {{- super() -}}
+  <meta name="description"
+        content="{{ request.app.config.get('SITE_DESCRIPTION') }}">
+{%- endblock metas -%}
+
 {%- block styles -%}
-  {{ super() }}
-  {% assets filters='cssmin', output='generic/css/main/index.css',
+  {{- super() -}}
+  {%- assets filters='cssmin', output='generic/css/main/index.css',
             'css/mc.css',
             'css/empty-message.css',
             'css/today-field.css',
-            'css/base.css' %}
+            'css/base.css' -%}
     <link rel="stylesheet" href="{{ ASSET_URL }}">
-  {% endassets %}
+  {%- endassets -%}
 {%- endblock styles -%}
 
 {%- block page_body -%}
@@ -23,12 +29,12 @@
 {%- endblock page_body -%}
 
 {%- block scripts -%}
-  {{ super() }}
-  {% assets filters='rjsmin', output='generic/js/main/index.js',
+  {{- super() -}}
+  {%- assets filters='rjsmin', output='generic/js/main/index.js',
             'js/format-footer.js',
             'js/check-mc.js',
             'js/render-tf.js',
-            'js/main/index.js' %}
+            'js/main/index.js' -%}
     <script src="{{ ASSET_URL }}"></script>
-  {% endassets %}
+  {%- endassets -%}
 {%- endblock scripts -%}

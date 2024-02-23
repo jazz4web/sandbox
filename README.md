@@ -8,6 +8,9 @@ $ mkdir ~/workspace
 $ cd ~/workspace
 $ git clone https://github.com/jazz4web/sandbox.git
 $ cd sandbox
+$ sudo apt install $(cat deploy/packages)
+$ createdb sandboxdev
+$ psql -d sandboxdev -f sql/db.sql
 $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install --upgrade wheel

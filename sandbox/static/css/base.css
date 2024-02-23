@@ -33,8 +33,8 @@ body {
   bottom: 0;
   width: 100%;
   height: 100px;
-  background-image: linear-gradient(to bottom, dimgray, darkslategray);
-  box-shadow: 0 0 6px dimgray;
+  background-image: linear-gradient(to bottom, gray, dimgray);
+  box-shadow: 0 0 6px gray;
 }
 
 .footer-block {
