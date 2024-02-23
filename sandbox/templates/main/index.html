@@ -5,13 +5,30 @@
 {%- block styles -%}
   {{ super() }}
   {% assets filters='cssmin', output='generic/css/main/index.css',
+            'css/mc.css',
+            'css/empty-message.css',
+            'css/today-field.css',
             'css/base.css' %}
     <link rel="stylesheet" href="{{ ASSET_URL }}">
   {% endassets %}
 {%- endblock styles -%}
 
 {%- block page_body -%}
-  <div>
-    Сайт в стадии разработки.
+  <div class="alert alert-warning page-block">
+    <div class="today-field"></div>
+    <div class="empty-message">
+      Сайт в стадии разработки, пропробуйте зайти позже.
+    </div>
   </div>
 {%- endblock page_body -%}
+
+{%- block scripts -%}
+  {{ super() }}
+  {% assets filters='rjsmin', output='generic/js/main/index.js',
+            'js/format-footer.js',
+            'js/check-mc.js',
+            'js/render-tf.js',
+            'js/main/index.js' %}
+    <script src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+{%- endblock scripts -%}

@@ -12,7 +12,7 @@ body {
 }
 
 #navigation {
-  margin: 6px 6px 0;
+  margin: 2px 4px 0;
   border: 1px solid linen;
   background-image: linear-gradient(to top, ghostwhite, snow);
   box-shadow: 0 0 4px gainsboro;
@@ -24,16 +24,21 @@ body {
   padding-top: 10px;
 }
 
+.alert {
+  margin: 0;
+}
+
 #footer {
   position: absolute;
   bottom: 0;
   width: 100%;
   height: 100px;
   background-image: linear-gradient(to bottom, dimgray, darkslategray);
+  box-shadow: 0 0 6px dimgray;
 }
 
 .footer-block {
-  height: 35px;
+  height: 32px;
 }
 
 .footer-left {
