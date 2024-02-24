@@ -12,6 +12,7 @@ from starlette.types import Receive, Scope, Send
 from webassets import Environment as AssetsEnvironment
 from webassets.ext.jinja2 import assets
 
+from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
 from .errors import show_error
 from .main.views import show_index, show_favicon
@@ -73,6 +74,7 @@ app = StApp(
     routes=[
         Route('/', show_index, name='index'),
         Route('/favicon.ico', show_favicon, name='favicon'),
+        Route('/captcha/{suffix}', show_captcha, name='captcha'),
         Mount('/static', app=StaticFiles(directory=static), name='static')],
     middleware=middleware,
     exception_handlers=errs)
