@@ -20,6 +20,7 @@ $ pip install --upgrade wheel
 $ pip install -r requirements.txt
 $ tar xvaf deploy/vendor.tar.gz -C sandbox/static
 $ python insert_captchas.py -n 100
+$ python create_root.py
 $ python runserver.py
 ```
 В браузере по адресу localhost:5000 на текущий момент можно увидеть следующее:

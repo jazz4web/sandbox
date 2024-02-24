@@ -16,7 +16,7 @@ from .api.main import Index
 from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
 from .errors import show_error
-from .main.views import show_index, show_favicon
+from .main.views import show_avatar, show_index, show_favicon
 
 try:
     from .tuning import SITE_NAME, SITE_DESCRIPTION
@@ -73,6 +73,7 @@ app = StApp(
     routes=[
         Route('/', show_index, name='index'),
         Route('/favicon.ico', show_favicon, name='favicon'),
+        Route('/ava/{username}/{size:int}', show_avatar, name='ava'),
         Route('/captcha/{suffix}', show_captcha, name='captcha'),
         Mount('/api', name='api', routes=[
             Route('/index', Index, name='aindex'),
