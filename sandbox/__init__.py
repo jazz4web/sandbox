@@ -18,13 +18,11 @@ from .errors import show_error
 from .main.views import show_index, show_favicon
 
 try:
-    from .tuning import SITE_NAME, SITE_DESCRIPTION, SECRET_KEY
+    from .tuning import SITE_NAME, SITE_DESCRIPTION
     if SITE_NAME:
         settings.file_values["SITE_NAME"] = SITE_NAME
     if SITE_DESCRIPTION:
         settings.file_values["SITE_DESCRIPTION"] = SITE_DESCRIPTION
-    if SECRET_KEY:
-        settings.file_values["SECRET_KEY"] = SECRET_KEY
 except ModuleNotFoundError:
     pass
 

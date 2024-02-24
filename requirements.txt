@@ -7,6 +7,7 @@ idna==3.6
 itsdangerous==2.1.2
 Jinja2==3.1.3
 MarkupSafe==2.1.5
+passlib==1.7.4
 pillow==10.2.0
 python-multipart==0.0.9
 redis==5.0.1
@@ -14,5 +15,6 @@ rjsmin==1.2.2
 sniffio==1.3.0
 starlette==0.37.1
 uvicorn==0.27.1
+validate_email==1.3
 webassets==2.0
 wheel==0.42.0
