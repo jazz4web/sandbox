@@ -7,7 +7,8 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
     {%- endblock metas -%}
     {%- block title -%}
-    <title>Sandbox: {% block title_part %}{% endblock title_part %}</title>
+    <title>{{- request.app.config.get(
+      'SITE_NAME') -}}: {% block title_part %}{% endblock title_part %}</title>
     {%- endblock title -%}
     {%- block styles -%}
       <link rel="icon"
@@ -19,6 +20,9 @@
         <link rel="stylesheet" href="{{ ASSET_URL }}">
       {%- endassets -%}
     {%- endblock styles -%}
+    {%- block templates -%}
+      <!-- templates -->
+    {%- endblock templates -%}
   </head>
   <body>
     <nav id="navigation" class="navbar navbar-default">
@@ -72,6 +76,20 @@
       </div>
     </nav>
     <div id="main-container">
+      {%- if flashed -%}
+      <div class="top-flashed-block">
+        {%- for message in flashed -%}
+          <div class="flashed-message
+                         {%- if not loop.first -%}next-block{%- endif -%}">
+            <div class="alert alert-warning">
+              <button class="close close-top-flashed" type="button">
+                &times;</button>
+              {{ message|safe }}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
       {%- block page_body -%}{%- endblock page_body -%}
     </div>
     <footer id="footer">
@@ -101,7 +119,10 @@
       {%- assets filters='rjsmin', output='generic/js/vendor-pub.js',
                 'vendor/jquery.js',
                 'vendor/luxon.js',
-                'vendor/bootstrap/js/bootstrap.js' -%}
+                'vendor/bootstrap/js/bootstrap.js',
+                'vendor/mustache.js',
+                'vendor/spark-md5.js',
+                'js/custom.js' -%}
         <script src="{{ ASSET_URL }}"></script>
       {%- endassets -%}
     {%- endblock scripts -%}

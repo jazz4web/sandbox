@@ -11,22 +11,28 @@
 {%- block styles -%}
   {{- super() -}}
   {%- assets filters='cssmin', output='generic/css/main/index.css',
+            'css/base.css',
             'css/mc.css',
             'css/empty-message.css',
             'css/today-field.css',
-            'css/base.css' -%}
+            'css/next-block.css' -%}
     <link rel="stylesheet" href="{{ ASSET_URL }}">
   {%- endassets -%}
 {%- endblock styles -%}
 
-{%- block page_body -%}
-  <div class="alert alert-warning page-block">
-    <div class="today-field"></div>
-    <div class="empty-message">
-      Сайт в стадии разработки, пропробуйте зайти позже.
-    </div>
-  </div>
-{%- endblock page_body -%}
+{%- block templates -%}
+  <script id="indext" type="text/template">
+    <% ^art %>
+      <div class="alert alert-warning page-block {% if flashed -%}
+                  next-block{%- endif -%}">
+        <div class="today-field"></div>
+        <div class="empty-message">
+          Сайт в стадии разработки, пропробуйте зайти позже.
+        </div>
+      </div>
+    <% /art %>
+  </script>
+{%- endblock templates -%}
 
 {%- block scripts -%}
   {{- super() -}}
@@ -34,6 +40,8 @@
             'js/format-footer.js',
             'js/check-mc.js',
             'js/render-tf.js',
+            'js/close-topflashed.js',
+            'js/show-index.js',
             'js/main/index.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}
