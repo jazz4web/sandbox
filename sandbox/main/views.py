@@ -5,7 +5,8 @@ import os
 from starlette.exceptions import HTTPException
 from starlette.responses import FileResponse, RedirectResponse, Response
 
-from ..common.flashed import get_flashed, set_flashed
+from ..auth.cu import getcu
+from ..common.flashed import get_flashed
 from ..common.pg import get_conn
 from ..dirs import static
 from ..errors import E404
@@ -20,7 +21,6 @@ async def show_avatar(request):
     res = await conn.fetchrow(
         'SELECT id, username FROM users WHERE username = $1',
         request.path_params['username'])
-    print(res)
     if res is None:
         raise HTTPException(status_code=404, detail=E404)
     ava = await conn.fetchval(
@@ -42,9 +42,11 @@ async def show_avatar(request):
 
 
 async def show_index(request):
+    cu = await getcu(request)
     return request.app.jinja.TemplateResponse(
         'main/index.html',
         {'request': request,
+         'cu': cu,
          'flashed': await get_flashed(request)})
 
 

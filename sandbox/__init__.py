@@ -13,6 +13,7 @@ from webassets import Environment as AssetsEnvironment
 from webassets.ext.jinja2 import assets
 
 from .api.main import Index
+from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
 from .errors import show_error
@@ -44,6 +45,8 @@ class J2Templates(Jinja2Templates):
         env_options.setdefault("extensions", [assets])
         env = jinja2.Environment(**env_options)
         env.assets_environment = assets_env
+        env.globals.setdefault("permissions", permissions)
+        env.globals.setdefault("groups", groups)
         return env
 
 
