@@ -1,8 +1,15 @@
-function getH() {
-  let wh = $(window).outerHeight();
+function getheight() {
+  let wh = $(window).height();
+  let mnav = parseInt($('#navigation').css('marginTop').replace('px', ''));
+  let nh = $('#navigation').outerHeight();
   let fh = $('#footer').outerHeight();
-  let nh = $('#navigation').outerHeight() + 2;
-  return wh - fh - nh;
+  let mch = Math.round($('#main-container').outerHeight());
+  let clearance = wh - mnav - nh - fh - mch;
+  if (clearance > 0) {
+    $('#main-container').css({"margin-top": "4px"});
+  } else {
+    $('#main-container').css({"margin-top": 0});
+  }
 }
 
 function resize(wwidth, width) {
@@ -19,15 +26,10 @@ function checkMC(width) {
   let wwidth = $(window).width();
   let mcon = $('#main-container');
   resize(wwidth, width);
-  let height = getH();
-  let mh = Math.round($('#main-container').outerHeight());
-  if (height > mh) $('#main-container').css({"height": height});
-  $(window).on('resize', {mh: mh}, function(event) {
+  getheight();
+  $(window).on('resize', function() {
     let wwidth = $(window).width();
     resize(wwidth, width);
-    let height = getH();
-    if (height > event.data.mh) {
-      $('#main-container').css({"height": height});
-    }
+    getheight();
   });
 }

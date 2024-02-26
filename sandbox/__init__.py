@@ -12,7 +12,7 @@ from starlette.types import Receive, Scope, Send
 from webassets import Environment as AssetsEnvironment
 from webassets.ext.jinja2 import assets
 
-from .api.main import Index
+from .api.main import Captcha, Index
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
@@ -80,6 +80,7 @@ app = StApp(
         Route('/captcha/{suffix}', show_captcha, name='captcha'),
         Mount('/api', name='api', routes=[
             Route('/index', Index, name='aindex'),
+            Route('/captcha', Captcha, name='acaptcha'),
             ]),
         Mount('/static', app=StaticFiles(directory=static), name='static')],
     middleware=middleware,

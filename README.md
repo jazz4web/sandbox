@@ -19,6 +19,8 @@ $ source venv/bin/activate
 $ pip install --upgrade wheel
 $ pip install -r requirements.txt
 $ tar xvaf deploy/vendor.tar.gz -C sandbox/static
+$ mkdir sandbox/static/generic
+$ ln -s -T ~/workspace/sandbox/sandbox/static/vendor/bootstrap/fonts sandbox/static/generic/fonts
 $ python insert_captchas.py -n 100
 $ python create_root.py
 $ python runserver.py

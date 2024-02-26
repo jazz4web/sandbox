@@ -5,7 +5,7 @@
 {%- block styles -%}
   {{ super() }}
   {% assets filters='cssmin', output='generic/css/errors/error.css',
-            'css/mc.css',
+            'css/main-container.css',
             'css/error.css',
             'css/base.css' %}
     <link rel="stylesheet" href="{{ ASSET_URL }}">
