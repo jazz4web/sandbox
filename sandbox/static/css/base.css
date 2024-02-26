@@ -24,8 +24,16 @@ body {
   padding-top: 10px;
 }
 
+.current-user-name {
+  margin: 0 4px 0 5px;
+}
+
 .alert {
   margin: 0;
+}
+
+.to-be-hidden {
+  display: none;
 }
 
 #footer {
@@ -34,7 +42,6 @@ body {
   width: 100%;
   height: 100px;
   background-image: linear-gradient(to bottom, gray, dimgray);
-  box-shadow: 0 0 6px gray;
 }
 
 .footer-block {

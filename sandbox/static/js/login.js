@@ -8,7 +8,6 @@ function login() {
         if ($('#main-container').length) {
           $('#main-container').append(form);
           slidePage('#loginf');
-          checkMC(860);
           clearInterval(interval);
         }
       }, 10);

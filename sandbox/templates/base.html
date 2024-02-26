@@ -22,6 +22,11 @@
     {%- endblock styles -%}
     {%- block templates -%}
       <!-- templates -->
+      <script id="ealertt" type="text/template">
+        <div id="ealert" class="alert alert-danger to-be-hidden">
+          <%{ message }%>
+        </div>
+      </script>
     {%- endblock templates -%}
   </head>
   <body>
@@ -95,22 +100,24 @@
         </div>
       </div>
     </nav>
-    <div id="main-container">
-      {%- if flashed -%}
-      <div class="top-flashed-block">
-        {%- for message in flashed -%}
-          <div class="flashed-message
-                         {%- if not loop.first -%}next-block{%- endif -%}">
-            <div class="alert alert-warning">
-              <button class="close close-top-flashed" type="button">
-                &times;</button>
-              {{ message|safe }}
+    <div id="page-content">
+      <div id="main-container">
+        {%- if flashed -%}
+        <div class="top-flashed-block">
+          {%- for message in flashed -%}
+            <div class="flashed-message
+                           {%- if not loop.first -%}next-block{%- endif -%}">
+              <div class="alert alert-warning">
+                <button class="close close-top-flashed" type="button">
+                  &times;</button>
+                {{ message|safe }}
+              </div>
             </div>
-          </div>
-        {%- endfor -%}
+          {%- endfor -%}
+        </div>
+        {%- endif -%}
+        {%- block page_body -%}{%- endblock page_body -%}
       </div>
-      {%- endif -%}
-      {%- block page_body -%}{%- endblock page_body -%}
     </div>
     <footer id="footer">
       <div class="container-fluid">

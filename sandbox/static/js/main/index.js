@@ -1,5 +1,8 @@
 $(function() {
   "use strict";
+  if (!cu) {
+    window.localStorage.removeItem('token');
+  }
   let dt = luxon.DateTime.now();
   formatFooter(dt);
   if (!window.location.hash) showIndex(dt);
@@ -15,6 +18,8 @@ $(function() {
       reg();
       renderTF('.today-field', dt);
     }
+    $('body').on('click', '#login-submit', loginSubmit);
+    $('body').on('click', '#login-reg', loginReg);
     $('body').on('click', '#rcaptcha-reload',
       {field: '#rcaptcha-field', suffix: '#rsuffix', captcha: '#rcaptcha'},
       captchaReload);

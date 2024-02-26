@@ -7,12 +7,12 @@ from ..auth.attri import get_group, permissions
 async def getcu(request):
     cache = request.session.get('_uid')
     if cache:
-        data = await request.app.rc.hgetall(cache.get('cache'))
+        data = await request.app.rc.hgetall(cache)
         if data:
             query = await request.app.rc.hgetall(f'data:{data["id"]}')
             uid = int(query.get('id'))
             if query and permissions.NOLOGIN in query.get('permissions'):
-                await request.app.rc.delete(cache.get('cache'))
+                await request.app.rc.delete(cache)
                 await request.app.rc.delete(f'data:{uid}')
                 return None
             if query:
@@ -28,4 +28,6 @@ async def getcu(request):
                             'ava', username=query.get('username'),
                             size=22)._url,
                         'brkey': data.get('brkey')}
+        else:
+            del request.session['_uid']
     return None

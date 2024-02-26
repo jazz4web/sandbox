@@ -27,7 +27,6 @@
 {%- block templates -%}
   {{ super() }}
   {% if not cu %}
-
   <script id="regt" type="text/template">
     <div id="regf" class="form-block to-be-hidden">
       <h1>Запрос регистрации или восстановления пароля</h1>
@@ -223,7 +222,7 @@
     <% ^art %>
       <div class="alert alert-warning page-block {% if flashed -%}
                   next-block{%- endif -%}">
-        <div class="today-field"></div>
+        <div class="today-field">some</div>
         <div class="empty-message">
           Сайт в стадии разработки, пропробуйте зайти позже.
         </div>
@@ -234,6 +233,7 @@
 
 {%- block scripts -%}
   {{- super() -}}
+  <script>let cu="{{ cu.username }}";</script>
   {%- assets filters='rjsmin', output='generic/js/main/index.js',
             'js/format-footer.js',
             'js/check-mc.js',
@@ -243,7 +243,11 @@
             'js/login.js',
             'js/reg.js',
             'js/slide-page.js',
+            'js/login-reg.js',
+            'js/login-submit.js',
             'js/captcha-reload.js',
+            'js/check-browser.js',
+            'js/show-error.js',
             'js/main/index.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}
