@@ -9,10 +9,29 @@ from ..common.flashed import set_flashed
 from ..common.pg import get_conn
 from .pg import filter_user
 from .redi import assign_uid, extract_cache
-from .tasks import change_pattern, rem_current_session, rem_old_session
+from .tasks import (
+    change_pattern, rem_all_sessions, rem_current_session, rem_old_session)
 from .tokens import check_token, create_login_token
 
 BADCAPTCHA = 'Тест провален, либо устарел, попробуйте снова.'
+
+
+class LogoutAll(HTTPEndpoint):
+    async def post(self, request):
+        res = {'result': None}
+        token = (await request.form()).get('token')
+        if token:
+            cache = await check_token(request.app.config, token)
+            if cache:
+                uid = await request.app.rc.hget(cache.get('cache'), 'id')
+                cu = await checkcu(request, token)
+                if cu.get('id') == int(uid):
+                    asyncio.ensure_future(
+                        rem_all_sessions(request, cu.get('id')))
+                    del request.session['_uid']
+                    res['result'] = True
+                    await set_flashed(request, f'Пока, {cu["username"]}!')
+        return JSONResponse(res)
 
 
 class Logout(HTTPEndpoint):

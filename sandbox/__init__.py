@@ -13,7 +13,7 @@ from webassets import Environment as AssetsEnvironment
 from webassets.ext.jinja2 import assets
 
 from .api.main import Captcha, Index
-from .api.auth import Login, Logout
+from .api.auth import Login, Logout, LogoutAll
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
@@ -84,6 +84,7 @@ app = StApp(
             Route('/captcha', Captcha, name='acaptcha'),
             Route('/login', Login, name='alogin'),
             Route('/logout', Logout, name='alogout'),
+            Route('/logout-all', LogoutAll, name='alogoutall'),
             ]),
         Mount('/static', app=StaticFiles(directory=static), name='static')],
     middleware=middleware,

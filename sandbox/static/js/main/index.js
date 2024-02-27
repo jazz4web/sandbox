@@ -11,6 +11,9 @@ $(function() {
     if (window.location.hash === '#logout') {
       logout();
     }
+    if (window.location.hash === '#logout-all') {
+      logoutAll();
+    }
   } else {
     if (window.location.hash === '#login') {
       login();
@@ -33,6 +36,9 @@ $(function() {
     if (window.localStorage.getItem('token')) {
       if (window.location.hash === '#logout') {
         logout();
+      }
+      if (window.location.hash === '#logout-all') {
+        logoutAll();
       }
     } else {
       if (window.location.hash === '#login') {
