@@ -5,10 +5,12 @@ $(function() {
   }
   let dt = luxon.DateTime.now();
   formatFooter(dt);
-  if (!window.location.hash) showIndex(dt);
+  if (!window.location.hash || cu) showIndex(dt);
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   if (window.localStorage.getItem('token')) {
-    //pass;
+    if (window.location.hash === '#logout') {
+      logout();
+    }
   } else {
     if (window.location.hash === '#login') {
       login();
@@ -29,7 +31,9 @@ $(function() {
   }
   $(window).bind('hashchange', function() {
     if (window.localStorage.getItem('token')) {
-      //pass;
+      if (window.location.hash === '#logout') {
+        logout();
+      }
     } else {
       if (window.location.hash === '#login') {
         login();

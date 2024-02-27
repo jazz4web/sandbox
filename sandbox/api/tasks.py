@@ -8,6 +8,17 @@ from ..captcha.picturize.picture import generate_image
 from ..common.pg import get_conn
 
 
+async def rem_current_session(config, cache, uid):
+    conn = await get_conn(config)
+    sessions = await conn.fetchval(
+        'SELECT sessions FROM users WHERE id = $1', uid) or list()
+    if cache in sessions:
+        sessions.remove(cache)
+        await conn.execute(
+            'UPDATE users SET sessions = $1 WHERE id = $2', sessions, uid)
+        await conn.close()
+
+
 async def rem_old_session(request, cache, username):
     conn = await get_conn(request.app.config)
     sessions = await conn.fetchval(
