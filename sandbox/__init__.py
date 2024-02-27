@@ -13,7 +13,7 @@ from webassets import Environment as AssetsEnvironment
 from webassets.ext.jinja2 import assets
 
 from .api.main import Captcha, Index
-from .api.auth import Login, Logout, LogoutAll
+from .api.auth import GetPasswd, Login, Logout, LogoutAll
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
@@ -21,11 +21,15 @@ from .errors import show_error
 from .main.views import show_avatar, show_index, show_favicon
 
 try:
-    from .tuning import SITE_NAME, SITE_DESCRIPTION
+    from .tuning import SITE_NAME, SITE_DESCRIPTION, SECRET_KEY, MAIL_PASSWORD
     if SITE_NAME:
         settings.file_values["SITE_NAME"] = SITE_NAME
     if SITE_DESCRIPTION:
         settings.file_values["SITE_DESCRIPTION"] = SITE_DESCRIPTION
+    if SECRET_KEY:
+        settings.file_values["SECRET_KEY"] = SECRET_KEY
+    if MAIL_PASSWORD:
+        settings.file_values["MAIL_PASSWORD"] = MAIL_PASSWORD
 except ModuleNotFoundError:
     pass
 
@@ -85,6 +89,7 @@ app = StApp(
             Route('/login', Login, name='alogin'),
             Route('/logout', Logout, name='alogout'),
             Route('/logout-all', LogoutAll, name='alogoutall'),
+            Route('/request-reg', GetPasswd, name='agetpasswd'),
             ]),
         Mount('/static', app=StaticFiles(directory=static), name='static')],
     middleware=middleware,

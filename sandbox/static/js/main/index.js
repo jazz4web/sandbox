@@ -25,6 +25,7 @@ $(function() {
     }
     $('body').on('click', '#login-submit', loginSubmit);
     $('body').on('click', '#login-reg', loginReg);
+    $('body').on('click', '#reg-submit', regSubmit);
     $('body').on('click', '#rcaptcha-reload',
       {field: '#rcaptcha-field', suffix: '#rsuffix', captcha: '#rcaptcha'},
       captchaReload);
