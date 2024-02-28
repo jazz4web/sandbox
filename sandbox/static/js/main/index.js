@@ -5,7 +5,7 @@ $(function() {
   }
   let dt = luxon.DateTime.now();
   formatFooter(dt);
-  if (!window.location.hash || cu) showIndex(dt);
+  showIndex(dt);
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   if (window.localStorage.getItem('token')) {
     if (window.location.hash === '#logout') {
@@ -33,6 +33,7 @@ $(function() {
       {field: '#lcaptcha-field', suffix: '#lsuffix', captcha: '#lcaptcha'},
       captchaReload);
     $('body').on('click', '#crp-submit', createUser);
+    $('body').on('click', '#rsp-submit', resetPwd);
   }
   $(window).bind('hashchange', function() {
     if (window.localStorage.getItem('token')) {
@@ -54,9 +55,17 @@ $(function() {
     if (crt) {
       requestPasswd(crt);
     }
+    let rst = parseHash(window.location.hash, '#reset-password');
+    if (rst) {
+      resetPasswd(rst);
+    }
   });
   let crt = parseHash(window.location.hash, '#request-password');
   if (crt) {
     requestPasswd(crt);
+  }
+  let rst = parseHash(window.location.hash, '#reset-password');
+  if (rst) {
+    resetPasswd(rst);
   }
 });
