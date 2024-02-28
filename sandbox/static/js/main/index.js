@@ -32,6 +32,7 @@ $(function() {
     $('body').on('click', '#lcaptcha-reload',
       {field: '#lcaptcha-field', suffix: '#lsuffix', captcha: '#lcaptcha'},
       captchaReload);
+    $('body').on('click', '#crp-submit', createUser);
   }
   $(window).bind('hashchange', function() {
     if (window.localStorage.getItem('token')) {
@@ -49,5 +50,13 @@ $(function() {
         reg();
       }
     }
+    let crt = parseHash(window.location.hash, '#request-password');
+    if (crt) {
+      requestPasswd(crt);
+    }
   });
+  let crt = parseHash(window.location.hash, '#request-password');
+  if (crt) {
+    requestPasswd(crt);
+  }
 });

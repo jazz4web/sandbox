@@ -27,6 +27,84 @@
 {%- block templates -%}
   {{ super() }}
   {% if not cu %}
+  <script id="crpt" type="text/template">
+    <div id="crpf" class="form-block to-be-hidden">
+      <h1>Создайте свой пароль</h1>
+      <div class="today-field"></div>
+      <div class="form-help">
+        <p>
+          Уважаемый гость, для создания пароля заполните форму ниже.
+          Придумайте и введите в соответствующие поля желаемый псевдоним и
+          пароль. Пароль нужно ввести второй раз в поле "Повторить".
+          Псевдоним может содержать от 3-х до 16-ти символов (латинские
+          буквы, буквы русского алфавита, цифры, знак подчёркивания, дефис и
+          точка), первый символ псевдонима должен быть латинской или русской
+          буквой. Нажмите кнопку "Создать пароль". Будьте внимательны,
+          псевдоним и пароль Вам потребуются для входа в сервис, а восстановить
+          пароль можно будет не ранее чем через {{ interval }} часов с момента
+          запроса регистрационной формы.
+        </p>
+      </div>
+      <div class="form-form">
+        <form>
+          <div class="form-group">
+            <div class="form-label text-right">
+              <label for="username">Псевдоним:</label>
+            </div>
+            <div class="form-input">
+              <input class="form-control"
+                     id="username"
+                     name="username"
+                     autocomplete="username"
+                     placeholder="введите желаемый псевдоним"
+                     required
+                     type="text">
+            </div>
+            <div class="footer-bottom"></div>
+          </div>
+          <div class="form-group">
+            <div class="form-label text-right">
+              <label for="crpassword">Пароль:</label>
+            </div>
+            <div class="form-input">
+              <input class="form-control"
+                     id="crpassword"
+                     name="crpassword"
+                     placeholder="введите желаемый пароль"
+                     autocomplete="new-password"
+                     required
+                     type="password">
+            </div>
+            <div class="footer-bottom"></div>
+          </div>
+          <div class="form-group">
+            <div class="form-label text-right">
+              <label for="confirmation">Повторить:</label>
+            </div>
+            <div class="form-input">
+              <input class="form-control"
+                     id="confirmation"
+                     name="confirmation"
+                     placeholder="повторите пароль"
+                     required
+                     autocomplete="new-password"
+                     type="password">
+            </div>
+            <div class="footer-bottom"></div>
+          </div>
+          <div class="form-group">
+            <div class="form-input">
+              <button type="button"
+                      class="btn btn-primary btn-block"
+                      id="crp-submit"
+                      name="crp-submit"
+                      data-aid="<% aid %>">Создать пароль</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </script>
   <script id="regt" type="text/template">
     <div id="regf" class="form-block to-be-hidden">
       <h1>Запрос регистрации или восстановления пароля</h1>
@@ -251,6 +329,9 @@
             'js/logout.js',
             'js/logout-all.js',
             'js/reg-submit.js',
+            'js/parse-hash.js',
+            'js/request-passwd.js',
+            'js/create-user.js',
             'js/main/index.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}

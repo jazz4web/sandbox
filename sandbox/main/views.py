@@ -43,10 +43,12 @@ async def show_avatar(request):
 
 async def show_index(request):
     cu = await getcu(request)
+    interval = request.app.config.get('REQUEST_INTERVAL', cast=float)
     return request.app.jinja.TemplateResponse(
         'main/index.html',
         {'request': request,
          'cu': cu,
+         'interval': interval,
          'flashed': await get_flashed(request)})
 
 
