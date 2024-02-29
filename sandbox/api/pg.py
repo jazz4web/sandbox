@@ -1,7 +1,43 @@
 from datetime import datetime, timedelta
 from validate_email import validate_email
 
-from ..auth.attri import permissions
+from ..auth.attri import get_group, permissions
+
+
+async def check_rel(conn, uid1, uid2):
+    friend = bool(await conn.fetchrow(
+        '''SELECT author_id, friend_id FROM friends
+             WHERE author_id = $1 AND friend_id = $2''', uid1, uid2))
+    follower = bool(await conn.fetchrow(
+        '''SELECT author_id, follower_id FROM followers
+             WHERE author_id = $1 AND follower_id = $2''', uid1, uid2))
+    blocker = bool(await conn.fetchrow(
+        '''SELECT target_id, blocker_id FROM blockers
+             WHERE target_id = $1 AND blocker_id = $2''', uid2, uid1))
+    blocked = bool(await conn.fetchrow(
+        '''SELECT target_id, blocker_id FROM blockers
+             WHERE target_id = $1 AND blocker_id = $2''', uid1, uid2))
+    return {'friend': friend, 'follower': follower,
+            'blocker': blocker, 'blocked': blocked}
+
+
+async def filter_target_user(request, conn, username):
+    query = await conn.fetchrow(
+        '''SELECT id, username, registered, last_visit, permissions,
+                  description, last_published FROM users
+             WHERE username = $1''', username)
+    if query:
+        return {'uid': query.get('id'),
+                'username': query.get('username'),
+                'group': await get_group(query.get('permissions')),
+                'registered': f'{query.get("registered").isoformat()}Z',
+                'last_visit': f'{query.get("last_visit").isoformat()}Z',
+                'permissions': query.get('permissions'),
+                'description': query.get('description'),
+                'last_published': f'{query.get("last_published").isoformat()}Z'
+                if query.get('last_published') else None,
+                'ava': request.url_for(
+                    'ava', username=query.get('username'), size=160)._url}
 
 
 async def get_acc(conn, account, address):

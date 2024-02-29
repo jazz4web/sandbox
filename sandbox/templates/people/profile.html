@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{%- block title_part -%}Профиль {{ cu['username'] }}{%- endblock title_part %}
+
+{%- block styles -%}
+  {{- super() -}}
+  {%- assets filters='cssmin', output='generic/css/people/profile.css',
+             'css/main-container.css',
+             'css/content-block.css',
+             'css/profile-block.css',
+             'css/personal-details.css',
+             'css/profile.css',
+             'css/avatar.css',
+             'css/base.css' -%}
+    <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {%- endassets -%}
+{%- endblock styles -%}
+
+{%- block templates -%}
+  {{ super() }}
+  <script id="profilet" type="text/template">
+    <div id="profile" class="page-block content-block">
+      <h1>Профиль <% user.username %></h1>
+      <div class="profile-block">
+        <div class="user-avatar avatar"
+             style="background:url(<% user.ava %>)"></div>
+        <div class="user-info">
+          <h3><% user.username %></h3>
+          <div class="personal-details">
+            <table class="user-info-table">
+              <tbody>
+              <tr>
+                <td>Группа:&nbsp;</td>
+                <td><% user.group %></td>
+              </tr>
+              <% #address %>
+              <tr class="address-row">
+                <td>Почта:&nbsp;</td>
+                <td><% user.address %></td>
+              </tr>
+              <% /address %>
+              <tr>
+                <td>Зарегистрирован:&nbsp;</td>
+                <td class="date-field"><% user.registered %></td>
+              </tr>
+              <tr>
+                <td>Последний визит:&nbsp;</td>
+                <td class="last-seen"><% user.last_visit %></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="footer-bottom"></div>
+      </div>
+      <% #description %>
+        <div class="profile-block description-block text-center">
+          <% #user.description %>
+            <p class="blog-description"><% user.description %></p>
+          <% /user.description %>
+          <% #owner %>
+            <% ^user.description %>
+              <div class="alert alert-warning alert-block">
+                Добавьте описание своего блога.
+              </div>
+            <% /user.description %>
+            <div class="description-options">
+              <button type="button"
+                      title="добавьте или измените описание блога"
+                      class="btn btn-default"
+                      id="fix-description">
+                Изменить описание блога.
+              </button>
+            </div>
+          <% /owner %>
+        </div>
+        <% #owner %>
+          <div id="description-e"
+               class="content-block editor-block next-block to-be-hidden">
+            <div class="length-marker">
+              Осталось: <span
+              id="length-marker">500</span>
+            </div>
+            <div class="form-form">
+              <div class="form-group">
+                <textarea id="description-editor"
+                          placeholder="введите текст описания"
+                          class="form-control"
+                          rows="6"><% user.description %></textarea>
+              </div>
+              <div class="form-group submit-group">
+                <button id="description-submit"
+                        class="btn btn-info"
+                        type="button">
+                  Сохранить
+                </button>
+                <button type="button"
+                        id="cancel-description"
+                        class="btn btn-default">
+                  Отменить
+                </button>
+              </div>
+            </div>
+          </div>
+        <% /owner %>
+      <% /description %>
+      <% #user.description %>
+        <% #user.last_published %>
+          <div class="content-block blog-link-block next-block text-center">
+            <a href="/arts/a/<% user.username %>">
+              <% user.username %>&nbsp;блог
+            </a>
+          </div>
+        <% /user.last_published %>
+      <% /user.description %>
+      <% #owner %>
+        <div class="profile-block section-block">
+          <h2>Действия</h2>
+          <div class="block-body text-center">
+            <button id="emchange"
+                    type="button"
+                    class="btn btn-default">
+              Сменить адрес
+            </button>
+            <button id="changepwd"
+                    type="button"
+                    class="btn btn-default">
+              Сменить пароль
+            </button>
+            <button id="changeava"
+                    type="button"
+                    class="btn btn-default">
+              Сменить аватар
+            </button>
+          </div>
+        </div>
+      <% /owner %>
+      <% ^owner %>
+        <% #acts %>
+          <div id="actions-block" class="content-block next-block">
+            <div class="block-header slidable">
+              <h3 class="panel-title">Действия</h3>
+            </div>
+            <div class="block-body text-center action-block">
+              <% #pm %>
+                <button id="pm-message"
+                        type="button"
+                        class="btn btn-info"
+                        data-url="/pm/<% user.username %>">
+                  приват
+                </button>
+              <% /pm %>
+              <% #block %>
+                <% ^rel.friend %>
+                <button id="blocking-button"
+                        type="button"
+                        data-uid="<% user.uid %>"
+                        class="btn btn-danger">
+                  <% #rel.blocker %>cнять блок<% /rel.blocker %>
+                  <% ^rel.blocker %>блокировать<% /rel.blocker %>
+                </button>
+                <% /rel.friend %>
+              <% /block %>
+              <% #mfriend %>
+                <button id="make-friend"
+                        type="button"
+                        data-uid="<% user.uid %>"
+                        class="btn btn-success">
+                  <% #rel.friend %>не дружить<% /rel.friend %>
+                  <% ^rel.friend %>дружить<% /rel.friend %>
+                </button>
+              <% /mfriend %>
+            </div>
+          </div>
+        <% /acts %>
+      <% /owner %>
+      <% #ch-perms %>
+        <div id="permissions-block"
+             class="content-block next-block">
+          <div class="block-header slidable">
+            <h3 class="panel-title">Разрешения <% user.username %></h3>
+          </div>
+          <div class="block-body">
+            <div class="form-form">
+              <%{ html }%>
+              <div class="form-group">
+                <input class="btn btn-primary btn-block"
+                       id="perms-submit"
+                       name="perms-submit"
+                       type="submit"
+                       value="Утвердить">
+              </div>
+            </div>
+          </div>
+        </div>
+      <% /ch-perms %>
+    </div>
+  </script>
+{%- endblock templates -%}
+
+{%- block scripts -%}
+  {{ super() }}
+  <script>let cu="{{ cu.username }}", username="{{ username }}";</script>
+  {%- assets filters='rjsmin', output='generic/js/people/profile.js',
+             'js/show-profile.js',
+             'js/check-browser.js',
+             'js/format-footer.js',
+             'js/close-topflashed.js',
+             'js/check-mc.js',
+             'js/slide-page.js',
+             'js/format-datetime.js',
+             'js/render-lastseen.js',
+             'js/people/profile.js' -%}
+    <script src="{{ ASSET_URL }}"></script>
+  {%- endassets -%}
+{%- endblock scripts -%}

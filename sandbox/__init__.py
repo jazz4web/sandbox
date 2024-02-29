@@ -15,11 +15,13 @@ from webassets.ext.jinja2 import assets
 from .api.main import Captcha, Index
 from .api.auth import (
     GetPasswd, Login, Logout, LogoutAll, RequestPasswd, ResetPasswd)
+from .api.people import Profile
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
 from .errors import show_error
 from .main.views import show_avatar, show_index, show_favicon
+from .people.views import show_profile
 
 try:
     from .tuning import SITE_NAME, SITE_DESCRIPTION, SECRET_KEY, MAIL_PASSWORD
@@ -93,6 +95,10 @@ app = StApp(
             Route('/request-reg', GetPasswd, name='agetpasswd'),
             Route('/request-passwd', RequestPasswd, name='arequestpwd'),
             Route('/reset-passwd', ResetPasswd, name='aresetpwd'),
+            Route('/profile', Profile, name='aprofile'),
+            ]),
+        Mount('/people', name='people', routes=[
+            Route('/{username}', show_profile, name='profile')
             ]),
         Mount('/static', app=StaticFiles(directory=static), name='static')],
     middleware=middleware,

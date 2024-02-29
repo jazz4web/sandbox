@@ -15,7 +15,7 @@
             'css/main-container.css',
             'css/empty-message.css',
             'css/today-field.css',
-            'css/form-block.css',
+            'css/content-block.css',
             'css/form-help.css',
             'css/form-labeled.css',
             'css/captcha.css',
@@ -28,7 +28,7 @@
   {{ super() }}
   {% if not cu %}
   <script id="rspt" type="text/template">
-    <div id="rspf" class="form-block to-be-hidden">
+    <div id="rspf" class="form-block content-block to-be-hidden">
       <h1>Восстановите забытый пароль</h1>
       <div class="today-field"></div>
       <div class="form-help">
@@ -105,7 +105,7 @@
     </div>
   </script>
   <script id="crpt" type="text/template">
-    <div id="crpf" class="form-block to-be-hidden">
+    <div id="crpf" class="form-block content-block to-be-hidden">
       <h1>Создайте свой пароль</h1>
       <div class="today-field"></div>
       <div class="form-help">
@@ -183,7 +183,7 @@
     </div>
   </script>
   <script id="regt" type="text/template">
-    <div id="regf" class="form-block to-be-hidden">
+    <div id="regf" class="form-block content-block to-be-hidden">
       <h1>Запрос регистрации или восстановления пароля</h1>
       <div class="today-field">some</div>
       <div class="form-help">
@@ -263,7 +263,7 @@
     </div>
   </script>
   <script id="logint" type="text/template">
-    <div id="loginf" class="form-block to-be-hidden">
+    <div id="loginf" class="form-block content-block to-be-hidden">
       <h1>Вход в сервис</h1>
       <div class="today-field">some</div>
       <div class="form-help">
