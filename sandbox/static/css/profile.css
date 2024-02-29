@@ -6,11 +6,11 @@
 
 .user-info {
   margin-left: 172px;
-  padding: 6px;
+  padding-top: 4px;
 }
 
 .user-info h3 {
-  margin: 0 0 6px 0;
+  margin: 0 0 4px 0;
   font-style:italic;
   text-shadow: 0 0 3px lightgray;
 }
@@ -27,13 +27,60 @@
   padding: 2px 8px;
 }
 
+.details-block {
+  margin: 6px 0 0;
+}
+
 .description-block {
-  padding: 4px 0;
+  margin: 6px 0 0;
+}
+
+.description-text {
+  margin: 0 0 4px;
 }
 
 .description-options {
-  margin: 4px 0;
-  margin-top: 4px;
-  border-top: 1px dashed lightgray;
   padding: 4px 0 0;
+  border-top: 1px dashed lightgray;
+}
+
+.actions-block {
+  margin: 6px 0 0;
+}
+
+.actions-header {
+  border-radius: 3px 3px 0 0;
+  padding: 4px 4px;
+}
+
+.actions-header:hover {
+  cursor: pointer;
+}
+
+.actions-block h2 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.actions-body {
+  margin: 6px 0 0;
+}
+
+#permissions-block .form-form {
+  width: 50%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+#permissions-block .form-group {
+  margin: 6px 0 0;
+}
+
+#permissions-block .checkbox {
+  font-size: 0.9em;
+  margin: 0;
+}
+
+#permissions-block .checkbox label label {
+  padding: 0 0 0 3px;
 }

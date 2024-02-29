@@ -39,7 +39,7 @@ async def check_profile_permissions(request, cu, user, rel, data):
               permissions.ADMINISTER not in user['permissions']))
     if data['ch-perms']:
         data['html'] = request.app.jinja.get_template(
-            'main/perms.html').render(
+            'people/perms.html').render(
             request=request, cu=cu, user=user,
             permissions=permissions, groups=groups)
 
