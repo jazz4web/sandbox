@@ -13,5 +13,7 @@ $(function() {
       window.location.reload();
     });
     $('body').on('change', '#image', changeAva);
+    $('body').on('click', '#changepwd', changePWD);
+    $('body').on('click', '#changepwd-submit', createNewpwd);
   }
 });

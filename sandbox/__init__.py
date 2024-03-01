@@ -14,7 +14,7 @@ from webassets.ext.jinja2 import assets
 
 from .api.main import Captcha, Index
 from .api.auth import (
-    ChangeAva, GetPasswd, Login, Logout,
+    ChangeAva, ChangePasswd, GetPasswd, Login, Logout,
     LogoutAll, RequestPasswd, ResetPasswd)
 from .api.people import Profile
 from .auth.attri import groups, permissions
@@ -98,6 +98,7 @@ app = StApp(
             Route('/reset-passwd', ResetPasswd, name='aresetpwd'),
             Route('/profile', Profile, name='aprofile'),
             Route('/change-ava', ChangeAva, name='chava'),
+            Route('/change-passwd', ChangePasswd, name='chpwd'),
             ]),
         Mount('/people', name='people', routes=[
             Route('/{username}', show_profile, name='profile')
