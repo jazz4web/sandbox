@@ -19,6 +19,7 @@ $ source venv/bin/activate
 $ pip install --upgrade wheel
 $ pip install -r requirements.txt
 $ tar xvaf deploy/vendor.tar.gz -C sandbox/static
+$ cp env_template .env
 $ mkdir sandbox/static/generic
 $ ln -s -T ~/workspace/sandbox/sandbox/static/vendor/bootstrap/fonts sandbox/static/generic/fonts
 $ python insert_captchas.py -n 100
@@ -27,7 +28,6 @@ $ python runserver.py
 ```
 В браузере по адресу localhost:5000 на текущий момент можно увидеть следующее:
 
-![screen](https://codej.ru/picture/RD45UYZGuw.png)
+![screen](https://codej.ru/picture/6JYYrix3wF.png)
 
-Дополнительная информация о проекте на [CodeJ](https://codej.ru/blogs/jazz).
-Жалуйтесь..! :)
+Дополнительная информация о проекте на [CodeJ](https://codej.ru/blogs/jazz).Донат проекту можно перевести [сюда](https://yoomoney.ru/to/410015590807463) - перевод на 5 рублей лучше, чем никакого перевода, а ваш донат гарантирует, что я не закрою проект уже в ближайшее время. Как-то так...

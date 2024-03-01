@@ -36,6 +36,10 @@ $(function() {
     $('body').on('click', '#rsp-submit', resetPwd);
   }
   $(window).bind('hashchange', function() {
+    let chem = parseHash(window.location.hash, '#change-email')
+    if (chem) {
+      changeEmail(chem);
+    }
     if (window.localStorage.getItem('token')) {
       if (window.location.hash === '#logout') {
         logout();
@@ -67,5 +71,9 @@ $(function() {
   let rst = parseHash(window.location.hash, '#reset-password');
   if (rst) {
     resetPasswd(rst);
+  }
+  let chem = parseHash(window.location.hash, '#change-email')
+  if (chem) {
+    changeEmail(chem);
   }
 });

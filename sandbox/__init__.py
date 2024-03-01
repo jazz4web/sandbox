@@ -14,9 +14,11 @@ from webassets.ext.jinja2 import assets
 
 from .api.main import Captcha, Index
 from .api.auth import (
-    ChangeAva, ChangePasswd, GetPasswd, Login, Logout,
-    LogoutAll, RequestPasswd, ResetPasswd)
+    ChangeAva, ChangeEmail, ChangePasswd, GetPasswd,
+    Login, Logout, LogoutAll, RequestEm,
+    RequestPasswd, ResetPasswd)
 from .api.people import Profile
+from .api.tasks import check_swapped
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
@@ -72,6 +74,10 @@ class StApp(Starlette):
         await self.middleware_stack(scope, receive, send)
 
 
+async def run_before():
+    await check_swapped(settings)
+
+
 middleware = [
     Middleware(
         SessionMiddleware,
@@ -99,10 +105,13 @@ app = StApp(
             Route('/profile', Profile, name='aprofile'),
             Route('/change-ava', ChangeAva, name='chava'),
             Route('/change-passwd', ChangePasswd, name='chpwd'),
+            Route('/request-email-change', RequestEm, name='rem-change'),
+            Route('/change-email', ChangeEmail, name='change-email'),
             ]),
         Mount('/people', name='people', routes=[
             Route('/{username}', show_profile, name='profile')
             ]),
         Mount('/static', app=StaticFiles(directory=static), name='static')],
+    on_startup=[run_before],
     middleware=middleware,
     exception_handlers=errs)

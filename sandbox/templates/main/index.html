@@ -375,7 +375,7 @@
   {% endif %}
   <script id="indext" type="text/template">
     <% ^art %>
-      <div class="alert alert-warning page-block {% if flashed -%}
+      <div id="idef" class="alert alert-warning page-block {% if flashed -%}
                   next-block{%- endif -%}">
         <div class="today-field">some</div>
         <div class="empty-message">
@@ -411,6 +411,7 @@
             'js/create-user.js',
             'js/reset-passwd.js',
             'js/reset-pwd.js',
+            'js/change-email.js',
             'js/main/index.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}
