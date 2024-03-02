@@ -28,6 +28,6 @@ $ python runserver.py
 ```
 В браузере по адресу localhost:5000 на текущий момент можно увидеть следующее:
 
-![screen](https://codej.ru/picture/6JYYrix3wF.png)
+![screen](https://codej.ru/picture/4f85NiuXF2.jpg)
 
 Дополнительная информация о проекте на [CodeJ](https://codej.ru/blogs/jazz). Донат проекту можно перевести [сюда](https://yoomoney.ru/to/410015590807463) - перевод на 5 рублей лучше, чем никакого перевода, а ваш донат гарантирует, что я не закрою проект уже в ближайшее время. Как-то так...
