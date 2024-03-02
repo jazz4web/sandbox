@@ -17,5 +17,51 @@ $(function() {
     $('body').on('click', '#changepwd-submit', createNewpwd);
     $('body').on('click', '#emchange', requestEmF);
     $('body').on('click', '#chaddress-submit', requestEmCh);
+    $('body').on('click', '#fix-description', function() {
+      $(this).blur();
+      $(this).parents('.description-block').slideUp('slow');
+      let editor = $('#description-e');
+      editor.slideDown('slow', function() { scrollPanel(editor); });
+      $('#description-editor').focus();
+    });
+    $('body').on('click', '#cancel-description', function() {
+      $(this).blur();
+      $(this).parents('#description-e').slideUp('slow');
+      let description = $('.description-block');
+      description.slideDown('slow', function() { scrollPanel(description); });
+    });
+    $('body').on(
+      'keyup', '#description-editor',
+      {len: 500, marker: '#length-marker', block: '.length-marker'},
+      trackMarker);
+    $('body').on('blur', '#description-editor', function() {
+      let v = $(this).val();
+      let g = $(this).parents('.form-group');
+      if (v.length === 0) g.addClass('has-error');
+    });
+    $('body').on('click', '#description-submit', function() {
+      $(this).blur();
+      $('#description-editor').trigger('blur');
+      if (!$(this).parents('.form-group')
+                  .siblings('.form-group').hasClass('has-error')) {
+        $.ajax({
+          method: 'PUT',
+          url: '/api/profile',
+          data: {
+            auth: window.localStorage.getItem('token'),
+            text: $('#description-editor').val()
+          },
+          success: function(data) {
+            if (data.done) {
+              window.location.reload();
+            } else {
+              showError('.description-block', data);
+              $('#ealert').addClass('next-block');
+            }
+          },
+          dataType: 'json'
+        });
+      }
+    });
   }
 });

@@ -44,6 +44,13 @@
   border-top: 1px dashed lightgray;
 }
 
+.blog-description {
+  text-align: justify;
+  font-style: italic;
+  text-shadow: 0 0 6px lightgray;
+  margin: 0;
+}
+
 .actions-block {
   margin: 6px 0 0;
 }
@@ -64,6 +71,18 @@
 
 .actions-body {
   margin: 6px 0 0;
+}
+
+#description-e {
+  margin-top: 6px;
+  padding: 6px;
+  box-shadow: 0 0 6px lightgray;
+  background-color: ivory;
+  border-radius: 3px;
+}
+
+#description-editor {
+  text-align: justify;
 }
 
 #permissions-block .form-form {

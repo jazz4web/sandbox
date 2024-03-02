@@ -15,6 +15,8 @@
              'css/today-field.css',
              'css/form-help.css',
              'css/form-labeled.css',
+             'css/length-marker.css',
+             'css/errors.css',
              'css/base.css' -%}
     <link rel="stylesheet" href="{{ ASSET_URL }}">
   {%- endassets -%}
@@ -207,7 +209,8 @@
     </script>
   {%- endif -%}
   <script id="profilet" type="text/template">
-    <div id="profile" class="page-block content-block">
+    <div id="profile" class="page-block content-block
+                             {% if flashed %}next-block{%- endif -%}">
       <h1>Профиль <% user.username %></h1>
       <div class="details-block">
         <div class="user-avatar avatar"
@@ -245,7 +248,7 @@
         <div class="description-block">
           <% #user.description %>
             <div class="description-text">
-            <p class="blog-description"><% user.description %></p>
+              <p class="blog-description"><% user.description %></p>
             </div>
           <% /user.description %>
           <% #owner %>
@@ -268,7 +271,7 @@
         </div>
         <% #owner %>
           <div id="description-e"
-               class="content-block editor-block next-block to-be-hidden">
+               class="editor-block to-be-hidden">
             <div class="length-marker">
               Осталось: <span
               id="length-marker">500</span>
@@ -298,7 +301,7 @@
       <% /description %>
       <% #user.description %>
         <% #user.last_published %>
-          <div class="content-block blog-link-block next-block text-center">
+          <div class="blog-link-block text-center">
             <a href="/arts/a/<% user.username %>">
               <% user.username %>&nbsp;блог
             </a>
@@ -412,6 +415,8 @@
              'js/show-error.js',
              'js/request-em-form.js',
              'js/request-em-change.js',
+             'js/scroll-panel.js',
+             'js/track-marker.js',
              'js/people/profile.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}

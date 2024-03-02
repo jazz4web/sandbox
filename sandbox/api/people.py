@@ -3,6 +3,7 @@ from starlette.responses import JSONResponse
 
 from ..auth.attri import permissions
 from ..auth.cu import checkcu
+from ..common.flashed import set_flashed
 from ..common.pg import get_conn
 from .pg import check_rel, filter_target_user
 from .tools import check_profile_permissions
@@ -41,4 +42,25 @@ class Profile(HTTPEndpoint):
                 res['perms'] = [name.lower() for name in permissions._fields]
             await conn.close()
             return JSONResponse(res)
+        return JSONResponse(res)
+
+    async def put(self, request):
+        res = {'done': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.ART not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        text = d.get('text')
+        if text:
+            conn = await get_conn(request.app.config)
+            await conn.execute(
+                'UPDATE users SET description = $1 WHERE id = $2',
+                text.strip()[:500], cu.get('id'))
+            await conn.close()
+            res['done'] = True
+            await set_flashed(request, 'Описание блога обновлено.')
         return JSONResponse(res)

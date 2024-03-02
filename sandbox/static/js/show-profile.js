@@ -25,6 +25,12 @@ function showProfile(dt) {
         formatDateTime($('#profile .date-field'));
         renderLastSeen($('#profile .last-seen'));
         checkMC(860);
+        if (!data.user.description) {
+          $('#length-marker').text(500);
+        } else {
+          $('#length-marker').text(500 - data.user.description.length);
+        }
+
       }
       console.log(data);
     },
