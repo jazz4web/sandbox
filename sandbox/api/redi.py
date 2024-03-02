@@ -1,6 +1,11 @@
 from ..common.random import randomize
 
 
+async def change_udata(rc, data, permissions):
+    if await rc.exists(data):
+        await rc.hset(data, key='permissions', value=','.join(permissions))
+
+
 async def assign_uid(request, prefix, remember_me, user, brkey):
     if remember_me:
         expiration = request.app.config.get('SESSION_LIFETIME')
