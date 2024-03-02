@@ -1,6 +1,6 @@
 .user-avatar {
-  width: 162px;
-  height: 162px;
+  width: 160px;
+  height: 160px;
   float: left;
 }
 
@@ -71,6 +71,10 @@
 
 .actions-body {
   margin: 6px 0 0;
+}
+
+#permissions-block .actions-body {
+  margin: 0;
 }
 
 #description-e {

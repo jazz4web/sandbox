@@ -313,7 +313,7 @@
           <div class="actions-header slidable">
             <h2>Действия</h2>
           </div>
-          <div class="actions-body text-center">
+          <div class="actions-body block-body text-center">
             <button id="emchange"
                     type="button"
                     class="btn btn-default">
@@ -338,7 +338,7 @@
             <div class="actions-header slidable">
               <h2>Действия</h2>
             </div>
-            <div class="actions-body text-center">
+            <div class="actions-body block-body text-center">
               <% #pm %>
                 <button id="pm-message"
                         type="button"
@@ -377,7 +377,7 @@
           <div class="actions-header slidable">
             <h2>Разрешения <% user.username %></h2>
           </div>
-          <div class="actions-body text-center">
+          <div class="actions-body block-body text-center">
             <div class="form-form">
               <%{ html }%>
               <div class="form-group">
@@ -419,6 +419,7 @@
              'js/track-marker.js',
              'js/checkbox.js',
              'js/check-average.js',
+             'js/slide-block.js',
              'js/people/profile.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}
