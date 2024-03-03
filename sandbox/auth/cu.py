@@ -3,6 +3,7 @@ import asyncio
 from ..api.tasks import ping_user
 from ..api.tokens import check_token
 from ..auth.attri import get_group, permissions
+from ..common.flashed import set_flashed
 
 
 async def checkcu(request, token):
@@ -29,6 +30,9 @@ async def checkcu(request, token):
                             'ava', username=query.get('username'),
                             size=22)._url,
                         'brkey': data.get('brkey')}
+    else:
+        if request.session.get('_uid'):
+            del request.session['_uid']
     return None
 
 
@@ -42,6 +46,8 @@ async def getcu(request):
             if query and permissions.NOLOGIN in query.get('permissions'):
                 await request.app.rc.delete(cache)
                 await request.app.rc.delete(f'data:{uid}')
+                await set_flashed(
+                    request, 'Ваше присутствие в сервисе нежелательно.')
                 return None
             if query:
                 asyncio.ensure_future(

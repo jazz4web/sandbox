@@ -12,7 +12,7 @@ function showProfile(dt) {
       if (token) {
         if (!data.cu || data.cu.brkey != checkBrowser()) {
           window.localStorage.removeItem('token');
-          window.location.reload();
+          window.location.replace('/');
         }
       }
       if (data.message) {
