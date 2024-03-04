@@ -25,6 +25,7 @@ from .dirs import base, static, templates, settings
 from .errors import show_error
 from .main.views import show_avatar, show_index, show_favicon
 from .people.views import show_profile
+from .pictures.views import show_albums
 
 try:
     from .tuning import SITE_NAME, SITE_DESCRIPTION, SECRET_KEY, MAIL_PASSWORD
@@ -111,6 +112,9 @@ app = StApp(
             ]),
         Mount('/people', name='people', routes=[
             Route('/{username}', show_profile, name='profile')
+            ]),
+        Mount('/pictures', name='pictures', routes=[
+            Route('/', show_albums, name='albums'),
             ]),
         Mount('/static', app=StaticFiles(directory=static), name='static')],
     on_startup=[run_before],

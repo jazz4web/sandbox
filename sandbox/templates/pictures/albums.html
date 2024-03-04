@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{%- block title_part -%}Ваши альбомы{%- endblock title_part -%}
+
+{%- block styles -%}
+  {{ super() }}
+  {%- assets filters='cssmin', output='generic/css/pictures/album.css',
+             'css/base.css' -%}
+    <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {%- endassets -%}
+{%- endblock styles -%}
+
+{%- block scripts -%}
+  {{- super() -}}
+  <script>let cu="{{ cu.username }}"; let page="{{ page }}";</script>
+  {%- assets filters='rjsmin', output='generic/js/pictures/albums.js',
+             'js/format-footer.js',
+             'js/close-topflashed.js',
+             'js/pictures/albums.js' -%}
+    <script src="{{ ASSET_URL }}"></script>
+  {%- endassets -%}
+{%- endblock scripts -%}
