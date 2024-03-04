@@ -31,8 +31,9 @@ async def checkcu(request, token):
                             size=22)._url,
                         'brkey': data.get('brkey')}
     else:
-        if request.session.get('_uid'):
-            del request.session['_uid']
+        if d := request.session.get('_uid'):
+            await request.app.rc.delete(d)
+            request.session.pop('_uid')
     return None
 
 
@@ -44,6 +45,7 @@ async def getcu(request):
             query = await request.app.rc.hgetall(f'data:{data["id"]}')
             uid = int(query.get('id'))
             if query and permissions.NOLOGIN in query.get('permissions'):
+                request.session.pop('_uid')
                 await request.app.rc.delete(cache)
                 await request.app.rc.delete(f'data:{uid}')
                 await set_flashed(
@@ -63,5 +65,5 @@ async def getcu(request):
                             size=22)._url,
                         'brkey': data.get('brkey')}
         else:
-            del request.session['_uid']
+            request.session.pop('_uid')
     return None

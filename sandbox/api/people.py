@@ -129,6 +129,7 @@ class Profile(HTTPEndpoint):
         cu = res['cu']
         if cu is None:
             res['message'] = 'Доступ ограничен, требуется авторизация.'
+            res['reload'] = True
             return JSONResponse(res)
         if cu and username:
             conn = await get_conn(request.app.config)
