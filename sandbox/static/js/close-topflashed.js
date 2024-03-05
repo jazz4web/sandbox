@@ -13,5 +13,6 @@ function closeTopFlashed() {
   if (!cond) {
     ttop.remove();
     ttopnext.removeClass('next-block');
+    if ($('#right-panel').length) $('#right-panel').removeClass('next-block');
   }
 }

@@ -18,6 +18,7 @@ from .api.auth import (
     Login, Logout, LogoutAll, RequestEm,
     RequestPasswd, ResetPasswd)
 from .api.people import Profile, Relation
+from .api.pictures import Albums
 from .api.tasks import check_swapped
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
@@ -109,6 +110,7 @@ app = StApp(
             Route('/request-email-change', RequestEm, name='rem-change'),
             Route('/change-email', ChangeEmail, name='change-email'),
             Route('/rel', Relation, name='arel'),
+            Route('/pictures', Albums, name='aalbums'),
             ]),
         Mount('/people', name='people', routes=[
             Route('/{username}', show_profile, name='profile')
