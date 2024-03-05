@@ -6,6 +6,40 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showAlbums(dt);
   if (window.localStorage.getItem('token')) {
+    $('body').on('click', '#album-reload', reload);
+    $('body').on('click', '#user-home', function() {
+      $(this).blur();
+      let cform = $('#create-form-block');
+      let fform = $('#find-pic-block');
+      if (!cform.is(':hidden')) cform.slideUp('slow');
+      if (!fform.is(':hidden')) fform.slideUp('slow');
+      if ($('.clicked-item').length) {
+        $('.clicked-item').removeClass('clicked-item');
+        showUserStat();
+      }
+    });
+    $('body').on('click', '.show-album', function() {
+      $(this).blur();
+      let url = '/pictures/' + $(this).data().dest;
+      window.location.assign(url);
+    });
+    $('body').on('click', '.page-link', function(event) {
+      event.preventDefault();
+      let th = $(this).parent();
+      if (!th.hasClass('active')) {
+        window.location.assign('/pictures/?page=' + $(this).text().trim());
+      }
+    });
+    $('body').on('click', '#next-link', {page: page}, function(event) {
+      event.preventDefault();
+      let p = parseInt(event.data.page.trim()) + 1;
+      window.location.assign('/pictures/?page=' + p);
+    });
+    $('body').on('click', '#prev-link', {page: page}, function(event) {
+      event.preventDefault();
+      let p = parseInt(event.data.page.trim()) - 1;
+      window.location.assign('/pictures/?page=' + p);
+    });
     $('body').on('click', '.album-header-panel', function() {
       if (!$(this).hasClass('clicked-item')) {
         let cform = $('#create-form-block');
@@ -14,7 +48,7 @@ $(function() {
         if (!fform.is(':hidden')) fform.slideUp('slow');
         $('.clicked-item').removeClass('clicked-item');
         $(this).addClass('clicked-item');
-//        showAlbumStat($(this).data().suffix);
+        showAlbumStat($(this).data().suffix);
       }
     });
     $('body').on('click', '#create-new', function() {

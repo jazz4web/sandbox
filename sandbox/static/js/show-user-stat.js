@@ -10,6 +10,7 @@ function showUserStat() {
         let ust = Mustache.render($('#ustatt').html(), data);
         $('#right-panel').empty().append(ust);
         formatDateTime($('.date-field'));
+        checkMC(1152);
       } else {
         showError('#left-panel', data);
         $('#right-panel').addClass('next-block');

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/_pictures.html" import album_statistic %}
 
 {%- block title_part -%}Ваши альбомы{%- endblock title_part -%}
 
@@ -26,6 +27,7 @@
 {%- block templates -%}
   {{- super() -}}
   {% if cu %}
+  {{ album_statistic(status) }}
   <script id="ustatt" type="text/template">
     <h2>Ваша статистика</h2>
     <div class="block-body album-statistic">
@@ -36,19 +38,19 @@
             <td class="text-right date-field"><% cu.registered %></td>
           </tr>
           <tr class="bordered">
-            <td>Группа</td>
+            <td>Группа:</td>
             <td class="text-right"><% cu.group %></td>
           </tr>
           <tr class="bordered">
-            <td>Альбомов</td>
+            <td>Альбомов:</td>
             <td class="text-right"><% stat.albums %></td>
           </tr>
           <tr class="bordered">
-            <td>Файлов</td>
+            <td>Файлов:</td>
             <td class="text-right"><% stat.files %></td>
           </tr>
           <tr>
-            <td>Итого</td>
+            <td>Итого:</td>
             <td class="text-right"><% stat.volume %></td>
           </tr>
         </tbody>
@@ -240,6 +242,8 @@
              'js/mark-input-error.js',
              'js/checkbox.js',
              'js/show-error.js',
+             'js/show-album-stat.js',
+             'js/reload.js',
              'js/pictures/albums.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}

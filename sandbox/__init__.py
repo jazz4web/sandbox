@@ -18,7 +18,7 @@ from .api.auth import (
     Login, Logout, LogoutAll, RequestEm,
     RequestPasswd, ResetPasswd)
 from .api.people import Profile, Relation
-from .api.pictures import Albums, Ustat
+from .api.pictures import Albums, Albumstat, Ustat
 from .api.tasks import check_swapped
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
@@ -112,6 +112,7 @@ app = StApp(
             Route('/rel', Relation, name='arel'),
             Route('/pictures', Albums, name='aalbums'),
             Route('/ustat', Ustat, name='austat'),
+            Route('/albumstat', Albumstat, name='albumstat'),
             ]),
         Mount('/people', name='people', routes=[
             Route('/{username}', show_profile, name='profile')
