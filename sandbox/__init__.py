@@ -18,7 +18,7 @@ from .api.auth import (
     Login, Logout, LogoutAll, RequestEm,
     RequestPasswd, ResetPasswd)
 from .api.people import Profile, Relation
-from .api.pictures import Albums
+from .api.pictures import Albums, Ustat
 from .api.tasks import check_swapped
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
@@ -26,7 +26,7 @@ from .dirs import base, static, templates, settings
 from .errors import show_error
 from .main.views import show_avatar, show_index, show_favicon
 from .people.views import show_profile
-from .pictures.views import show_albums
+from .pictures.views import show_album, show_albums
 
 try:
     from .tuning import SITE_NAME, SITE_DESCRIPTION, SECRET_KEY, MAIL_PASSWORD
@@ -111,13 +111,14 @@ app = StApp(
             Route('/change-email', ChangeEmail, name='change-email'),
             Route('/rel', Relation, name='arel'),
             Route('/pictures', Albums, name='aalbums'),
+            Route('/ustat', Ustat, name='austat'),
             ]),
         Mount('/people', name='people', routes=[
             Route('/{username}', show_profile, name='profile')
             ]),
         Mount('/pictures', name='pictures', routes=[
             Route('/', show_albums, name='albums'),
-            ]),
+            Route('/{suffix}', show_album, name='album')]),
         Mount('/static', app=StaticFiles(directory=static), name='static')],
     on_startup=[run_before],
     middleware=middleware,

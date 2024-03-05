@@ -28,6 +28,33 @@ function showAlbums(dt) {
         checkMC(1152);
         if ($('.today-field').length) renderTF('.today-field', dt);
         formatDateTime($('.date-field'));
+        let pub = $('#pub-f');
+        pub.on('change', function() {
+          if ($(this).is(':checked')) {
+            uncheckBox('#priv-f');
+            uncheckBox('#ffo-f');
+          } else {
+            checkBox('#priv-f');
+          }
+        });
+        let priv = $('#priv-f');
+        priv.on('change', function() {
+          if ($(this).is(':checked')) {
+            uncheckBox('#pub-f');
+            uncheckBox('#ffo-f');
+          } else {
+            checkBox('#pub-f');
+          }
+        });
+        let ffo = $('#ffo-f');
+        ffo.on('change', function() {
+          if ($(this).is(':checked')) {
+            uncheckBox('#pub-f');
+            uncheckBox('#priv-f');
+          } else {
+            checkBox('#pub-f');
+          }
+        });
       }
     },
     dataType: 'json'

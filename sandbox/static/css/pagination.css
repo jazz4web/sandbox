@@ -1,9 +1,11 @@
-.albums-options {
-  margin: 6px 0 0 0;
+.entity-pagination {
   border: thin solid gainsboro;
   box-shadow: 0 0 4px lightcyan;
   background-color: ghostwhite;
   background-image: linear-gradient(to top, ghostwhite, snow);
   border-radius: 3px;
-  padding: 6px 0;
+}
+
+.pagination {
+  margin: 5px 0 -2px 0;
 }
