@@ -18,7 +18,7 @@ from .api.auth import (
     Login, Logout, LogoutAll, RequestEm,
     RequestPasswd, ResetPasswd)
 from .api.people import Profile, Relation
-from .api.pictures import Albums, Albumstat, Ustat
+from .api.pictures import Album, Albums, Albumstat, Ustat
 from .api.tasks import check_swapped
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
@@ -111,6 +111,7 @@ app = StApp(
             Route('/change-email', ChangeEmail, name='change-email'),
             Route('/rel', Relation, name='arel'),
             Route('/pictures', Albums, name='aalbums'),
+            Route('/pictures/{suffix}', Album, name='aalbum'),
             Route('/ustat', Ustat, name='austat'),
             Route('/albumstat', Albumstat, name='albumstat'),
             ]),

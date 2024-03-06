@@ -10,6 +10,7 @@ async def show_album(request):
         'pictures/album.html',
         {'request': request,
          'suffix': request.path_params.get('suffix'),
+         'cu': cu,
          'page': await parse_page(request),
          'status': status,
          'flashed': await get_flashed(request)})
