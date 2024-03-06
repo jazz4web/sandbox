@@ -22,7 +22,7 @@ async def select_pictures(conn, aid, page, per_page, last):
                 'pages': await iter_pages(page, last),
                 'pictures': [{'filename': record.get('filename'),
                               'parsed40': await parse_pic_filename(
-                                  record.get('filename'), 40),
+                                  record.get('filename'), 34),
                               'suffix': record.get('suffix')}
                              for record in query]}
 

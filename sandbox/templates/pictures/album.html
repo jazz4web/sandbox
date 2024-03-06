@@ -17,16 +17,18 @@
              'css/today-field.css',
              'css/form-labeled.css',
              'css/albums.css',
+             'css/items-table-block.css',
+             'css/pagination.css',
              'css/next-block.css' -%}
-             <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
-             {%- endassets -%}
+    <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
+  {%- endassets -%}
 {%- endblock styles -%}
 
 {%- block templates -%}
   {{- super() -}}
   {{ album_statistic(status) }}
   <script id="albumt" type="text/template">
-    <div id="left-panel" class="content-block" {% if flashed %}next-block
+    <div id="left-panel" class="content-block {% if flashed %}next-block
                                 {%- endif -%}">
       <h2 <% #album.parse_t %>title="<% album.title %>"<% /album.parse_t %>>
         <% album.parsed50 %>
@@ -146,6 +148,8 @@
              'js/render-tf.js',
              'js/check-browser.js',
              'js/check-mc.js',
+             'js/show-error.js',
+             'js/upload-picture.js',
              'js/pictures/album.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}

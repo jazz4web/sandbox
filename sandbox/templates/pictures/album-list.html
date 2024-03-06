@@ -10,7 +10,7 @@
       <tr {% if not loop.last %}class="bordered"{% endif %}>
         <td class="album-header-panel"
             data-suffix="{{ pic['suffix'] }}"
-            {% if pic['filename']|length > 40 %}
+            {% if pic['filename']|length > 38 %}
             title="{{ pic['filename'] }}"
             {% endif %}>
           <span class="glyphicon glyphicon-picture"
