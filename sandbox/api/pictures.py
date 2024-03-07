@@ -8,7 +8,7 @@ from starlette.responses import JSONResponse
 
 from ..auth.attri import permissions
 from ..auth.cu import checkcu
-from ..common.aparsers import parse_filename, parse_page
+from ..common.aparsers import parse_filename, parse_page, parse_redirect
 from ..common.flashed import set_flashed
 from ..common.pg import get_conn
 from ..common.random import get_unique_s
@@ -17,6 +17,34 @@ from .checkimg import read_data
 from .pg import (
     check_last, create_new_album, get_album, get_pic_stat,
     get_user_stat, select_albums, select_pictures)
+
+
+class Search(HTTPEndpoint):
+    async def get(self, request):
+        res = {'album': None}
+        cu = await checkcu(request, request.headers.get('x-auth-token'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, необходима авторизация.'
+            return JSONResponse(res)
+        if permissions.PICTURE not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        suffix = request.query_params.get('suffix')
+        if suffix is None:
+            res['message'] = 'Пустой запрос не имеет смысла.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        s = await conn.fetchval(
+            '''SELECT albums.suffix FROM albums, pictures
+                 WHERE albums.id = pictures.album_id
+                   AND pictures.suffix = $1 AND albums.author_id = $2''',
+            suffix, cu.get('id'))
+        await conn.close()
+        if s is None:
+            res['message'] = 'Нет такого файла.'
+            return JSONResponse(res)
+        res['album'] = request.url_for('pictures:album', suffix=s)._url
+        return JSONResponse(res)
 
 
 class Picstat(HTTPEndpoint):
@@ -45,6 +73,44 @@ class Picstat(HTTPEndpoint):
 
 
 class Album(HTTPEndpoint):
+    async def delete(self, request):
+        res = {'album': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('token'))
+        if cu is None:
+            res['message'] = 'Действие требует авторизации.'
+            return JSONResponse(res)
+        if permissions.PICTURE not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        picture = await conn.fetchrow(
+            '''SELECT albums.volume AS avol,
+                      albums.suffix AS asuffix,
+                      pictures.volume AS pvol,
+                      pictures.album_id AS aid FROM albums, pictures
+                 WHERE albums.id = pictures.album_id
+                   AND albums.author_id = $1
+                   AND pictures.suffix = $2''',
+            cu.get('id'), d.get('picture'))
+        if picture is None:
+            res['message'] = 'Нет такого файла.'
+            await conn.close()
+            return JSONResponse(res)
+        await conn.execute(
+            'UPDATE albums SET changed = $1, volume = $2 WHERE id = $3',
+            datetime.utcnow(), picture.get('avol') - picture.get('pvol'),
+            picture.get('aid'))
+        await conn.execute(
+            'DELETE FROM pictures WHERE suffix = $1', d.get('picture'))
+        await conn.close()
+        res['album'] = picture.get('asuffix')
+        res['url'] = await parse_redirect(
+            request, int(d.get('page', '1')), int(d.get('last', '0')),
+            'pictures:album', suffix=picture.get('asuffix'))
+        await set_flashed(request, 'Файл успешно удалён.')
+        return JSONResponse(res)
+
     async def get(self, request):
         cu = await checkcu(request, request.headers.get('x-auth-token'))
         if cu is None:
@@ -150,6 +216,54 @@ class Album(HTTPEndpoint):
         res['done'] = True
         await set_flashed(request, 'Изображение успешно загружено.')
         await conn.close()
+        return JSONResponse(res)
+
+    async def put(self, request):
+        res = {'album': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('token'))
+        if cu is None:
+            res['message'] = 'Действие требует авторизации.'
+            return JSONResponse(res)
+        if permissions.PICTURE not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        album = await get_album(
+            conn, cu.get('id'), suffix=request.path_params.get('suffix'))
+        if album is None:
+            res['message'] = 'Такой альбом не существует.'
+            await conn.close()
+            return JSONResponse(res)
+        field, value = d.get('field', ''), d.get('value', '')
+        if field == 'state':
+            if value not in status:
+                res['message'] = 'Неизвестный статус альбома, отклонено.'
+                await conn.close()
+                return JSONResponse(res)
+            await set_flashed(request, 'Статус альбома успешно изменён.')
+        elif field == 'title':
+            rep = await conn.fetchrow(
+                '''SELECT title FROM albums
+                     WHERE title = $1 AND author_id = $2''',
+                value.strip(), cu.get('id'))
+            if rep:
+                res['message'] = 'Имя альбома занято, действие отклонено.'
+                await conn.close()
+                return JSONResponse(res)
+            if not value or len(value.strip()) > 100:
+                res['message'] = 'Имя альбома должно умещаться в 100 знаков.'
+                await conn.close()
+                return JSONResponse(res)
+            if album.get('title') == value.strip():
+                res['message'] = 'Запрос не имеет смысла.'
+                await conn.close()
+                return JSONResponse(res)
+            await set_flashed(request, 'Альбом успешно переименован.')
+        q = f'UPDATE albums SET {field} = $1 WHERE id = $2'
+        await conn.execute(q, value.strip(), album.get('id'))
+        await conn.close()
+        res['album'] = album.get('suffix')
         return JSONResponse(res)
 
 

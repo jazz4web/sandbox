@@ -6,6 +6,64 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showAlbums(dt);
   if (window.localStorage.getItem('token')) {
+    $('body').on('click', '#find-submit', function() {
+      $(this).blur();
+      let suffix = $('#find-input').val();
+      let token = window.localStorage.getItem('token');
+      let tee = token ? {'x-auth-token': token} : {};
+      if (suffix) {
+        $.ajax({
+          method: 'GET',
+          url: '/api/search',
+          headers: tee,
+          data: {
+            suffix: suffix
+          },
+          success: function(data) {
+            if (data.album) {
+              window.location.assign(data.album);
+            } else {
+              let html = Mustache.render($('#ealertt').html(), data);
+              $('#main-container').append(html);
+              showError('#left-panel', data);
+              $('#right-panel').addClass('next-block');
+              checkMC(1152);
+            }
+          },
+          dataType: 'json'
+        });
+      }
+    });
+    $('body').on('click', '#album-search', function() {
+      $(this).blur();
+      let cform = $('#create-form-block');
+      let fblock = $('#find-pic-block');
+      if (fblock.is(':hidden')) {
+        if (!cform.is(':hidden')) cform.slideUp('slow');
+        fblock.slideDown('slow', function() {
+          scrollPanel($('.albums-options'));
+          checkMC(1152);
+        });
+        if ($('.clicked-item').length) {
+          $('.clicked-item').removeClass('clicked-item');
+          showUserStat();
+        }
+      } else {
+        fblock.slideUp('slow', function() { checkMC(1152);});
+      }
+    });
+    $('body').on('click', '#album-first-page', function() {
+      $(this).blur();
+      window.location.assign('/pictures/');
+    });
+    $('body').on(
+      'keyup blur', '#title-change',
+      {min: 3, max: 100, block: '#rename-form'},
+      markInputError);
+    $('body').on('click', '#rename-album', {suffix: null}, renameAlbum);
+    $('body').on('change', '#select-status', {suffix: null}, changeStatus);
+    $('body').on('click', '#show-rename-form', showRenameForm);
+    $('body').on('click', '#show-state-form', showStateForm);
     $('body').on('click', '#album-reload', reload);
     $('body').on('click', '#user-home', function() {
       $(this).blur();

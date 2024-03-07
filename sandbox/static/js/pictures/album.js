@@ -6,6 +6,83 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showAlbum(page, suffix, dt);
   if (window.localStorage.getItem('token')) {
+    $('body')
+    .on('click', '#album-first-page', {suffix: suffix}, function(event) {
+      $(this).blur();
+      window.location.assign('/pictures/' + event.data.suffix);
+    });
+    $('body')
+      .on('click', '.remove-button', {page: page, suffix: suffix}, removeThis);
+    $('body').on('click', '.trash-button', function() {
+      $(this).blur();
+      let alb = $(this).parents('.album-tools-panel')
+                       .siblings('.album-header-panel');
+      if (alb.hasClass('clicked-item')) showHideButton(
+        $(this), '.remove-button');
+    });
+    $('body').on(
+      'keyup blur', '#title-change',
+      {min: 3, max: 100, block: '#rename-form'},
+      markInputError);
+    $('body').on('click', '#rename-album', {suffix: suffix}, renameAlbum);
+    $('body').on('change', '#select-status', {suffix: suffix}, changeStatus);
+    $('body').on('click', '#show-rename-form', showRenameForm);
+    $('body').on('click', '#show-state-form', showStateForm);
+    $('body').on('click', '#upload-new', {suffix: suffix}, function(event) {
+      $(this).blur();
+      let upblock = $('#create-form-block');
+      if (!upblock.is(':hidden')) {
+        upblock.slideUp('slow');
+      } else {
+        if ($('.clicked-item').length) {
+          $('.clicked-item').removeClass('clicked-item');
+          $('.remove-button').each(function() { $(this).fadeOut('slow'); });
+          showAlbumStat(event.data.suffix);
+        }
+        upblock.slideDown('slow');
+        scrollPanel($('.albums-options'));
+      }
+    });
+    $('body').on('click', '#album-reload', reload);
+    $('body').on('click', '#go-home', function() {
+      $(this).blur();
+      window.location.assign('/pictures/');
+    });
+    $('body')
+    .on('click', '#show-statistic', {suffix: suffix}, function(event) {
+      $(this).blur();
+      let form = $('#upload-form-block');
+      if (!form.is(':hidden')) form.slideUp('slow');
+      if ($('.clicked-item').length) {
+        $('.clicked-item').removeClass('clicked-item');
+        $('.remove-button').each(function() {$(this).fadeOut('slow'); });
+        showAlbumStat(event.data.suffix);
+      }
+    });
+    $('body').on('click', '.copy-md-code', function() {
+      $(this).blur();
+      $('.remove-button').each(function() { $(this).fadeOut('slow'); });
+      let sf = $('.album-form-b');
+      let ff = $('.album-form');
+      if (sf.is(':hidden')) {
+        sf.slideDown('slow');
+        ff.slideUp('slow');
+      } else {
+        sf.slideUp('slow');
+      }
+    });
+    $('body').on('click', '.copy-link', function() {
+      $(this).blur();
+      $('.remove-button').each(function() { $(this).fadeOut('slow'); });
+      let ff = $('.album-form');
+      let sf = $('.album-form-b');
+      if (ff.is(':hidden')) {
+        ff.slideDown('slow');
+        sf.slideUp('slow');
+      } else {
+        ff.slideUp('slow');
+      }
+    });
     $('body').on('click', '.album-header-panel', function() {
       if (!$(this).hasClass('clicked-item')) {
         let form = $('#create-form-block');
