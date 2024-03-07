@@ -10,7 +10,43 @@ from ..common.flashed import get_flashed
 from ..common.pg import get_conn
 from ..dirs import static
 from ..errors import E404
+from .pg import check_state
 from .tools import resize
+
+
+async def show_picture(request):
+    cu = await getcu(request)
+    conn = await get_conn(request.app.config)
+    target = await conn.fetchrow(
+        '''SELECT albums.state, albums.author_id, pictures.suffix,
+                  pictures.picture, pictures.format FROM albums, pictures
+             WHERE pictures.suffix = $1
+             AND albums.id = pictures.album_id''',
+            request.path_params.get('suffix'))
+    if target is None:
+        response = FileResponse(
+            os.path.join(static, 'images', '404.png'))
+        response.headers.append(
+            'cache-control',
+            'max-age=0, no-store, no-cache, must-revalidate')
+    else:
+        if await check_state(conn, target, cu.get('id')):
+            response = Response(
+                target.get('picture'),
+                media_type=f'image/{target.get("format").lower()}')
+            response.headers.append(
+                'cache-control',
+                'public, max-age={0}'.format(
+                    request.app.config.get(
+                        'SEND_FILE_MAX_AGE', cast=int, default=0)))
+        else:
+            response = FileResponse(
+                os.path.join(static, 'images', '403.png'))
+            response.headers.append(
+                'cache-control',
+                'max-age=0, no-store, no-cache, must-revalidate')
+    await conn.close()
+    return response
 
 
 async def show_avatar(request):

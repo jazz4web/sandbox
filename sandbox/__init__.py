@@ -18,13 +18,13 @@ from .api.auth import (
     Login, Logout, LogoutAll, RequestEm,
     RequestPasswd, ResetPasswd)
 from .api.people import Profile, Relation
-from .api.pictures import Album, Albums, Albumstat, Ustat
+from .api.pictures import Album, Albums, Albumstat, Picstat, Ustat
 from .api.tasks import check_swapped
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
 from .errors import show_error
-from .main.views import show_avatar, show_index, show_favicon
+from .main.views import show_avatar, show_index, show_favicon, show_picture
 from .people.views import show_profile
 from .pictures.views import show_album, show_albums
 
@@ -95,6 +95,7 @@ app = StApp(
         Route('/favicon.ico', show_favicon, name='favicon'),
         Route('/ava/{username}/{size:int}', show_avatar, name='ava'),
         Route('/captcha/{suffix}', show_captcha, name='captcha'),
+        Route('/picture/{suffix}', show_picture, name='picture'),
         Mount('/api', name='api', routes=[
             Route('/index', Index, name='aindex'),
             Route('/captcha', Captcha, name='acaptcha'),
@@ -114,6 +115,7 @@ app = StApp(
             Route('/pictures/{suffix}', Album, name='aalbum'),
             Route('/ustat', Ustat, name='austat'),
             Route('/albumstat', Albumstat, name='albumstat'),
+            Route('/picstat', Picstat, name='apicstat'),
             ]),
         Mount('/people', name='people', routes=[
             Route('/{username}', show_profile, name='profile')
