@@ -10,6 +10,7 @@ from ..common.flashed import get_flashed
 from ..common.pg import get_conn
 from ..dirs import static
 from ..errors import E404
+from ..pictures.attri import status
 from .pg import check_state
 from .tools import resize
 
@@ -30,7 +31,7 @@ async def show_picture(request):
             'cache-control',
             'max-age=0, no-store, no-cache, must-revalidate')
     else:
-        if await check_state(conn, target, cu.get('id')):
+        if await check_state(conn, target, cu):
             response = Response(
                 target.get('picture'),
                 media_type=f'image/{target.get("format").lower()}')
@@ -40,8 +41,12 @@ async def show_picture(request):
                     request.app.config.get(
                         'SEND_FILE_MAX_AGE', cast=int, default=0)))
         else:
+            if target['state'] == status.ffo:
+                picname = '403a.png'
+            else:
+                picname = '403.png'
             response = FileResponse(
-                os.path.join(static, 'images', '403.png'))
+                os.path.join(static, 'images', picname))
             response.headers.append(
                 'cache-control',
                 'max-age=0, no-store, no-cache, must-revalidate')

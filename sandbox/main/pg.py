@@ -10,9 +10,7 @@ async def check_friends(conn, author, friend):
     return False
 
 
-async def check_state(conn, target, uid):
-    cu = await conn.fetchrow(
-        'SELECT id, permissions FROM users WHERE id = $1', uid)
+async def check_state(conn, target, cu):
     if target['state'] == status.pub:
         return True
     elif target['state'] == status.priv:
