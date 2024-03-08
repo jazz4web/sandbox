@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{%- block title_part -%}Ваши черновики{%- endblock title_part -%}
+
+{%- block styles -%}
+  {{- super() -}}
+  {%- assets filters='cssmin', output='generic/css/drafts/drafts.css',
+             'css/base.css' -%}
+    <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
+  {%- endassets -%}
+{%- endblock styles -%}
+
+{%- block scripts -%}
+  {{- super() -}}
+  <script>let cu="{{ cu.username }}"; let page="{{ page }}";</script>
+  {%- assets filters='rjsmin', output='generic/js/drafts/drafts.js',
+             'js/format-footer.js',
+             'js/close-topflashed.js',
+             'js/drafts/drafts.js' -%}
+    <script src="{{ ASSET_URL }}"></script>
+  {%- endassets -%}
+{%- endblock scripts -%}

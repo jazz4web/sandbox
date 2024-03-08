@@ -75,9 +75,10 @@
 #description-e {
   margin-top: 6px;
   padding: 6px;
-  box-shadow: 0 0 6px lightgray;
-  background-color: ivory;
-  border-radius: 3px;
+  box-shadow: 0 0 6px beige;
+  border: 2px solid beige;
+  background-color: beige;
+  border-radius: 6px;
 }
 
 #description-editor {

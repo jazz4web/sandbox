@@ -70,6 +70,12 @@
                 Инструменты <b class="caret"></b>
               </a>
               <ul class="dropdown-menu">
+                {% if cu and permissions.ART in cu['permissions'] %}
+                  <li>
+                    <a href="{{ url_for('drafts:drafts') }}">Черновики</a>
+                  </li>
+                  <li role="separator" class="divider"></li>
+                {% endif %}
                 {% if cu and permissions.PICTURE in cu['permissions'] %}
                   <li>
                     <a href="{{ url_for('pictures:albums') }}">Картинки</a>

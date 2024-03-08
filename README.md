@@ -30,4 +30,6 @@ $ python runserver.py
 
 ![screen](https://codej.ru/picture/4f85NiuXF2.jpg)
 
+![screen2](https://codej.ru/picture/mJzCzMLNn4.jpg)
+
 Дополнительная информация о проекте на [CodeJ](https://codej.ru/8ffdIqY4). Донат проекту можно перевести [сюда](https://yoomoney.ru/to/410015590807463) - перевод на 5 рублей лучше, чем никакого перевода, а ваш донат гарантирует, что я не закрою проект уже в ближайшее время. Как-то так...

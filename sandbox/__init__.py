@@ -23,6 +23,7 @@ from .api.tasks import check_swapped
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
+from .drafts.views import show_drafts
 from .errors import show_error
 from .main.views import show_avatar, show_index, show_favicon, show_picture
 from .people.views import show_profile
@@ -117,6 +118,9 @@ app = StApp(
             Route('/albumstat', Albumstat, name='albumstat'),
             Route('/picstat', Picstat, name='apicstat'),
             Route('/search', Search, name='asearch')
+            ]),
+        Mount('/drafts', name='drafts', routes=[
+            Route('/', show_drafts, name='drafts'),
             ]),
         Mount('/people', name='people', routes=[
             Route('/{username}', show_profile, name='profile')
