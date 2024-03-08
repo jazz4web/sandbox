@@ -24,7 +24,7 @@ from .api.tasks import check_swapped
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
-from .drafts.views import show_drafts
+from .drafts.views import show_draft, show_drafts
 from .errors import show_error
 from .main.views import show_avatar, show_index, show_favicon, show_picture
 from .people.views import show_profile
@@ -123,6 +123,7 @@ app = StApp(
             ]),
         Mount('/drafts', name='drafts', routes=[
             Route('/', show_drafts, name='drafts'),
+            Route('/{slug}', show_draft, name='draft'),
             ]),
         Mount('/people', name='people', routes=[
             Route('/{username}', show_profile, name='profile')

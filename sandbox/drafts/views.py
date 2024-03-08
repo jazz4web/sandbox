@@ -3,6 +3,16 @@ from ..common.aparsers import parse_page
 from ..common.flashed import get_flashed
 
 
+async def show_draft(request):
+    cu = await getcu(request)
+    return request.app.jinja.TemplateResponse(
+        'drafts/draft.html',
+        {'request': request,
+         'cu': cu,
+         'slug': request.path_params.get('slug'),
+         'flashed': await get_flashed(request)})
+
+
 async def show_drafts(request):
     cu = await getcu(request)
     return request.app.jinja.TemplateResponse(

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/_drafts.html" import show_arts %}
 
 {%- block title_part -%}Ваши черновики{%- endblock title_part -%}
 
@@ -13,6 +14,7 @@
              'css/inline-form.css',
              'css/entity-block.css',
              'css/drafts.css',
+             'css/pagination.css',
              'css/next-block.css' -%}
     <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
   {%- endassets -%}
@@ -68,7 +70,7 @@
           Разрешение вести свой блог можно получить у администратора.
         </div>
       <% /canwrite %>
-  {#    {{ show_arts('/drafts/', '/drafts/t/') }} #}
+      {{ show_arts('/drafts/', '/drafts/t/') }}
       <% ^pagination.articles %>
         <div class="alert alert-warning next-block">
           На текущий момент у вас нет черновиков.
@@ -94,6 +96,8 @@
              'js/check-mc.js',
              'js/check-browser.js',
              'js/render-tf.js',
+             'js/mark-input-error.js',
+             'js/show-error.js',
              'js/drafts/drafts.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}
