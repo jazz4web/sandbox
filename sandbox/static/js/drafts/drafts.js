@@ -4,4 +4,5 @@ $(function() {
   let dt = luxon.DateTime.now();
   formatFooter(dt);
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
+  showDrafts(dt, '/api/drafts', page);
 });

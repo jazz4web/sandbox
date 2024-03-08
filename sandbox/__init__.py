@@ -17,6 +17,7 @@ from .api.auth import (
     ChangeAva, ChangeEmail, ChangePasswd, GetPasswd,
     Login, Logout, LogoutAll, RequestEm,
     RequestPasswd, ResetPasswd)
+from .api.drafts import Drafts
 from .api.people import Profile, Relation
 from .api.pictures import Album, Albums, Albumstat, Picstat, Search, Ustat
 from .api.tasks import check_swapped
@@ -117,7 +118,8 @@ app = StApp(
             Route('/ustat', Ustat, name='austat'),
             Route('/albumstat', Albumstat, name='albumstat'),
             Route('/picstat', Picstat, name='apicstat'),
-            Route('/search', Search, name='asearch')
+            Route('/search', Search, name='asearch'),
+            Route('/drafts', Drafts, name='adrafts'),
             ]),
         Mount('/drafts', name='drafts', routes=[
             Route('/', show_drafts, name='drafts'),

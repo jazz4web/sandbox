@@ -3,3 +3,7 @@
   text-align: justify;
   font-size: 0.9em;
 }
+
+.form-help p {
+  margin: 0;
+}
