@@ -17,7 +17,7 @@ from .api.auth import (
     ChangeAva, ChangeEmail, ChangePasswd, GetPasswd,
     Login, Logout, LogoutAll, RequestEm,
     RequestPasswd, ResetPasswd)
-from .api.drafts import Drafts
+from .api.drafts import Draft, Drafts
 from .api.people import Profile, Relation
 from .api.pictures import Album, Albums, Albumstat, Picstat, Search, Ustat
 from .api.tasks import check_swapped
@@ -26,7 +26,8 @@ from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
 from .drafts.views import show_draft, show_drafts
 from .errors import show_error
-from .main.views import show_avatar, show_index, show_favicon, show_picture
+from .main.views import (
+    jump, show_avatar, show_index, show_favicon, show_picture)
 from .people.views import show_profile
 from .pictures.views import show_album, show_albums
 
@@ -95,6 +96,7 @@ app = StApp(
     routes=[
         Route('/', show_index, name='index'),
         Route('/favicon.ico', show_favicon, name='favicon'),
+        Route('/{suffix}', jump, name='jump'),
         Route('/ava/{username}/{size:int}', show_avatar, name='ava'),
         Route('/captcha/{suffix}', show_captcha, name='captcha'),
         Route('/picture/{suffix}', show_picture, name='picture'),
@@ -120,6 +122,7 @@ app = StApp(
             Route('/picstat', Picstat, name='apicstat'),
             Route('/search', Search, name='asearch'),
             Route('/drafts', Drafts, name='adrafts'),
+            Route('/draft', Draft, name='adraft'),
             ]),
         Mount('/drafts', name='drafts', routes=[
             Route('/', show_drafts, name='drafts'),

@@ -3,7 +3,8 @@ import functools
 import os
 
 from starlette.exceptions import HTTPException
-from starlette.responses import FileResponse, RedirectResponse, Response
+from starlette.responses import (
+    HTMLResponse, FileResponse, RedirectResponse, Response)
 
 from ..auth.cu import getcu
 from ..common.flashed import get_flashed
@@ -13,6 +14,11 @@ from ..errors import E404
 from ..pictures.attri import status
 from .pg import check_state
 from .tools import resize
+
+
+async def jump(request):
+    suffix = request.path_params.get('suffix')
+    return HTMLResponse('<div>Not implemented yet.</div>')
 
 
 async def show_picture(request):
