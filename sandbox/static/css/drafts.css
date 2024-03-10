@@ -1,3 +1,29 @@
+.entity-link {
+  color: dimgray;
+}
+
+.entity-block {
+  background-color: ivory;
+  padding: 8px;
+}
+
 .form-form {
   margin: 4px 0 0 0;
+}
+
+.entity-details {
+  margin: 4px 0 0 0;
+}
+
+.entity-summary {
+  margin: 4px 0 0 0;
+}
+
+.entity-alias {
+  margin: 4px 0 0 0;
+  text-align: center;
+}
+
+.entity-labels-block {
+  margin: 6px 0 0 0;
 }

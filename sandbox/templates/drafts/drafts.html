@@ -7,13 +7,18 @@
   {{- super() -}}
   {%- assets filters='cssmin', output='generic/css/drafts/drafts.css',
              'css/base.css',
-             'css/main-container.css',
+             'css/listed-mc.css',
              'css/content-block.css',
              'css/form-help.css',
              'css/today-field.css',
              'css/inline-form.css',
              'css/entity-block.css',
+             'css/entity-attributes.css',
+             'css/labels.css',
+             'css/avatar.css',
+             'css/entity-summary.css',
              'css/entity-details.css',
+             'css/personal-details.css',
              'css/drafts.css',
              'css/pagination.css',
              'css/next-block.css' -%}
@@ -99,6 +104,8 @@
              'js/render-tf.js',
              'js/mark-input-error.js',
              'js/show-error.js',
+             'js/format-datetime.js',
+             'js/fix-comma.js',
              'js/drafts/drafts.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}

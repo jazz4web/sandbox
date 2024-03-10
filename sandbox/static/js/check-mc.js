@@ -1,10 +1,8 @@
 function resize(wwidth, width) {
   if (wwidth > width) {
-    $('#main-container').css({"width": width - 20,
-                              "box-shadow": "0 0 10px gainsboro"});
+    $('#main-container').css({"width": width - 20});
   } else {
-    $('#main-container').css({"width": wwidth - 20,
-                              "box-shadow": "0 0 10px gainsboro"});
+    $('#main-container').css({"width": wwidth - 20});
   }
 }
 
