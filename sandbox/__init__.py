@@ -17,14 +17,14 @@ from .api.auth import (
     ChangeAva, ChangeEmail, ChangePasswd, GetPasswd,
     Login, Logout, LogoutAll, RequestEm,
     RequestPasswd, ResetPasswd)
-from .api.drafts import Draft, Drafts
+from .api.drafts import Draft, Drafts, Labels
 from .api.people import Profile, Relation
 from .api.pictures import Album, Albums, Albumstat, Picstat, Search, Ustat
 from .api.tasks import check_swapped
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
-from .drafts.views import show_draft, show_drafts
+from .drafts.views import show_draft, show_drafts, show_labeled
 from .errors import show_error
 from .main.views import (
     jump, show_avatar, show_index, show_favicon, show_picture)
@@ -123,11 +123,12 @@ app = StApp(
             Route('/search', Search, name='asearch'),
             Route('/drafts', Drafts, name='adrafts'),
             Route('/draft', Draft, name='adraft'),
+            Route('/labels', Labels, name='alabel'),
             ]),
         Mount('/drafts', name='drafts', routes=[
             Route('/', show_drafts, name='drafts'),
             Route('/{slug}', show_draft, name='draft'),
-            ]),
+            Route('/t/{label}', show_labeled, name='show-labeled')]),
         Mount('/people', name='people', routes=[
             Route('/{username}', show_profile, name='profile')
             ]),
