@@ -14,6 +14,44 @@ from .parse import parse_art_query, parse_arts_query
 from .slugs import check_max, make, parse_match
 
 
+async def change_draft(request, conn, did, field, value):
+    q = f'UPDATE articles SET {field} = $1 WHERE id = $2'
+    if field == 'meta':
+        value = value.strip()[:180]
+        await conn.execute(q, value, did)
+    elif field == 'state':
+        if value in status:
+            await conn.execute(q, value, did)
+            published = await conn.fetchrow(
+                'SELECT published, author_id FROM articles WHERE id = $1', did)
+            if published.get('published') is None and \
+                    value in (status.pub, status.priv, status.ffo):
+                now = datetime.utcnow()
+                await conn.execute(
+                    '''UPDATE articles SET published = $1, edited = $1
+                         WHERE id = $2''', now, did)
+                await conn.execute(
+                    'UPDATE users SET last_published = $1 WHERE id = $2',
+                    now, published.get('author_id'))
+                await request.app.rc.hset(
+                    f'data:{published.get("author_id")}',
+                    'last_published', f'{now.isoformat()}Z')
+    elif field == 'summary':
+        value = value.strip()[:512]
+        await conn.execute(q, value, did)
+    elif field == 'commented':
+        value = await conn.fetchval(
+            'SELECT commented FROM articles WHERE id = $1', did)
+        await conn.execute(q, not value, did)
+    elif field == 'title':
+        value = value.strip()[:100]
+        slug = await check_slug(conn, value)
+        await conn.execute(
+            'UPDATE articles SET title = $1, slug = $2 WHERE id = $3',
+            value, slug, did)
+        return slug
+
+
 async def check_draft(request, conn, slug, cuid, target):
     query = await conn.fetchrow(
         '''SELECT articles.id, articles.title, articles.slug,

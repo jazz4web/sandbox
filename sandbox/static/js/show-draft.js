@@ -31,10 +31,19 @@ function showDraft(slug, dt) {
         $('#labels-edit').val(labels);
         let lhtml = $('.labels').html().trim().slice(0, -1);
         $('.labels').html(lhtml);
+        if (!data.draft.meta) {
+          $('#d-length-value').text(180);
+        } else {
+          $('#d-length-value').text(180 - data.draft.meta.length);
+        }
+        if (!data.draft.summary) {
+          $('#s-length-value').text(512);
+        } else {
+          $('#s-length-value').text(512 - data.draft.summary.length);
+        }
         checkMC(860);
         // here;
       }
-      console.log(data);
     },
     dataType: 'json'
   });

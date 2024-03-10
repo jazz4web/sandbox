@@ -13,8 +13,11 @@
              'css/aoptions.css',
              'css/form-help.css',
              'css/form-labeled.css',
+             'css/inline-form.css',
              'css/labels.css',
+             'css/length-marker.css',
              'css/next-block.css',
+             'css/errors.css',
              'css/draft.css',
              'css/main-container.css' -%}
     <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
@@ -245,7 +248,7 @@
             </tbody>
           </table>
         </div>
-        <div id="summary-editor" class="form-form to-be-hidden">
+        <div id="summary-editor" class="to-be-hidden">
           <div id="s-length-marker" class="length-marker">
             Осталось: <span
               id="s-length-value">512</span>
@@ -373,6 +376,10 @@
              'js/change-form.js',
              'js/scroll-panel.js',
              'js/show-error.js',
+             'js/track-marker.js',
+             'js/change-draft.js',
+             'js/mark-input-error.js',
+             'js/move-screen-up.js',
              'js/drafts/draft.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}

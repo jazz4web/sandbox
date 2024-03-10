@@ -136,7 +136,6 @@ function showProfile(dt) {
           checkAverage('#announce');
         }
       }
-      console.log(data);
     },
     dataType: 'json'
   });

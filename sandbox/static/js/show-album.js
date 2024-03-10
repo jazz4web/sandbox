@@ -9,7 +9,6 @@ function showAlbum(page, suffix, dt) {
     },
     headers: tee,
     success: function(data) {
-      console.log(data);
       if (token) {
         if (!data.cu || data.cu.brkey != checkBrowser()) {
           window.localStorage.removeItem('token');

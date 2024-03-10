@@ -6,6 +6,68 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showDraft(slug, dt);
   if (window.localStorage.getItem('token')) {
+    $('body').on('click', '#move-screen-up', moveScreenUp);
+    $('body').on('click', '#metadesc-submit', {slug: slug}, function(event) {
+      $(this).blur();
+      if (!$('#metadesc-edit').parents('.form-group').hasClass('has-error')) {
+        changeDraft('meta', $('#metadesc-edit').val(), event.data.slug);
+      }
+    });
+    $('body').on(
+      'keyup blur', '#metadesc-edit',
+      {len: 180, marker: '#d-length-value', block: '#d-length-marker'},
+      trackMarker);
+    $('body').on('click', '#edit-metadesc', function() {
+      $(this).blur();
+      changeForm('#meta-description-editor', '#metadesc-edit');
+    });
+    $('body').on('click', '#title-submit', {slug: slug}, function(event) {
+      $(this).blur();
+      if (!$('.input-field').hasClass('has-error')) {
+        changeDraft('title', $('#title').val(), event.data.slug);
+      }
+    });
+    $('body').on(
+      'keyup blur', '#title',
+      {min: 3, max: 100, block: '.input-field'}, markInputError);
+    $('body').on('click', '#edit-title', function() {
+      $(this).blur();
+      changeForm('#entity-title-editor', '#title');
+    });
+    $('body').on('click', '#comments-state', {slug: slug}, function(event) {
+      $(this).blur();
+      changeDraft('commented', 'empty', event.data.slug);
+    });
+    $('body').on('click', '#summary-from-text', function() {
+      $(this).blur();
+      let l = $('.entity-text-block').children('p');
+      let w = '';
+      for (let n = 0; n < l.length && w.length < 512; n++) {
+        w = w + ' ' + $(l[n]).text();
+      }
+      let t = w.trim().split(' ');
+      let res = '';
+      let i = 0;
+      while ((res + '...').length <= 384 && i < t.length) {
+        res = res + ' ' + t[i];
+        i++;
+      }
+      $('#summary-edit').val(res.trim() + '...').trigger('blur');
+    });
+    $('body').on('click', '#summary-submit', {slug: slug}, function(event) {
+      $(this).blur();
+      if (!$('#summary-edit').parents('.form-group').hasClass('has-error')) {
+        changeDraft('summary', $('#summary-edit').val(), event.data.slug);
+      }
+    });
+    $('body').on(
+      'keyup blur', '#summary-edit',
+      {len: 512, marker: '#s-length-value', block: '#s-length-marker'},
+      trackMarker);
+    $('body').on('click', '#edit-summary', function() {
+      $(this).blur();
+      changeForm('#summary-editor', '#summary-edit');
+    });
     $('body').on('click', '#labels-submit', {slug: slug}, function(event) {
       $(this).blur();
       let e = $('#labels-edit').parents('.form-group');

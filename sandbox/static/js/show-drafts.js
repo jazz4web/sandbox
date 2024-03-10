@@ -9,7 +9,6 @@ function showDrafts(dt, url, page) {
       page: page
     },
     success: function(data) {
-      console.log(data);
       if (token) {
         if (!data.cu || data.cu.brkey != checkBrowser()) {
           window.localStorage.removeItem('token');

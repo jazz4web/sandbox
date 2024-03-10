@@ -9,7 +9,7 @@ from ..common.aparsers import parse_page
 from ..common.flashed import set_flashed
 from ..common.pg import get_conn
 from ..drafts.attri import status
-from .pg import check_draft, check_last, create_d, select_drafts
+from .pg import change_draft, check_draft, check_last, create_d, select_drafts
 
 
 class Labels(HTTPEndpoint):
@@ -93,6 +93,33 @@ class Draft(HTTPEndpoint):
         res['cens'] = target['state'] == status.cens
         res['keeper'] = cu.get('group') in (groups.keeper, groups.root)
         res['draft'] = target
+        await conn.close()
+        return JSONResponse(res)
+
+    async def put(self, request):
+        res = {'done': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.ART not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        field, value, slug = (
+            d.get('field', ''), d.get('value', ''), d.get('slug', ''))
+        if not all((field, value, slug)):
+            res['message'] = 'Запрос содержит неверные параметры.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        draft = await conn.fetchval(
+            'SELECT id FROM articles WHERE slug = $1 AND author_id = $2',
+            d.get('slug', ''), cu.get('id'))
+        s = await change_draft(request, conn, draft, field, value)
+        res['done'] = True
+        if s:
+            res['slug'] = s
+        await set_flashed(request, 'Изменено успешно.')
         await conn.close()
         return JSONResponse(res)
 
