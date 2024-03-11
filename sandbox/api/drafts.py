@@ -11,7 +11,7 @@ from ..common.pg import get_conn
 from ..drafts.attri import status
 from .pg import (
     change_draft, check_draft, check_last, create_d,
-    select_labeled_drafts, select_drafts)
+    select_labeled_drafts, select_drafts, undress_art_links)
 
 
 class Labels(HTTPEndpoint):
@@ -132,6 +132,34 @@ class Draft(HTTPEndpoint):
         res['cens'] = target['state'] == status.cens
         res['keeper'] = cu.get('group') in (groups.keeper, groups.root)
         res['draft'] = target
+        await conn.close()
+        return JSONResponse(res)
+
+    async def patch(self, request):
+        res = {'done': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        draft = await conn.fetchrow(
+            'SELECT id, author_id FROM articles WHERE slug = $1',
+            d.get('slug', ''))
+        if draft is None:
+            res['message'] = 'Ничего не нашлось по запросу.'
+            await conn.close()
+            return JSONResponse(res)
+        if (cu.get('id') == draft.get('author_id') and
+            cu.get('group') not in (groups.keeper, groups.root)) or \
+                    (cu.get('id') != draft.get('author_id') and
+                     cu.get('group') != groups.root):
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            await conn.close()
+            return JSONResponse(res)
+        res['done'] = True
+        await undress_art_links(conn, draft.get('id'))
+        await set_flashed(request, 'Атрибут у ссылок удалён.')
         await conn.close()
         return JSONResponse(res)
 

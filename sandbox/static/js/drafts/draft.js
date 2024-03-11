@@ -6,6 +6,10 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showDraft(slug, dt);
   if (window.localStorage.getItem('token')) {
+    $('body').on('click', '#special-case', {slug: slug}, function(event) {
+      $(this).blur();
+      undressLinks(event.data.slug);
+    });
     $('body').on('click', '#move-screen-up', moveScreenUp);
     $('body').on('click', '#metadesc-submit', {slug: slug}, function(event) {
       $(this).blur();

@@ -10,8 +10,21 @@ from ..common.aparsers import (
     iter_pages, parse_pic_filename, parse_title, parse_units)
 from ..common.random import get_unique_s
 from ..drafts.attri import status
+from .md import parse_md
 from .parse import parse_art_query, parse_arts_query
 from .slugs import check_max, make, parse_match
+
+
+async def undress_art_links(conn, did):
+    pars = await conn.fetch(
+        '''SELECT mdtext FROM paragraphs
+             WHERE article_id = $1 ORDER BY num ASC''', did)
+    loop = asyncio.get_running_loop()
+    html = await loop.run_in_executor(
+        None, functools.partial(parse_md, pars, sc=True))
+    if html:
+        await conn.execute(
+            'UPDATE articles SET html = $1 WHERE id = $2', html, did)
 
 
 async def select_labeled_drafts(
