@@ -9,6 +9,11 @@
 
 .editor-forms-block textarea {
   text-align: justify;
+  font-size: 12pt;
+}
+
+.editor-forms-block input {
+  font-size: 12pt;
 }
 
 #new-paragraph-editor .form-group {
