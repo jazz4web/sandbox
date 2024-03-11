@@ -6,6 +6,7 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showDraft(slug, dt);
   if (window.localStorage.getItem('token')) {
+    $('body').on('click', '.copy-link', showCopyForm);
     $('body').on('click', '#special-case', {slug: slug}, function(event) {
       $(this).blur();
       undressLinks(event.data.slug);
