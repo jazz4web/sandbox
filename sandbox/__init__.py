@@ -17,7 +17,7 @@ from .api.auth import (
     ChangeAva, ChangeEmail, ChangePasswd, GetPasswd,
     Login, Logout, LogoutAll, RequestEm,
     RequestPasswd, ResetPasswd)
-from .api.drafts import Draft, Drafts, Labels
+from .api.drafts import Draft, Drafts, Labels, Paragraph
 from .api.people import Profile, Relation
 from .api.pictures import Album, Albums, Albumstat, Picstat, Search, Ustat
 from .api.tasks import check_swapped
@@ -124,6 +124,7 @@ app = StApp(
             Route('/drafts', Drafts, name='adrafts'),
             Route('/draft', Draft, name='adraft'),
             Route('/labels', Labels, name='alabel'),
+            Route('/send-par', Paragraph, name='aparagraph'),
             ]),
         Mount('/drafts', name='drafts', routes=[
             Route('/', show_drafts, name='drafts'),

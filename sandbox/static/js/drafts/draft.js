@@ -6,6 +6,20 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showDraft(slug, dt);
   if (window.localStorage.getItem('token')) {
+    $('body').on('keyup', '#html-text-edit', {slug: slug}, function(event) {
+      let val = $(this).val().trim();
+      if (event.which == 13) {
+        const F = '```';
+        if (val.startsWith(F)) {
+          if (val.indexOf(F, 1) >= 4) {
+            val = val.slice(0, val.indexOf(F, 4)).trim() + '\n\n' + F;
+            sendPar(event.data.slug, val, 1);
+          }
+        } else if (val) {
+          sendPar(event.data.slug, val.replace('\n', ''), 0);
+        }
+      }
+    });
     $('body').on('click', '.copy-link', showCopyForm);
     $('body').on('click', '#special-case', {slug: slug}, function(event) {
       $(this).blur();

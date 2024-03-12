@@ -11,7 +11,40 @@ from ..common.pg import get_conn
 from ..drafts.attri import status
 from .pg import (
     change_draft, check_draft, check_last, create_d,
-    select_labeled_drafts, select_drafts, undress_art_links)
+    save_par, select_labeled_drafts, select_drafts, undress_art_links)
+
+
+class Paragraph(HTTPEndpoint):
+    async def post(self, request):
+        res = {'done': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.ART not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        slug, text, code = (
+            d.get('slug', ''), d.get('text', ''), int(d.get('code', '0')))
+        if not slug or not text:
+            res['message'] = 'Запрос содержит неверные параметры.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        draft = await conn.fetchval(
+            'SELECT id FROM articles WHERE slug = $1 AND author_id = $2',
+            slug, cu.get('id'))
+        if draft is None:
+            res['message'] = 'Черновик не обнаружен.'
+            await conn.close()
+            return JSONResponse(res)
+        res['html'] = await save_par(conn, draft, text, code)
+        res['length'] = await conn.fetchval(
+            'SELECT count(*) FROM paragraphs WHERE article_id = $1',
+            draft)
+        res['done'] = True
+        await conn.close()
+        return JSONResponse(res)
 
 
 class Labels(HTTPEndpoint):
