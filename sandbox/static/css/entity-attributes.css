@@ -3,14 +3,14 @@
 }
 
 .author-avatar {
-  width: 88px;
-  height: 88px;
+  width: 98px;
+  height: 98px;
   float: left;
 }
 
 .entity-info {
-  margin-left: 100px;
-  padding: 4px 0;
+  margin-left: 110px;
+  padding: 0;
 }
 
 .entity-info h4 {

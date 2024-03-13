@@ -28,7 +28,7 @@ async def parse_art_query(request, conn, query, target):
     target['author_perms'] = query.get('permissions')
     target['author_id'] = query.get('author_id')
     target['ava'] = request.url_for(
-        'ava', username=query.get('username'), size=88)._url
+        'ava', username=query.get('username'), size=98)._url
     target['jump'] = request.url_for('jump', suffix=query.get('suffix'))._url
     target['likes'] = await conn.fetchval(
         'SELECT count(*) FROM likes WHERE article_id = $1', query.get('id'))
@@ -62,7 +62,7 @@ async def parse_arts_query(request, conn, query, target, page, last):
              'viewed': record.get('viewed'),
              'author': record.get('username'),
              'ava': request.url_for(
-                 'ava', username=record.get('username'), size=88)._url,
+                 'ava', username=record.get('username'), size=98)._url,
              'likes': await conn.fetchval(
                  'SELECT count(*) FROM likes WHERE article_id = $1',
                  record.get('id')),

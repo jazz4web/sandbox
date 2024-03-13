@@ -12,7 +12,7 @@ from ..common.pg import get_conn
 from ..dirs import static
 from ..errors import E404
 from ..pictures.attri import status
-from .pg import check_state
+from .pg import check_state, check_topic
 from .tools import resize
 
 
@@ -24,7 +24,20 @@ async def show_robots(request):
 
 
 async def show_public(request):
-    return HTMLResponse('<div>Not implemented yet!</div>')
+    slug = request.path_params.get('slug')
+    cu = await getcu(request)
+    if cu:
+        return RedirectResponse(request.url_for('arts:art', slug=slug), 301)
+    topic = dict()
+    conn = await get_conn(request.app.config)
+    await check_topic(request, conn, slug, topic)
+    if not topic:
+        raise HTTPException(
+            status_code=404, detail='Такой страницы у нас нет.')
+    return request.app.jinja.TemplateResponse(
+        'main/show-public.html',
+        {'request': request,
+         'topic': topic})
 
 
 async def show_sitemap(request):
