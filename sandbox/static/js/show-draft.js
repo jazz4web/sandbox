@@ -43,8 +43,13 @@ function showDraft(slug, dt) {
         } else {
           $('#s-length-value').text(512 - data.draft.summary.length);
         }
+        let s = $('#select-status option');
+        for (let n = 0; n < s.length; n++) {
+          if (s[n].value == data.draft.state) {
+            $(s[n]).attr('selected', 'selected');
+          }
+        }
         checkMC(860);
-        // here;
       }
     },
     dataType: 'json'

@@ -6,6 +6,14 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showDraft(slug, dt);
   if (window.localStorage.getItem('token')) {
+    $('body').on('change', '#select-status', {slug: slug}, function(event) {
+      changeDraft('state', $('#select-status').val(), event.data.slug);
+    });
+    $('body').on('click', '#state-button', function() {
+      $(this).blur();
+      changeForm('#status-editor', '#select-status');
+    });
+    $('body').on('click', '.entity-text-block img', clickImage);
     $('body')
     .on('keyup', '#paragraph-text-edit', {slug: slug}, function(event) {
       if (event.which == 13) {
