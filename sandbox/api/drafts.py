@@ -11,10 +11,70 @@ from ..common.pg import get_conn
 from ..drafts.attri import status
 from .pg import (
     change_draft, check_draft, check_last, create_d,
-    save_par, select_labeled_drafts, select_drafts, undress_art_links)
+    edit_par, insert_par, remove_par, save_par,
+    select_labeled_drafts, select_drafts, undress_art_links)
 
 
 class Paragraph(HTTPEndpoint):
+    async def delete(self, request):
+        res = {'done': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.ART not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        slug, num = d.get('slug', ''), d.get('num', None)
+        if not slug or num is None:
+            res['message'] = 'Запрос содержит неверные параметры.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        draft = await conn.fetchval(
+            'SELECT id FROM articles WHERE slug = $1 AND author_id = $2',
+            slug, cu.get('id'))
+        if draft is None:
+            res['message'] = 'Черновик не обнаружен.'
+            await conn.close()
+            return JSONResponse(res)
+        res['html'] = await remove_par(conn, draft, int(num))
+        res['length'] = await conn.fetchval(
+            'SELECT count(*) FROM paragraphs WHERE article_id = $1',
+            draft)
+        res['done'] = True
+        await conn.close()
+        return JSONResponse(res)
+
+    async def get(self, request):
+        res = {'text': None}
+        slug = request.query_params.get('slug', '')
+        num = request.query_params.get('num', None)
+        cu = await checkcu(request, request.headers.get('x-auth-token'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.ART not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        if not slug or num is None:
+            res['message'] = 'Запрос содержит неверные параметры.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        text = await conn.fetchval(
+            '''SELECT par.mdtext FROM paragraphs AS par, articles AS arts
+                 WHERE par.num = $1
+                   AND arts.author_id = $2
+                   AND arts.slug = $3
+                   AND par.article_id = arts.id''',
+            int(num), cu.get('id'), slug)
+        await conn.close()
+        if text is None:
+            res['message'] = 'Запрос содержит неверные параметры.'
+            return JSONResponse(res)
+        res['text'] = text
+        return JSONResponse(res)
+
     async def post(self, request):
         res = {'done': None}
         d = await request.form()
@@ -44,6 +104,50 @@ class Paragraph(HTTPEndpoint):
             draft)
         res['done'] = True
         await conn.close()
+        return JSONResponse(res)
+
+    async def put(self, request):
+        res = {'done': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.ART not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        slug, num, insert, text, code = (
+            d.get('slug', ''), d.get('num', None), d.get('insert', None),
+            d.get('text', ''), d.get('code', None))
+        if not all((slug, num, insert, text, code)):
+            res['message'] = 'Запрос содержит неверные параметры.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        draft = await conn.fetchval(
+            'SELECT id FROM articles WHERE slug = $1 AND author_id = $2',
+            slug, cu.get('id'))
+        if draft is None:
+            res['message'] = 'Черновик не обнаружен.'
+            await conn.close()
+            return JSONResponse(res)
+        last = await conn.fetchval(
+            '''SELECT num FROM paragraphs
+                 WHERE article_id = $1 ORDER BY num DESC''', draft)
+        if int(num) > last:
+            res['message'] = 'Запрос содержит неверные параметры.'
+            await conn.close()
+            return JSONResponse(res)
+        if int(insert):
+            res['html'] = await insert_par(
+                conn, draft, text.strip(), int(num), int(code))
+        else:
+            res['html'] = await edit_par(
+                conn, draft, text.strip(), int(num), int(code))
+        res['length'] = await conn.fetchval(
+            'SELECT count(*) FROM paragraphs WHERE article_id = $1',
+            draft)
+        await conn.close()
+        res['done'] = True
         return JSONResponse(res)
 
 

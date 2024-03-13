@@ -27,6 +27,7 @@ function showDraft(slug, dt) {
         $('#main-container').append(html);
         $('.date-field').each(function() { formatDateTime($(this)); });
         $('#copy-button').on('click', {cls: '#link-copy-form'}, copyThis);
+        if ($('.entity-text-block').length) parseDraft();
         let labels = $('#labels-edit').val().trim();
         if (labels.slice(-1) === ',') labels = labels.slice(0, -1);
         $('#labels-edit').val(labels);

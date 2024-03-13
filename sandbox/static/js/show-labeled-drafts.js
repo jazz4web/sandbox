@@ -24,6 +24,7 @@ function showLabeledDrafts(url, page, label, dt) {
         let html = Mustache.render($('#draftst').html(), data);
         $('#main-container').append(html);
         $('.date-field').each(function() { formatDateTime($(this)); });
+        $('.entity-block').each(checkNext);
         $('.labels').each(fixComma);
         checkMC(860);
       }

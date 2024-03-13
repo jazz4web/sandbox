@@ -23,6 +23,7 @@ function showDrafts(dt, url, page) {
         let html = Mustache.render($('#draftst').html(), data);
         $('#main-container').append(html);
         if ($('.today-field').length) renderTF('.today-field', dt);
+        $('.entity-block').each(checkNext);
         $('.date-field').each(function() { formatDateTime($(this)); });
         $('.labels').each(fixComma);
         checkMC(860);
