@@ -21,13 +21,15 @@ from .api.drafts import Draft, Drafts, Labels, Paragraph
 from .api.people import Profile, Relation
 from .api.pictures import Album, Albums, Albumstat, Picstat, Search, Ustat
 from .api.tasks import check_swapped
+from .arts.views import show_art
 from .auth.attri import groups, permissions
 from .captcha.views import show_captcha
 from .dirs import base, static, templates, settings
 from .drafts.views import show_draft, show_drafts, show_labeled
 from .errors import show_error
 from .main.views import (
-    jump, show_avatar, show_index, show_favicon, show_picture)
+    jump, show_avatar, show_favicon, show_index,
+    show_picture, show_public, show_robots, show_sitemap)
 from .people.views import show_profile
 from .pictures.views import show_album, show_albums
 
@@ -96,10 +98,13 @@ app = StApp(
     routes=[
         Route('/', show_index, name='index'),
         Route('/favicon.ico', show_favicon, name='favicon'),
+        Route('/robots.txt', show_robots, name='robots.txt'),
+        Route('/sitemap.xml', show_sitemap, name='sitemap'),
         Route('/{suffix}', jump, name='jump'),
         Route('/ava/{username}/{size:int}', show_avatar, name='ava'),
         Route('/captcha/{suffix}', show_captcha, name='captcha'),
         Route('/picture/{suffix}', show_picture, name='picture'),
+        Route('/public/{slug}', show_public, name='public'),
         Mount('/api', name='api', routes=[
             Route('/index', Index, name='aindex'),
             Route('/captcha', Captcha, name='acaptcha'),
@@ -125,6 +130,9 @@ app = StApp(
             Route('/draft', Draft, name='adraft'),
             Route('/labels', Labels, name='alabel'),
             Route('/send-par', Paragraph, name='aparagraph'),
+            ]),
+        Mount('/arts', name='arts', routes=[
+            Route('/{slug}', show_art, name='art'),
             ]),
         Mount('/drafts', name='drafts', routes=[
             Route('/', show_drafts, name='drafts'),

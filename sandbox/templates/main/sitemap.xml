@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {% if arts %}
+    {% for art in arts %}
+      <url>
+        <loc>{{ url_for('public', slug=art.get('slug')) }}</loc>
+        <lastmod>{{ art.get('edited').isoformat() + 'Z' }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1</priority>
+      </url>
+    {% endfor %}
+  {% endif %}
+</urlset>
