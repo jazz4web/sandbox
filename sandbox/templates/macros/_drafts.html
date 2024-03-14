@@ -1,6 +1,7 @@
-{% macro show_arts(apoint, lpoint) %}
+{% macro show_arts(apoint, lpoint, fl=False) %}
   <% #pagination.articles %>
-  <div class="content-block entity-block <% #extra %>next-block<% /extra %>">
+  <div class="content-block entity-block <% #extra %>next-block<% /extra %>
+              {% if fl %}next-block{% endif %}">
       <h2>
         <a class="entity-link"
            title="<% title %>"

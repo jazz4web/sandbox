@@ -13,6 +13,7 @@ from webassets import Environment as AssetsEnvironment
 from webassets.ext.jinja2 import assets
 
 from .api.main import Captcha, Index
+from .api.arts import Arts
 from .api.auth import (
     ChangeAva, ChangeEmail, ChangePasswd, GetPasswd,
     Login, Logout, LogoutAll, RequestEm,
@@ -22,7 +23,7 @@ from .api.drafts import Draft, Drafts, Labels, Paragraph
 from .api.people import Profile, Relation
 from .api.pictures import Album, Albums, Albumstat, Picstat, Search, Ustat
 from .api.tasks import check_swapped
-from .arts.views import show_art
+from .arts.views import show_art, show_arts
 from .auth.attri import groups, permissions
 from .blogs.views import show_blogs
 from .captcha.views import show_captcha
@@ -133,8 +134,10 @@ app = StApp(
             Route('/labels', Labels, name='alabel'),
             Route('/send-par', Paragraph, name='aparagraph'),
             Route('/blogs', Authors, name='ablogs'),
+            Route('/arts', Arts, name='aarts'),
             ]),
         Mount('/arts', name='arts', routes=[
+            Route('/', show_arts, name='arts'),
             Route('/{slug}', show_art, name='art'),
             ]),
         Mount('/blogs', name='blogs', routes=[

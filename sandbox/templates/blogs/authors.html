@@ -24,7 +24,7 @@
   {{- super() -}}
   <script id="authorst" type="text/template">
     <% #pagination.blogs %>
-      <div class="entity-block">
+      <div class="entity-block {% if flashed %}next-block{%- endif -%}">
         <div class="entity-attributes">
           <div class="author-avatar avatar"
                style="background:url(<% ava %>)"></div>
@@ -59,7 +59,7 @@
     <% ^pagination.blogs %>
       <div class="alert alert-warning">
         <div class="today-field"></div>
-        <div class="message-text">
+        <div class="empty-message">
           Сайт в стадии разработки, попробуйте зайти позже.
         </div>
       </div>

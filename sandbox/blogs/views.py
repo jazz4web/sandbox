@@ -1,6 +1,6 @@
 from ..auth.cu import getcu
 from ..common.aparsers import parse_page
-from ..common.flashed import get_flashed, set_flashed
+from ..common.flashed import get_flashed
 
 
 async def show_blogs(request):
