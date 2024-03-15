@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% from "macros/_drafts.html" import show_arts %}
+
+{%- block title_part -%}{{ username }} блог{%- endblock title_part -%}
+
+{%- block styles -%}
+  {{ super() }}
+  {%- assets filters='cssmin', output='generic/css/blogs/blog.css',
+             'css/base.css',
+             'css/listed-mc.css',
+             'css/content-block.css',
+             'css/today-field.css',
+             'css/empty-message.css',
+             'css/entity-block.css',
+             'css/entity-attributes.css',
+             'css/labels.css',
+             'css/avatar.css',
+             'css/entity-summary.css',
+             'css/entity-details.css',
+             'css/personal-details.css',
+             'css/description-block.css',
+             'css/next-block.css',
+             'css/drafts.css',
+             'css/pagination.css' -%}
+    <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
+  {%- endassets -%}
+{%- endblock styles -%}
+
+{%- block templates -%}
+  {{- super() -}}
+  <script id="draftst" type="text/template">
+    <% #author %>
+      <div class="entity-block description-block {% if flashed %}next-block
+                                                 {%- endif -%}">
+        <% author %>
+      </div>
+    <% /author %>
+    {%- if flashed -%}
+      {{ show_arts('/arts/', '/blogs/' + username + '/t/', fl=True) }}
+    {%- else -%}
+      {{ show_arts('/arts/', '/blogs/' + username + '/t/') }}
+    {%- endif -%}
+    <% ^pagination.articles %>
+      <div class="alert alert-warning">
+        <div class="today-field"></div>
+        <div class="empty-message">
+          У {{ username }} пока нет публичных статей, попробуйте зайти позже.
+        </div>
+      </div>
+    <% /pagination.articles %>
+    <% #pv %>
+      <div class="entity-pagination next-block text-center">
+        <%{ pv }%>
+      </div>
+    <% /pv %>
+  </script>
+{%- endblock templates -%}
+
+{%- block scripts -%}
+  {{- super() -}}
+  <script>let page="{{ page }}";let username="{{ username }}";let cu="{{ cu.username }}";</script>
+  {%- assets filters='rjsmin', output='generic/js/blogs/blog.js',
+             'js/show-blog.js',
+             'js/format-footer.js',
+             'js/close-topflashed.js',
+             'js/check-browser.js',
+             'js/check-next.js',
+             'js/format-datetime.js',
+             'js/fix-comma.js',
+             'js/check-mc.js',
+             'js/slide-page.js',
+             'js/blogs/blog.js' -%}
+    <script src="{{ ASSET_URL }}"></script>
+  {%- endassets -%}
+{%- endblock scripts -%}

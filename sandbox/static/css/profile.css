@@ -51,6 +51,12 @@
   margin: 0;
 }
 
+.blog-link-block {
+  margin: 6px 0 0;
+  font-style: italic;
+  text-shadow: 0 0 3px lightgray;
+}
+
 .actions-block {
   margin: 6px 0 0;
 }

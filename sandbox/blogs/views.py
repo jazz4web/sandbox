@@ -3,6 +3,17 @@ from ..common.aparsers import parse_page
 from ..common.flashed import get_flashed
 
 
+async def show_blog(request):
+    cu = await getcu(request)
+    return request.app.jinja.TemplateResponse(
+        'blogs/blog.html',
+        {'request': request,
+         'cu': cu,
+         'page': await parse_page(request),
+         'username': request.path_params.get('username'),
+         'flashed': await get_flashed(request)})
+
+
 async def show_blogs(request):
     cu = await getcu(request)
     return request.app.jinja.TemplateResponse(
