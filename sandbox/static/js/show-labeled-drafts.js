@@ -25,6 +25,7 @@ function showLabeledDrafts(url, page, label, dt) {
         $('#main-container').append(html);
         $('.date-field').each(function() { formatDateTime($(this)); });
         $('.entity-block').each(checkNext);
+        if ($('.today-field').length) renderTF('.today-field', dt);
         $('.labels').each(fixComma);
         checkMC(860);
       }

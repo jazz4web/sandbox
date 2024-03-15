@@ -28,11 +28,11 @@
 {%- block templates -%}
   {{- super() -}}
   <script id="draftst" type="text/template">
-    {% if flashed %}
+    {%- if flashed -%}
       {{ show_arts('arts/', '/arts/t/', fl=True) }}
-    {% else %}
+    {%- else -%}
       {{ show_arts('/arts/', '/arts/t/') }}
-    {% endif %}
+    {%- endif -%}
     <% ^pagination.articles %>
       <div class="alert alert-warning">
         <div class="today-field"></div>
