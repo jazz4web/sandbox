@@ -20,7 +20,7 @@ from .api.auth import (
     RequestPasswd, ResetPasswd)
 from .api.blogs import Authors, Blog, LBlog
 from .api.drafts import Draft, Drafts, Labels, Paragraph
-from .api.people import Profile, Relation
+from .api.people import People, Profile, Relation
 from .api.pictures import Album, Albums, Albumstat, Picstat, Search, Ustat
 from .api.tasks import check_swapped
 from .arts.views import (
@@ -35,7 +35,7 @@ from .errors import show_error
 from .main.views import (
     jump, show_avatar, show_favicon, show_index,
     show_picture, show_public, show_robots, show_sitemap)
-from .people.views import show_profile
+from .people.views import show_people, show_profile
 from .pictures.views import show_album, show_albums
 
 try:
@@ -142,6 +142,7 @@ app = StApp(
             Route('/lblog', LBlog, name='alblog'),
             Route('/lenta', Lenta, name='alenta'),
             Route('/llenta', LLenta, name='allenta'),
+            Route('/people', People, name='apeople'),
             ]),
         Mount('/arts', name='arts', routes=[
             Route('/', show_arts, name='arts'),
@@ -163,6 +164,7 @@ app = StApp(
             Route('/{slug}', show_draft, name='draft'),
             Route('/t/{label}', show_labeled, name='show-labeled')]),
         Mount('/people', name='people', routes=[
+            Route('/', show_people, name='people'),
             Route('/{username}', show_profile, name='profile')
             ]),
         Mount('/pictures', name='pictures', routes=[

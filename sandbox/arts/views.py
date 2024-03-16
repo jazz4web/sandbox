@@ -4,6 +4,7 @@ from ..auth.cu import getcu
 from ..common.aparsers import parse_page
 from ..common.flashed import get_flashed
 
+
 async def show_labeled_f(request):
     cu = await getcu(request)
     return request.app.jinja.TemplateResponse(
@@ -23,6 +24,7 @@ async def show_followed(request):
          'page': await parse_page(request),
          'cu': cu,
          'flashed': await get_flashed(request)})
+
 
 async def show_labeled_author(request):
     username = request.path_params.get('username')

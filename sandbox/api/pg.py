@@ -15,6 +15,35 @@ from .parse import parse_art_query, parse_arts_query
 from .slugs import check_max, make, parse_match
 
 
+async def select_users(
+        request, conn, uid, is_admin, target, page, per_page, last):
+    if is_admin:
+        query = await conn.fetch(
+            '''SELECT username, registered, last_visit, permissions
+                 FROM users WHERE id != $1
+                 ORDER BY last_visit DESC LIMIT $2 OFFSET $3''',
+            uid, per_page, per_page*(page-1))
+    else:
+        query = await conn.fetch(
+            '''SELECT username, registered, last_visit, permissions
+                 FROM users WHERE id != $1 AND permissions[1] != $2
+                 ORDER BY last_visit DESC LIMIT $3 OFFSET $4''',
+            uid, permissions.NOLOGIN, per_page, per_page*(page-1))
+    if query:
+        target['page'] = page
+        target['next'] = page + 1 if page + 1 <= last else None
+        target['prev'] = page - 1 or None
+        target['pages'] = await iter_pages(page, last)
+        target['users'] = [
+            {'username': record.get('username'),
+             'group': await get_group(record.get('permissions')),
+             'last_visit': f'{record.get("last_visit").isoformat()}Z',
+             'registered': f'{record.get("registered").isoformat()}Z',
+             'ava': request.url_for(
+                 'ava', username=record.get('username'), size=98)._url}
+            for record in query]
+
+
 async def select_labeled_f(
         request, conn, uid, label, target, page, per_page, last):
     query = await conn.fetch(

@@ -1,5 +1,16 @@
 from ..auth.cu import getcu
+from ..common.aparsers import parse_page
 from ..common.flashed import get_flashed
+
+
+async def show_people(request):
+    cu = await getcu(request)
+    return request.app.jinja.TemplateResponse(
+        'people/people.html',
+        {'request': request,
+         'cu': cu,
+         'page': await parse_page(request),
+         'flashed': await get_flashed(request)})
 
 
 async def show_profile(request):
