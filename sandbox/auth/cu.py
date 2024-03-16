@@ -58,7 +58,7 @@ async def getcu(request):
                         'username': query.get('username'),
                         'group': await get_group(query.get('permissions')),
                         'registered': query.get('registered'),
-                        'last_published': query.get('last_pablished'),
+                        'last_published': query.get('last_published'),
                         'permissions': query.get('permissions').split(','),
                         'ava': request.url_for(
                             'ava', username=query.get('username'),

@@ -1,11 +1,13 @@
 {% extends "base.html" %}
-{% from "macros/_drafts.html" import show_arts %}
+{%- from "macros/_drafts.html" import show_arts -%}
 
-{%- block title_part -%}{{ username }} блог{%- endblock title_part -%}
+{%- block title_part -%}
+  {{ username }} с меткой {{ label }}
+{%- endblock title_part -%}
 
 {%- block styles -%}
-  {{ super() }}
-  {%- assets filters='cssmin', output='generic/css/blogs/blog.css',
+  {{- super() -}}
+  {%- assets filters='cssmin', output='generic/css/blogs/labeled.css',
              'css/base.css',
              'css/listed-mc.css',
              'css/content-block.css',
@@ -29,26 +31,20 @@
 {%- block templates -%}
   {{- super() -}}
   <script id="draftst" type="text/template">
-    <% #author %>
-      <div class="entity-block description-block {% if flashed %}next-block
-                                                 {%- endif -%}">
-        <% author %>
-      </div>
-    <% /author %>
     {%- if flashed -%}
       {{ show_arts('/arts/', '/blogs/' + username + '/t/', fl=True) }}
     {%- else -%}
       {{ show_arts('/arts/', '/blogs/' + username + '/t/') }}
     {%- endif -%}
     <% ^pagination.articles %>
-      <div class="alert alert-warning {%- if flashed -%}next-block
+      <div class="alert alert-warning {% if flashed %}next-block
                                       {%- endif -%}">
         <div class="today-field"></div>
         <div class="empty-message">
-          {%- if cu['username'] == username %}
-            У Вас пока нет публичных статей.
+          {%- if cu['username'] == username -%}
+            У Вас нет метки {{ label }}
           {%- else -%}
-            У {{ username }} пока нет публичных статей, попробуйте зайти позже.
+            У {{ username }} нет метки {{ label }}
           {%- endif -%}
         </div>
       </div>
@@ -63,19 +59,19 @@
 
 {%- block scripts -%}
   {{- super() -}}
-  <script>let page="{{ page }}";let username="{{ username }}";let cu="{{ cu.username }}";</script>
-  {%- assets filters='rjsmin', output='generic/js/blogs/blog.js',
-             'js/show-blog.js',
+  <script>let cu="{{ cu.username }}";let page="{{ page }}";let username="{{ username }}";let label="{{ label }}";</script>
+  {%- assets filters='rjsmin', output='generic/js/blogs/labeled.js',
+             'js/show-l-author.js',
              'js/format-footer.js',
              'js/close-topflashed.js',
              'js/check-browser.js',
+             'js/slide-page.js',
+             'js/check-mc.js',
              'js/check-next.js',
              'js/format-datetime.js',
              'js/fix-comma.js',
-             'js/check-mc.js',
-             'js/slide-page.js',
              'js/render-tf.js',
-             'js/blogs/blog.js' -%}
+             'js/blogs/labeled.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}
 {%- endblock scripts -%}
