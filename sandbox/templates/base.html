@@ -61,12 +61,17 @@
                 </li>
                 {%- if cu -%}
                   <li role="separator" class="divider"></li>
-                  {% if cu['last_published'] != '0' %}
+                  {%- if cu['last_published'] != '0' -%}
                   <li>
                     <a href="{{ url_for(
                       'blogs:blog', username=cu['username']) }}">Своё</a>
                   </li>
-                  {% endif %}
+                  {%- endif -%}
+                  {%- if permissions.FOLLOW in cu['permissions'] -%}
+                  <li>
+                    <a href="{{ url_for('arts:lenta') }}">В ленте</a>
+                  </li>
+                  {%- endif -%}
                 {%- endif -%}
               </ul>
             </li>

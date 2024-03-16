@@ -13,7 +13,7 @@ from webassets import Environment as AssetsEnvironment
 from webassets.ext.jinja2 import assets
 
 from .api.main import Captcha, Index
-from .api.arts import Alabels, Arts
+from .api.arts import Alabels, Arts, Lenta
 from .api.auth import (
     ChangeAva, ChangeEmail, ChangePasswd, GetPasswd,
     Login, Logout, LogoutAll, RequestEm,
@@ -24,7 +24,8 @@ from .api.people import Profile, Relation
 from .api.pictures import Album, Albums, Albumstat, Picstat, Search, Ustat
 from .api.tasks import check_swapped
 from .arts.views import (
-    show_art, show_arts, show_author, show_labeled_arts, show_labeled_author)
+    show_art, show_arts, show_author, show_followed,
+    show_labeled_arts, show_labeled_author)
 from .auth.attri import groups, permissions
 from .blogs.views import show_blog, show_blogs, show_blog_l
 from .captcha.views import show_captcha
@@ -139,6 +140,7 @@ app = StApp(
             Route('/arts', Arts, name='aarts'),
             Route('/alabels', Alabels, name='alabels'),
             Route('/lblog', LBlog, name='alblog'),
+            Route('/lenta', Lenta, name='alenta'),
             ]),
         Mount('/arts', name='arts', routes=[
             Route('/', show_arts, name='arts'),
@@ -146,6 +148,7 @@ app = StApp(
             Route('/a/{username}', show_author, name='show-auth'),
             Route(
                 '/a/{username}/t/{label}', show_labeled_author, name='lauth'),
+            Route('/l/', show_followed, name='lenta'),
             Route('/t/{label}', show_labeled_arts, name='labeled-arts'),
             ]),
         Mount('/blogs', name='blogs', routes=[

@@ -5,6 +5,15 @@ from ..common.aparsers import parse_page
 from ..common.flashed import get_flashed
 
 
+async def show_followed(request):
+    cu = await getcu(request)
+    return request.app.jinja.TemplateResponse(
+        'arts/lenta.html',
+        {'request': request,
+         'page': await parse_page(request),
+         'cu': cu,
+         'flashed': await get_flashed(request)})
+
 async def show_labeled_author(request):
     username = request.path_params.get('username')
     label = request.path_params.get('label')
