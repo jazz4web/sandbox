@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% from "macros/_drafts.html" import show_arts %}
 
-{%- block title_part -%}Ваша лента{%- endblock title_part -%}
+{%- block title_part -%}
+  В ленте с меткой "{{ label }}"
+{%- endblock title_part -%}
 
 {%- block styles -%}
   {{- super() -}}
-  {%- assets filters='cssmin', output='generic/css/arts/lenta.css',
+  {%- assets filters='cssmin', output='generic/css/arts/llenta.css',
              'css/base.css',
              'css/listed-mc.css',
              'css/content-block.css',
@@ -26,7 +28,7 @@
 {%- endblock styles -%}
 
 {%- block templates -%}
-  {{ super() }}
+  {{- super() -}}
   <script id="draftst" type="text/template">
     {%- if flashed -%}
     {{ show_arts('/arts/', '/arts/l/t/', fl=True) }}
@@ -38,7 +40,7 @@
                                       {%- endif -%}">
         <div class="today-field"></div>
         <div class="empty-message">
-          В вашей ленте нет ни одного автора.
+          С меткой <% label %> ничего не найдено.
         </div>
       </div>
     <% /pagination.articles %>
@@ -52,19 +54,19 @@
 
 {%- block scripts -%}
   {{- super() -}}
-  <script>let page="{{ page }}";let cu="{{ cu.username }}";</script>
-  {%- assets filters='rjsmin', output='generic/js/arts/lenta.js',
-             'js/show-drafts.js',
-             'js/format-footer.js',
-             'js/close-topflashed.js',
-             'js/check-browser.js',
-             'js/slide-page.js',
-             'js/check-next.js',
-             'js/format-datetime.js',
-             'js/fix-comma.js',
-             'js/check-mc.js',
-             'js/render-tf.js',
-             'js/arts/lenta.js' -%}
+  <script>let cu="{{ cu.username }}";let label="{{ label }}";let page="{{ page }}";</script>
+  {% assets filters='rjsmin', output='generic/js/arts/llenta.js',
+            'js/show-labeled-drafts.js',
+            'js/format-footer.js',
+            'js/close-topflashed.js',
+            'js/check-browser.js',
+            'js/format-datetime.js',
+            'js/check-next.js',
+            'js/fix-comma.js',
+            'js/check-mc.js',
+            'js/slide-page.js',
+            'js/render-tf.js',
+            'js/arts/llenta.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}
 {%- endblock scripts -%}
