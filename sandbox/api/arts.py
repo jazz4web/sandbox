@@ -8,7 +8,48 @@ from ..common.pg import get_conn
 from ..drafts.attri import status
 from .pg import (
     check_last, select_arts, select_carts, select_followed,
-    select_labeled_arts, select_labeled_f)
+    select_labeled_arts, select_labeled_carts, select_labeled_f)
+
+
+class LCArts(HTTPEndpoint):
+    async def get(self, request):
+        label = request.query_params.get('label')
+        res = {'label': label,
+               'cu': await checkcu(
+            request, request.headers.get('x-auth-token'))}
+        cu = res['cu']
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.BLOCK not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        page = await parse_page(request)
+        conn = await get_conn(request.app.config)
+        last = await check_last(
+            conn, page,
+            request.app.config.get('ARTS_PER_PAGE', cast=int, default=3),
+            '''SELECT count(*) FROM articles, labels, als
+                 WHERE articles.id = als.article_id
+                   AND labels.label = $1
+                   AND labels.id = als.label_id
+                   AND articles.state = $2''',
+            label, status.cens)
+        if page > last:
+            res['message'] = f'Всего страниц: {last}.'
+            await conn.close()
+            return JSONResponse(res)
+        res['pagination'] = dict()
+        await select_labeled_carts(
+            request, conn, label, res['pagination'], page,
+            request.app.config.get('ARTS_PER_PAGE', cast=int, default=3), last)
+        if res['pagination']:
+            if res['pagination']['next'] or res['pagination']['prev']:
+                res['pv'] = request.app.jinja.get_template(
+                    'pictures/pv.html').render(
+                    request=request, pagination=res['pagination'])
+        await conn.close()
+        return JSONResponse(res)
 
 
 class CArts(HTTPEndpoint):

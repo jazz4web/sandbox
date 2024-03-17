@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% from "macros/_drafts.html" import show_arts %}
 
-{%- block title_part -%}Темы с меткой "{{ label }}"{%- endblock title_part -%}
+{%- block title_part -%}
+  Закрытое с меткой "{{ label }}"
+{%- endblock title_part -%}
 
 {%- block styles -%}
   {{- super() -}}
-  {%- assets filters='cssmin', output='generic/css/arts/labeled-arts.css',
+  {%- assets filters='cssmin', output='generic/css/arts/lcarts.css',
              'css/base.css',
              'css/listed-mc.css',
              'css/content-block.css',
@@ -25,16 +27,16 @@
   {%- endassets -%}
 {%- endblock styles -%}
 
-{% block templates %}
-  {{ super() }}
+{%- block templates -%}
+  {{- super() -}}
   <script id="draftst" type="text/template">
     {%- if flashed -%}
-      {{ show_arts('arts/', '/arts/t/', fl=True) }}
+      {{ show_arts('/arts/c/', '/arts/c/t/', fl=True) }}
     {%- else -%}
-      {{ show_arts('/arts/', '/arts/t/') }}
+      {{ show_arts('/arts/c/', '/arts/c/t/') }}
     {%- endif -%}
     <% ^pagination.articles %>
-      <div class="alert alert-warning">
+      <div class="alert alert-warning {% if flashed %}next-block{%- endif -%}">
         <div class="today-field"></div>
         <div class="empty-message">
         С меткой <% label %> ничего не найдено.
@@ -47,22 +49,22 @@
       </div>
     <% /pv %>
   </script>
-{% endblock templates %}
+{%- endblock templates -%}
 
 {%- block scripts -%}
   {{- super() -}}
-  <script>let cu="{{ cu.username }}";let page="{{ page }}";let label="{{ label }}";</script>
-  {%- assets filters='rjsmin', output='generic/js/arts/labeled-arts.js',
+  <script>let page="{{ page }}";let cu="{{ cu.username }}";let label="{{ label }}";</script>
+  {%- assets filters='rjsmin', output='generic/js/arts/lcarts.js',
              'js/show-labeled-drafts.js',
              'js/format-footer.js',
              'js/close-topflashed.js',
-             'js/format-datetime.js',
+             'js/check-browser.js',
              'js/check-next.js',
+             'js/render-tf.js',
              'js/fix-comma.js',
              'js/check-mc.js',
-             'js/check-browser.js',
-             'js/render-tf.js',
-             'js/arts/labeled-arts.js' -%}
+             'js/slide-page.js',
+             'js/arts/lcarts.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}
 {%- endblock scripts -%}
