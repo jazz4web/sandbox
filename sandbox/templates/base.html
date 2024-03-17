@@ -75,6 +75,12 @@
                     <a href="{{ url_for('arts:lenta') }}">В ленте</a>
                   </li>
                   {%- endif -%}
+                  {%- if permissions.BLOCK in cu['permissions'] -%}
+                  <li role="separator" class="divider"></li>
+                  <li>
+                    <a href="{{ url_for('arts:carts') }}">Закрытое</a>
+                  </li>
+                  {%- endif -%}
                 {%- endif -%}
               </ul>
             </li>

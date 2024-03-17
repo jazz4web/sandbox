@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% from "macros/_drafts.html" import show_arts %}
+
+{%- block title_part -%}Закрытое{%- endblock title_part -%}
+
+{%- block styles -%}
+  {{- super() -}}
+  {%- assets filters='cssmin', output='generic/css/arts/carts.css',
+             'css/base.css',
+             'css/listed-mc.css',
+             'css/content-block.css',
+             'css/today-field.css',
+             'css/empty-message.css',
+             'css/entity-block.css',
+             'css/entity-attributes.css',
+             'css/labels.css',
+             'css/avatar.css',
+             'css/entity-summary.css',
+             'css/entity-details.css',
+             'css/personal-details.css',
+             'css/next-block.css',
+             'css/drafts.css',
+             'css/pagination.css' -%}
+    <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
+  {%- endassets -%}
+{%- endblock styles -%}
+
+{%- block templates -%}
+  {{- super() -}}
+  <script id="draftst" type="text/template">
+    {% if flashed %}
+      {{ show_arts('/arts/c/', '/arts/c/t/', fl=True) }}
+    {% else %}
+      {{ show_arts('/arts/c/', '/arts/c/t/') }}
+    {% endif %}
+    <% ^pagination.articles %>
+      <div class="alert alert-warning {% if flashed %}next-block{%- endif -%}">
+        <div class="today-field"></div>
+        <div class="empty-message">
+          Заблокированных топиков не найдено.
+        </div>
+      </div>
+    <% /pagination.articles %>
+    <% #pv %>
+      <div class="entity-pagination next-block text-center">
+        <%{ pv }%>
+      </div>
+    <% /pv %>
+  </script>
+{%- endblock templates -%}
+
+{%- block scripts -%}
+  {{- super() -}}
+  <script>let cu="{{ cu.username }}";let page="{{ page }}";</script>
+  {%- assets filters='rjsmin', output='generic/js/arts/carts.js',
+             'js/show-drafts.js',
+             'js/format-footer.js',
+             'js/close-topflashed.js',
+             'js/render-tf.js',
+             'js/check-next.js',
+             'js/fix-comma.js',
+             'js/check-mc.js',
+             'js/check-browser.js',
+             'js/slide-page.js',
+             'js/arts/carts.js' -%}
+    <script src="{{ ASSET_URL }}"></script>
+  {%- endassets -%}
+{%- endblock scripts -%}
