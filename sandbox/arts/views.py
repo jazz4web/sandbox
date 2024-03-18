@@ -1,8 +1,12 @@
-from starlette.responses import RedirectResponse
+from starlette.responses import HTMLResponse, RedirectResponse
 
 from ..auth.cu import getcu
 from ..common.aparsers import parse_page
 from ..common.flashed import get_flashed
+
+
+async def show_cart(request):
+    return HTMLResponse('<div>Not implemented yet.</div>')
 
 
 async def show_art(request):

@@ -4,12 +4,150 @@ from starlette.responses import JSONResponse
 from ..auth.attri import get_group, groups, permissions
 from ..auth.cu import checkcu
 from ..common.aparsers import parse_page
+from ..common.flashed import set_flashed
 from ..common.pg import get_conn
 from ..drafts.attri import status
 from .pg import (
     check_article, check_last, check_rel, select_arts,
     select_carts, select_followed, select_labeled_arts, select_labeled_carts,
     select_labeled_f)
+
+
+class CArt(HTTPEndpoint):
+    async def put(self, request):
+        res = {'done': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.BLOCK not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        slug = d.get('slug', '')
+        if not slug:
+            res['message'] = 'Запрос содержит неверные данные.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        art = await conn.fetchrow(
+            'SELECT slug, state FROM articles WHERE slug = $1',
+            slug)
+        if art is None:
+            res['message'] = 'Запрос содержит неверные данные.'
+            await conn.close()
+            return JSONResponse(res)
+        if art.get('state') in (status.pub, status.priv, status.ffo):
+            await conn.execute(
+                'UPDATE articles SET state = $1 WHERE slug = $2',
+                status.cens, slug)
+            res['done'] = True
+            res['redirect'] = request.url_for('arts:cart', slug=slug)._url
+        if art.get('state') == status.cens:
+            await conn.execute(
+                'UPDATE articles SET state = $1 WHERE slug = $2',
+                status.draft, slug)
+            res['done'] = True
+            res['redirect'] = request.url_for('arts:carts')._url
+        await conn.close()
+        return JSONResponse(res)
+
+
+class Dislike(HTTPEndpoint):
+    async def put(self, request):
+        res = {'done': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        art = await conn.fetchrow(
+            '''SELECT a.id, a.author_id, u.permissions
+                 FROM articles AS a, users AS u
+                 WHERE a.author_id = u.id
+                   AND a.slug = $1 AND a.state IN ($2, $3, $4)''',
+            d.get('slug', ''), status.pub, status.priv, status.ffo)
+        if art is None:
+            res['message'] = 'Запрос содержит неверные данные.'
+            await conn.close()
+            return JSONResponse(res)
+        rel = await check_rel(conn, art.get('author_id'), cu.get('id'))
+        if permissions.LIKE not in cu['permissions'] or \
+                permissions.ADMINISTER in art['permissions'] or \
+                rel['blocker'] or rel['blocked']:
+            res['message'] = 'Запрос отклонён.'
+            await conn.close()
+            return JSONResponse(res)
+        l = await conn.fetchrow(
+            'SELECT * FROM likes WHERE article_id = $1 AND user_id = $2',
+            art.get('id'), cu.get('id'))
+        d = await conn.fetchrow(
+            'SELECT * FROM dislikes WHERE article_id = $1 AND user_id = $2',
+            art.get('id'), cu.get('id'))
+        if l:
+            await conn.execute(
+                'DELETE FROM likes WHERE article_id = $1 AND user_id = $2',
+                art.get('id'), cu.get('id'))
+        if not l and not d:
+            await conn.execute(
+                'INSERT INTO dislikes (article_id, user_id) VALUES ($1, $2)',
+                art.get('id'), cu.get('id'))
+        res = {'done': True,
+               'likes': await conn.fetchval(
+                   'SELECT count(*) FROM likes WHERE article_id = $1',
+                   art.get('id')),
+               'dislikes': await conn.fetchval(
+                   'SELECT count(*) FROM dislikes WHERE article_id = $1',
+                   art.get('id'))}
+        await conn.close()
+        return JSONResponse(res)
+
+
+class Like(HTTPEndpoint):
+    async def put(self, request):
+        res = {'done': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        art = await conn.fetchrow(
+            '''SELECT id, author_id FROM articles
+                 WHERE slug = $1 AND state IN ($2, $3, $4)''',
+            d.get('slug', ''), status.pub, status.priv, status.ffo)
+        if art is None:
+            res['message'] = 'Запрос содержит неверные данные.'
+            await conn.close()
+            return JSONResponse(res)
+        if permissions.LIKE not in cu['permissions'] or \
+                cu.get('id') == art.get('author_id'):
+            res['message'] = 'Запрос отклонён.'
+            await conn.close()
+            return JSONResponse(res)
+        l = await conn.fetchrow(
+            'SELECT * FROM likes WHERE article_id = $1 AND user_id = $2',
+            art.get('id'), cu.get('id'))
+        d = await conn.fetchrow(
+            'SELECT * FROM dislikes WHERE article_id = $1 AND user_id = $2',
+            art.get('id'), cu.get('id'))
+        if d:
+            await conn.execute(
+                'DELETE FROM dislikes WHERE article_id = $1 AND user_id = $2',
+                art.get('id'), cu.get('id'))
+        if not d and not l:
+            await conn.execute(
+                'INSERT INTO likes (article_id, user_id) VALUES ($1, $2)',
+                art.get('id'), cu.get('id'))
+        res = {'done': True,
+               'likes': await conn.fetchval(
+                   'SELECT count(*) FROM likes WHERE article_id = $1',
+                   art.get('id')),
+               'dislikes': await conn.fetchval(
+                   'SELECT count(*) FROM dislikes WHERE article_id = $1',
+                   art.get('id'))}
+        await conn.close()
+        return JSONResponse(res)
 
 
 class Art(HTTPEndpoint):
@@ -224,6 +362,41 @@ class Lenta(HTTPEndpoint):
                 res['pv'] = request.app.jinja.get_template(
                     'pictures/pv.html').render(
                     request=request, pagination=res['pagination'])
+        await conn.close()
+        return JSONResponse(res)
+
+    async def put(self, request):
+        res = {'done': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        user = await conn.fetchval(
+            'SELECT author_id FROM articles WHERE slug = $1',
+            d.get('slug', ''))
+        if user is None:
+            res['message'] = 'Запрос содержит неверные данные.'
+            await conn.close()
+            return JSONResponse(res)
+        rel = await check_rel(conn, user, cu.get('id'))
+        if rel['follower']:
+            await conn.execute(
+                '''DELETE FROM followers WHERE author_id = $1
+                     AND follower_id = $2''', user, cu.get('id'))
+            res['done'] = True
+            await set_flashed(request, 'Автор топика удалён из вашей ленты.')
+        else:
+            if rel['blocked'] or rel['blocker']:
+                res['message'] = 'Запрос отклонён.'
+                await conn.close()
+                return JSONResponse(res)
+            await conn.execute(
+                '''INSERT INTO followers (author_id, follower_id)
+                     VALUES ($1, $2)''', user, cu.get('id'))
+            res['done'] = True
+            await set_flashed(request, 'Автор топика добавлен в вашу ленту.')
         await conn.close()
         return JSONResponse(res)
 

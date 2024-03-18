@@ -13,7 +13,8 @@ from webassets import Environment as AssetsEnvironment
 from webassets.ext.jinja2 import assets
 
 from .api.main import Captcha, Index
-from .api.arts import Alabels, Art, Arts, CArts, LCArts, Lenta, LLenta
+from .api.arts import (
+    Alabels, Art, Arts, CArt, Dislike, CArts, LCArts, Lenta, Like, LLenta)
 from .api.auth import (
     ChangeAva, ChangeEmail, ChangePasswd, GetPasswd,
     Login, Logout, LogoutAll, RequestEm,
@@ -24,7 +25,7 @@ from .api.people import People, Profile, Relation
 from .api.pictures import Album, Albums, Albumstat, Picstat, Search, Ustat
 from .api.tasks import check_swapped
 from .arts.views import (
-    show_art, show_arts, show_author, show_carts, show_followed,
+    show_art, show_arts, show_author, show_cart, show_carts, show_followed,
     show_labeled_arts, show_labeled_author, show_labeled_c, show_labeled_f)
 from .auth.attri import groups, permissions
 from .blogs.views import show_blog, show_blogs, show_blog_l
@@ -146,6 +147,10 @@ app = StApp(
             Route('/carts', CArts, name='acarts'),
             Route('/lcarts', LCArts, name='alcarts'),
             Route('/art', Art, name='aart'),
+            Route('/follow', Lenta, name='afollow'),
+            Route('/like', Like, name='alike'),
+            Route('/dislike', Dislike, name='adislike'),
+            Route('/cart', CArt, name='acart'),
             ]),
         Mount('/arts', name='arts', routes=[
             Route('/', show_arts, name='arts'),
@@ -154,6 +159,7 @@ app = StApp(
             Route(
                 '/a/{username}/t/{label}', show_labeled_author, name='lauth'),
             Route('/c/', show_carts, name='carts'),
+            Route('/c/{slug}', show_cart, name='cart'),
             Route('/c/t/{label}', show_labeled_c, name='lcarts'),
             Route('/l/', show_followed, name='lenta'),
             Route('/l/t/{label}', show_labeled_f, name='llenta'),
