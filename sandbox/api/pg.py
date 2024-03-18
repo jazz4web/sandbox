@@ -15,6 +15,37 @@ from .parse import parse_art_query, parse_arts_query
 from .slugs import check_max, make, parse_match
 
 
+async def check_rel(conn, uid1, uid2):
+    friend = bool(await conn.fetchrow(
+        '''SELECT author_id, friend_id FROM friends
+             WHERE author_id = $1 AND friend_id = $2''', uid1, uid2))
+    follower = bool(await conn.fetchrow(
+        '''SELECT author_id, follower_id FROM followers
+             WHERE author_id = $1 AND follower_id = $2''', uid1, uid2))
+    blocker = bool(await conn.fetchrow(
+        '''SELECT target_id, blocker_id FROM blockers
+             WHERE target_id = $1 AND blocker_id = $2''', uid2, uid1))
+    blocked = bool(await conn.fetchrow(
+        '''SELECT target_id, blocker_id FROM blockers
+             WHERE target_id = $1 AND blocker_id = $2''', uid1, uid2))
+    return {'friend': friend, 'follower': follower,
+            'blocker': blocker, 'blocked': blocked}
+
+
+async def check_article(request, conn, slug, target):
+    query = await conn.fetchrow(
+        '''SELECT a.id, a.title, a.slug, a.suffix, a.html, a.summary,
+                a.meta, a.published, a.edited, a.state, a.commented,
+                a.viewed, a.author_id, u.username, u.permissions
+             FROM articles AS a, users AS u
+             WHERE a.slug = $1
+               AND u.id = a.author_id
+               AND a.state IN ($2, $3, $4)''',
+        slug, status.pub, status.priv, status.ffo)
+    if query:
+        await parse_art_query(request, conn, query, target)
+
+
 async def select_labeled_carts(
         request, conn, label, target, page, per_page, last):
     query = await conn.fetch(

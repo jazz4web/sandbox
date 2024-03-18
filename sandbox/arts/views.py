@@ -1,8 +1,18 @@
-from starlette.responses import HTMLResponse, RedirectResponse
+from starlette.responses import RedirectResponse
 
 from ..auth.cu import getcu
 from ..common.aparsers import parse_page
 from ..common.flashed import get_flashed
+
+
+async def show_art(request):
+    cu = await getcu(request)
+    return request.app.jinja.TemplateResponse(
+        'arts/art.html',
+        {'request': request,
+         'cu': cu,
+         'slug': request.path_params.get('slug'),
+         'flashed': await get_flashed(request)})
 
 
 async def show_labeled_c(request):
@@ -79,7 +89,3 @@ async def show_arts(request):
          'cu': cu,
          'page': await parse_page(request),
          'flashed': await get_flashed(request)})
-
-
-async def show_art(request):
-    return HTMLResponse('<div>Not implemented yet.</div>')

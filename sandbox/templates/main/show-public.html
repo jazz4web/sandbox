@@ -21,7 +21,6 @@
              'css/avatar.css',
              'css/common-details.css',
              'css/entity-details.css',
-             'css/entity-block.css',
              'css/entity-text-block.css',
              'css/form-labeled.css',
              'css/labels.css',
@@ -173,6 +172,7 @@
 
 {%- block scripts -%}
   {{- super() -}}
+  <script>let suffix="{{ topic['suffix'] }}";</script>
   {%- assets filters='rjsmin', output='generic/js/main/show-public.js',
              'js/format-footer.js',
              'js/check-mc.js',
@@ -183,6 +183,7 @@
              'js/set-margin.js',
              'js/adjust-image.js',
              'js/click-image.js',
+             'js/count-clicks.js',
              'js/main/show-public.js' -%}
              <script src="{{ ASSET_URL }}"></script>
              {%- endassets -%}

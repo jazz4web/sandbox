@@ -1,6 +1,7 @@
 from starlette.endpoints import HTTPEndpoint
 from starlette.responses import JSONResponse
 
+from ..auth.cu import checkcu
 from ..common.pg import get_conn
 from .redi import assign_cache
 
@@ -20,4 +21,10 @@ class Captcha(HTTPEndpoint):
 class Index(HTTPEndpoint):
     async def get(self, request):
         res = {'empty': True}
+        return JSONResponse(res)
+
+    async def post(self, request):
+        await checkcu(
+            request, (await request.form()).get('auth'))
+        res = {'emtpy': True}
         return JSONResponse(res)

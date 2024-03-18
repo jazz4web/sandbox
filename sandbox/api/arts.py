@@ -1,14 +1,82 @@
 from starlette.endpoints import HTTPEndpoint
 from starlette.responses import JSONResponse
 
-from ..auth.attri import permissions
+from ..auth.attri import get_group, groups, permissions
 from ..auth.cu import checkcu
 from ..common.aparsers import parse_page
 from ..common.pg import get_conn
 from ..drafts.attri import status
 from .pg import (
-    check_last, select_arts, select_carts, select_followed,
-    select_labeled_arts, select_labeled_carts, select_labeled_f)
+    check_article, check_last, check_rel, select_arts,
+    select_carts, select_followed, select_labeled_arts, select_labeled_carts,
+    select_labeled_f)
+
+
+class Art(HTTPEndpoint):
+    async def get(self, request):
+        res = {'art': None,
+               'cu': await checkcu(
+                   request, request.headers.get('x-auth-token'))}
+        cu, slug = res['cu'], request.query_params.get('slug', '')
+        conn = await get_conn(request.app.config)
+        art = dict()
+        await check_article(request, conn, slug, art)
+        if not art:
+            res['message'] = 'Ничего не найдено по запросу, проверьте ссылку.'
+            await conn.close()
+            return JSONResponse(res)
+        if art.get('state') in (status.priv, status.ffo) and cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            await conn.close()
+            return JSONResponse(res)
+        if cu:
+            res['own'] = cu.get('id') == art.get('author_id')
+            artgroup = await get_group(art['author_perms'])
+            res['cens'] = (permissions.ADMINISTER in cu['permissions'] and
+                           artgroup != groups.root) or \
+                          (permissions.BLOCK in cu['permissions'] and \
+                           artgroup not in (groups.keeper, groups.root) and
+                           not res['own'])
+            res['admin'] = permissions.ADMINISTER in cu['permissions']
+            rel = await check_rel(
+                conn, art.get('author_id'), cu.get('id'))
+            if art.get('state') == status.ffo and not rel['friend'] and \
+                    permissions.ADMINISTER not in cu['permissions'] \
+                    and cu.get('id') != art.get('author_id'):
+                res['message'] = 'Доступ ограничен, топик для друзей автора.'
+                await conn.close()
+                return JSONResponse(res)
+            res['follow'] = not rel['follower'] and not rel['blocker'] \
+                            and not rel['blocked'] and \
+                            permissions.FOLLOW in cu['permissions'] \
+                            and cu.get('id') != art.get('author_id')
+            res['ld'] = permissions.LIKE in cu['permissions'] and \
+                        not res['own']
+            res['dislike'] = not rel['blocker'] and not rel['blocked'] and \
+                             permissions.ADMINISTER not in art['author_perms']
+            res['follower'] = rel['follower']
+        res['art'] = art
+#       res['anns'] = await select_broadcast(conn, art.get('author_id'))
+        await conn.close()
+        return JSONResponse(res)
+
+    async def put(self, request):
+        res = {'done': None}
+        d = await request.form()
+        field, suffix = d.get('field', ''), d.get('suffix', 'empty')
+        if field == 'viewed':
+            conn = await get_conn(request.app.config)
+            art = await conn.fetchrow(
+                'SELECT suffix, viewed FROM articles WHERE suffix = $1',
+                suffix)
+            if art:
+                await conn.execute(
+                    'UPDATE articles SET viewed = $1 WHERE suffix = $2',
+                    art.get('viewed') + 1, suffix)
+            await conn.close()
+            res['done'] = True
+            res['views'] = art.get('viewed') + 1
+        return JSONResponse(res)
 
 
 class LCArts(HTTPEndpoint):

@@ -13,7 +13,7 @@ from webassets import Environment as AssetsEnvironment
 from webassets.ext.jinja2 import assets
 
 from .api.main import Captcha, Index
-from .api.arts import Alabels, Arts, CArts, LCArts, Lenta, LLenta
+from .api.arts import Alabels, Art, Arts, CArts, LCArts, Lenta, LLenta
 from .api.auth import (
     ChangeAva, ChangeEmail, ChangePasswd, GetPasswd,
     Login, Logout, LogoutAll, RequestEm,
@@ -145,6 +145,7 @@ app = StApp(
             Route('/people', People, name='apeople'),
             Route('/carts', CArts, name='acarts'),
             Route('/lcarts', LCArts, name='alcarts'),
+            Route('/art', Art, name='aart'),
             ]),
         Mount('/arts', name='arts', routes=[
             Route('/', show_arts, name='arts'),
