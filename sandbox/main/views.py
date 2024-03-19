@@ -4,7 +4,7 @@ import os
 
 from starlette.exceptions import HTTPException
 from starlette.responses import (
-    HTMLResponse, FileResponse, PlainTextResponse, RedirectResponse, Response)
+    FileResponse, PlainTextResponse, RedirectResponse, Response)
 
 from ..auth.cu import getcu
 from ..common.flashed import get_flashed
@@ -58,7 +58,42 @@ async def show_sitemap(request):
 
 async def jump(request):
     suffix = request.path_params.get('suffix')
-    return HTMLResponse('<div>Not implemented yet.</div>')
+    conn = await get_conn(request.app.config)
+    if len(suffix) in (6, 7, 9, 10):
+        alias = await conn.fetchrow(
+            'SELECT url, clicked, author_id FROM aliases WHERE suffix = $1',
+            suffix)
+        if alias and alias.get('author_id'):
+            cu = await getcu(request)
+#           cu = int((await request.app.rc.hgetall(
+#               request.session.get('_uid', 'empty'))).get('id', '0'))
+            jumps = request.session.get('jumps', list())
+            if suffix not in jumps and \
+                    (not cu or cu.get('id') != alias.get('author_id')):
+                clicked = alias.get('clicked') + 1
+                if clicked > 9999:
+                    clicked = 9
+                await conn.execute(
+                    'UPDATE aliases SET clicked = $1 WHERE suffix = $2',
+                    clicked, suffix)
+                jumps.append(suffix)
+                if len(jumps) > 20:
+                    del jumps[0]
+                request.session['jumps'] = jumps
+            await conn.close()
+            return RedirectResponse(alias.get('url'), 301)
+    elif len(suffix) in (8, 11, 12, 13):
+        art = await conn.fetchrow(
+            'SELECT suffix, slug FROM articles WHERE suffix = $1', suffix)
+        await conn.close()
+        if art:
+            curl = request.url_for('public', slug=art.get('slug'))
+            rurl = request.url_for('arts:art', slug=art.get('slug'))
+            response = RedirectResponse(rurl, 301)
+            response.headers.append('Link', f'<{curl}>; rel="canonical"')
+            return response
+    await conn.close()
+    raise HTTPException(status_code=404, detail='Такой страницы у нас нет.')
 
 
 async def show_picture(request):

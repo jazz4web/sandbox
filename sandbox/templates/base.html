@@ -93,24 +93,29 @@
                 Инструменты <b class="caret"></b>
               </a>
               <ul class="dropdown-menu">
-                {% if cu and permissions.ART in cu['permissions'] %}
+                {%- if cu and permissions.ALIAS in cu['permissions'] -%}
+                  <li>
+                    <a href="{{ url_for('aliases:aliases') }}">Ссылки</a>
+                  </li>
+                {%- endif -%}
+                {%- if cu and permissions.ART in cu['permissions'] -%}
                   <li>
                     <a href="{{ url_for('drafts:drafts') }}">Черновики</a>
                   </li>
                   <li role="separator" class="divider"></li>
-                {% endif %}
-                {% if cu and permissions.PICTURE in cu['permissions'] %}
+                {%- endif -%}
+                {%- if cu and permissions.PICTURE in cu['permissions'] -%}
                   <li>
                     <a href="{{ url_for('pictures:albums') }}">Картинки</a>
                   </li>
-                {% endif %}
+                {%- endif -%}
               </ul>
             </li>
-            {% endif %}
+            {%- endif -%}
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
-              {% if cu %}
+              {%- if cu -%}
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <img alt="avatar"
                        src="{{ cu.get('ava') }}"><span
@@ -131,7 +136,7 @@
                     <a id="logout-all" href="/#logout-all">Выйти везде</a>
                   </li>
                 </ul>
-              {% else %}
+              {%- else -%}
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   Действия <b class="caret"></b>
                 </a>
@@ -143,7 +148,7 @@
                     <a id="reg" href="/#get-password">Получить пароль</a>
                   </li>
                 </ul>
-              {% endif %}
+              {%- endif -%}
             </li>
           </ul>
         </div>
