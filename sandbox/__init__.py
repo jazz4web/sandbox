@@ -14,6 +14,7 @@ from webassets.ext.jinja2 import assets
 
 from .aliases.views import show_aliases
 from .api.main import Captcha, Index
+from .api.aliases import Aliases
 from .api.arts import (
     Alabels, Art, Arts, CArt, Dislike, CArts, LCArts, Lenta, Like, LLenta)
 from .api.auth import (
@@ -155,6 +156,7 @@ app = StApp(
             Route('/like', Like, name='alike'),
             Route('/dislike', Dislike, name='adislike'),
             Route('/cart', CArt, name='acart'),
+            Route('/aliases', Aliases, name='aaliases'),
             ]),
         Mount('/arts', name='arts', routes=[
             Route('/', show_arts, name='arts'),

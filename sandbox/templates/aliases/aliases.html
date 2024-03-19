@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/_aliases.html" import show_alias %}
 
 {%- block title_part -%}Ваши ссылки{%- endblock title_part -%}
 
@@ -6,7 +7,97 @@
   {{- super() -}}
   {%- assets filters='cssmin', output='generic/css/aliases/aliases.css',
              'css/base.css',
+             'css/listed-mc.css',
+             'css/content-block.css',
+             'css/entity-block.css',
+             'css/next-block.css',
+             'css/today-field.css',
+             'css/form-help.css',
+             'css/inline-form.css',
+             'css/aliases.css',
              'css/pagination.css' -%}
     <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
   {%- endassets -%}
 {%- endblock styles -%}
+
+{%- block templates -%}
+  {{- super() -}}
+  <script id="aliasest" type="text/template">
+    <% #extra %>
+      <div id="new-title" class="content-block entity-block
+                                 {% if flashed %}next-block{%- endif -%}">
+        <h1>Создайте новый алиас</h1>
+        <div class="block-body">
+          <div class="today-field"></div>
+          <div class="form-help">
+            <p>
+              Уважаемый <% cu.username %>, здесь Вы можете создать алиас для
+              любой внешней ссылки сети Интернет, для этого введите url-адрес
+              в поле ввода и нажмите кнопку "Создать". Поддерживаются только
+              http и https ссылки с обязательным указанием протокола.
+            </p>
+          </div>
+          <div class="form-form">
+            <table class="inline-form-table">
+              <tbody>
+                <tr>
+                  <td class="input-field">
+                    <input id="link"
+                           class="form-control"
+                           type="text"
+                           placeholder="введите url-адрес ссылки">
+                  </td>
+                  <td>&nbsp;</td>
+                  <td>
+                    <button id="link-submit"
+                            class="btn btn-primary"
+                            type="button">
+                      Укоротить
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    <% /extra %>
+    <% #pagination.aliases %>
+      {{ show_alias(f=False) }}
+    <% /pagination.aliases %>
+    <% ^pagination.aliases %>
+      <div class="alert alert-warning next-block">
+        На текущий момент алиасы отсутствуют.
+      </div>
+    <% /pagination.aliases %>
+    <% #pv %>
+      <div class="entity-pagination next-block text-center">
+        <%{ pv }%>
+      </div>
+    <% /pv %>
+  </script>
+  <script id="aliast" type="text/template">
+    {{ show_alias(f=True) }}
+  </script>
+{%- endblock templates -%}
+
+{%- block scripts -%}
+  {{- super() -}}
+  <script>let cu="{{ cu.username }}";let page="{{ page }}";</script>
+  {%- assets filters='rjsmin', output='generic/js/aliases/aliases.js',
+             'js/show-aliases.js',
+             'js/format-footer.js',
+             'js/close-topflashed.js',
+             'js/check-browser.js',
+             'js/render-tf.js',
+             'js/check-next.js',
+             'js/check-mc.js',
+             'js/slide-page.js',
+             'js/format-datetime.js',
+             'js/copy-alias.js',
+             'js/show-error.js',
+             'js/show-hide-button.js',
+             'js/aliases/aliases.js' -%}
+    <script src="{{ ASSET_URL }}"></script>
+  {%- endassets -%}
+{%- endblock scripts -%}

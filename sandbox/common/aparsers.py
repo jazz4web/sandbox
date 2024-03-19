@@ -1,6 +1,15 @@
 import os
 import re
 
+from urllib.parse import urlparse
+
+
+async def parse_url(url):
+    l = ''.join(urlparse(url)[1:])
+    if len(l) > 50:
+        l = l[:49] + '~'
+    return l
+
 
 async def parse_redirect(request, page, last, endpoint, **kwargs):
     if last:
