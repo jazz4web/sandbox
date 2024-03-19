@@ -1,5 +1,7 @@
-{% macro show_alias(f=False) %}
-<div class="entity-block {% if f %}found-alias next-block{% endif %}">
+{% macro show_alias(f=False, fl=False) %}
+<div class="entity-block
+            {% if f %}found-alias next-block{% endif %}
+            {% if fl %}next-block{%- endif -%}">
     <div class="alias-info-block">
       <table>
         <tbody>

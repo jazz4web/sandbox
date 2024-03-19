@@ -63,7 +63,11 @@
       </div>
     <% /extra %>
     <% #pagination.aliases %>
+      {%- if flashed -%}
+      {{ show_alias(f=False, fl=True) }}
+      {%- else -%}
       {{ show_alias(f=False) }}
+      {%- endif -%}
     <% /pagination.aliases %>
     <% ^pagination.aliases %>
       <div class="alert alert-warning next-block">
