@@ -15,6 +15,19 @@ from .parse import parse_art_query, parse_arts_query
 from .slugs import check_max, make, parse_match
 
 
+async def check_cart(request, conn, slug, target):
+    query = await conn.fetchrow(
+        '''SELECT a.id, a.title, a.slug, a.suffix, a.html, a.summary,
+                  a.meta, a.published, a.edited, a.state, a.commented,
+                  a.viewed, a.author_id, u.username, u.permissions
+             FROM articles AS a, users AS u
+             WHERE a.slug = $1
+               AND u.id = a.author_id
+               AND a.state = $2''', slug, status.cens)
+    if query:
+        await parse_art_query(request, conn, query, target)
+
+
 async def check_rel(conn, uid1, uid2):
     friend = bool(await conn.fetchrow(
         '''SELECT author_id, friend_id FROM friends

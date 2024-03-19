@@ -8,12 +8,35 @@ from ..common.flashed import set_flashed
 from ..common.pg import get_conn
 from ..drafts.attri import status
 from .pg import (
-    check_article, check_last, check_rel, select_arts,
+    check_article, check_cart, check_last, check_rel, select_arts,
     select_carts, select_followed, select_labeled_arts, select_labeled_carts,
     select_labeled_f)
 
 
 class CArt(HTTPEndpoint):
+    async def get(self, request):
+        slug = request.query_params.get('slug', '')
+        res = {'art': None,
+               'cu': await checkcu(
+                   request, request.headers.get('x-auth-token'))}
+        cu = res['cu']
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.BLOCK not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        art = dict()
+        await check_cart(request, conn, slug, art)
+        await conn.close()
+        if not art:
+            res['message'] = 'Ничего не найдено, проверьте ссылку.'
+            return JSONResponse(res)
+        res['art'] = art
+        res['admin'] = permissions.ADMINISTER in cu['permissions']
+        return JSONResponse(res)
+
     async def put(self, request):
         res = {'done': None}
         d = await request.form()

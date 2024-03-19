@@ -1,4 +1,4 @@
-from starlette.responses import HTMLResponse, RedirectResponse
+from starlette.responses import RedirectResponse
 
 from ..auth.cu import getcu
 from ..common.aparsers import parse_page
@@ -6,7 +6,13 @@ from ..common.flashed import get_flashed
 
 
 async def show_cart(request):
-    return HTMLResponse('<div>Not implemented yet.</div>')
+    cu = await getcu(request)
+    return request.app.jinja.TemplateResponse(
+        'arts/cart.html',
+        {'request': request,
+         'slug': request.path_params.get('slug'),
+         'cu': cu,
+         'flashed': await get_flashed(request)})
 
 
 async def show_art(request):
