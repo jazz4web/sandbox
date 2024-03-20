@@ -1,16 +1,18 @@
-{% macro show_announce(link=True) %}
-  <div class="entity-block ann-block">
-    <div class="block-header slidable">
-      <h3 class="panel-title">
+{% macro show_announce(link=True, fl=False) %}
+  <div class="entity-block ann-block {% if fl %}next-block{%- endif -%}">
+    <div class="slidable">
+      <h2>
         {% if link %}
-          <a href="/announces/<% suffix %>"><% headline %></a>
+          <a class="title-link" href="/announces/<% suffix %>">
+            <% headline %>
+          </a>
         {% else %}
           <% headline %>
         {% endif %}
-      </h3>
+      </h2>
     </div>
     <div class="block-body">
-      <div class="info-line-block">
+      <div class="info-line-block personal-details">
         <table>
         <tbody>
           <tr>

@@ -6,6 +6,27 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showAnnounces(page, dt);
   if (window.localStorage.getItem('token')) {
+    $('body').on('click', '.entity-text-block img', clickImage);
+    $('body').on('click', '.page-link', function(event) {
+      event.preventDefault();
+      let th = $(this).parent();
+      if (!th.hasClass('active')) {
+        window.location.assign('/announces/?page=' + $(this).text().trim());
+      }
+    });
+    $('body').on('click', '#next-link', {page: page}, function(event) {
+      event.preventDefault();
+      let p = parseInt(event.data.page.trim()) + 1;
+      window.location.assign('/announces/?page=' + p);
+    });
+    $('body').on('click', '#prev-link', {page: page}, function(event) {
+      event.preventDefault();
+      let p = parseInt(event.data.page.trim()) - 1;
+      window.location.assign('/announces/?page=' + p);
+    });
+    $('body').on('click', '.title-link', function(event) {
+      event.stopPropagation();
+    });
     $('body').on('click', '.slidable', slideBlock);
     $('body').on(
       'keyup blur', '#headline',

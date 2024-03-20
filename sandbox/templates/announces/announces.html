@@ -16,6 +16,10 @@
              'css/next-block.css',
              'css/errors.css',
              'css/announces.css',
+             'css/ann.css',
+             'css/entity-text-block.css',
+             'css/pygments.css',
+             'css/personal-details.css',
              'css/pagination.css' -%}
     <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
   {%- endassets -%}
@@ -30,7 +34,7 @@
         <div class="slidable">
           <h1>Создайте новое объявление</h1>
         </div>
-        <div class="block-body">
+        <div class="block-body to-be-hidden">
           <div class="today-field"></div>
           <div class="form-help">
             <p>
@@ -84,7 +88,11 @@
       </div>
     <% /extra %>
     <% #pagination.announces %>
+      {%- if flashed -%}
+      {{ show_announce(fl=True) }}
+      {%- else -%}
       {{ show_announce() }}
+      {%- endif -%}
     <% /pagination.announces %>
     <% ^pagination.announces %>
       <div class="alert alert-warning next-block">
@@ -117,6 +125,7 @@
              'js/track-marker.js',
              'js/mark-input-error.js',
              'js/format-datetime.js',
+             'js/click-image.js',
              'js/announces/announces.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}
