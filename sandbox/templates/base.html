@@ -102,11 +102,23 @@
                   <li>
                     <a href="{{ url_for('drafts:drafts') }}">Черновики</a>
                   </li>
+                {%- endif -%}
+                {%- if cu and (permissions.ALIAS in cu['permissions'] or
+                        permissions.ART in cu['permissions']) and
+                       (permissions.PICTURE in cu['permissions'] or
+                        permissions.ANNOUNCE in cu['permissions']) -%}
                   <li role="separator" class="divider"></li>
                 {%- endif -%}
                 {%- if cu and permissions.PICTURE in cu['permissions'] -%}
                   <li>
                     <a href="{{ url_for('pictures:albums') }}">Картинки</a>
+                  </li>
+                {%- endif -%}
+                {%- if cu and permissions.ANNOUNCE in cu['permissions'] -%}
+                  <li>
+                    <a href="{{ url_for('announces:announces') }}">
+                      Объявления
+                    </a>
                   </li>
                 {%- endif -%}
               </ul>
@@ -160,7 +172,7 @@
         <div class="top-flashed-block">
           {%- for message in flashed -%}
             <div class="flashed-message
-                           {%- if not loop.first -%}next-block{%- endif -%}">
+                        {% if not loop.first %}next-block{%- endif -%}">
               <div class="alert alert-warning">
                 <button class="close close-top-flashed" type="button">
                   &times;</button>
