@@ -9,6 +9,10 @@
   margin: 4px 0;
 }
 
+.entity-text-block p {
+  margin: 0 0 6px;
+}
+
 .entity-text-block ul, .entity-text-block ol {
   margin: 2px 0 6px;
   padding: 0 0 0 20px;

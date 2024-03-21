@@ -19,10 +19,6 @@ class Captcha(HTTPEndpoint):
 
 
 class Index(HTTPEndpoint):
-    async def get(self, request):
-        res = {'empty': True}
-        return JSONResponse(res)
-
     async def post(self, request):
         await checkcu(
             request, (await request.form()).get('auth'))

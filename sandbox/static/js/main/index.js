@@ -1,12 +1,15 @@
 $(function() {
   "use strict";
-  if (!cu) {
-    window.localStorage.removeItem('token');
-  }
+  if (!cu) window.localStorage.removeItem('token');
   let dt = luxon.DateTime.now();
   formatFooter(dt);
-  showIndex(dt);
+  if ($('.today-field').length) renderTF('.today-field', dt);
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
+  $('.date-field').each(function() { formatDateTime($(this)); });
+  $('.entity-text-block iframe').each(adjustFrame);
+  $('.entity-text-block').children().each(setMargin);
+  $('.entity-text-block img').each(adjustImage);
+  $('.entity-text-block img').on('click', clickImage);
   if (window.localStorage.getItem('token')) {
     if (window.location.hash === '#logout') {
       logout();
@@ -50,9 +53,11 @@ $(function() {
     } else {
       if (window.location.hash === '#login') {
         login();
+        renderTF('.today-field', dt);
       }
       if (window.location.hash === '#get-password') {
         reg();
+        renderTF('.today-field', dt);
       }
     }
     let crt = parseHash(window.location.hash, '#request-password');
@@ -76,4 +81,5 @@ $(function() {
   if (chem) {
     changeEmail(chem);
   }
+  checkMC(860);
 });

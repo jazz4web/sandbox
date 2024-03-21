@@ -166,10 +166,27 @@ async def show_avatar(request):
 async def show_index(request):
     cu = await getcu(request)
     interval = request.app.config.get('REQUEST_INTERVAL', cast=float)
+    art = None
+    suffix = await request.app.rc.get('index:page')
+    if suffix:
+        conn = await get_conn(request.app.config)
+        art = await conn.fetchrow(
+            '''SELECT a.id, a.suffix, a.title,
+                      a.html, a.edited, u.username
+                 FROM articles AS a, users AS u
+                 WHERE a.author_id = u.id AND a.suffix = $1''', suffix)
+        if art:
+            art = {'id': art.get('id'),
+                   'suffix': art.get('suffix'),
+                   'title': art.get('title'),
+                   'html': art.get('html'),
+                   'edited': f'{art.get("edited").isoformat()}Z',
+                   'author': art.get('username')}
     return request.app.jinja.TemplateResponse(
         'main/index.html',
         {'request': request,
          'cu': cu,
+         'art': art,
          'interval': interval,
          'flashed': await get_flashed(request)})
 

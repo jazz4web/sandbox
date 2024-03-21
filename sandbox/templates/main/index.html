@@ -14,11 +14,14 @@
             'css/base.css',
             'css/main-container.css',
             'css/empty-message.css',
-            'css/today-field.css',
             'css/content-block.css',
+            'css/today-field.css',
             'css/form-help.css',
             'css/form-labeled.css',
+            'css/entity-text-block.css',
+            'css/pygments.css',
             'css/captcha.css',
+            'css/index.css',
             'css/next-block.css' -%}
     <link rel="stylesheet" href="{{ ASSET_URL }}">
   {%- endassets -%}
@@ -373,18 +376,36 @@
     </div>
   </script>
   {% endif %}
-  <script id="indext" type="text/template">
-    <% ^art %>
-      <div id="idef" class="alert alert-warning page-block {% if flashed -%}
-                  next-block{%- endif -%}">
-        <div class="today-field">some</div>
-        <div class="empty-message">
-          Сайт в стадии разработки, пропробуйте зайти позже.
-        </div>
-      </div>
-    <% /art %>
-  </script>
 {%- endblock templates -%}
+
+{%- block page_body -%}
+  {%- if art -%}
+    <div id="topic" class="content-block {% if flashed %}next-block
+                                         {%- endif -%}">
+      <h1 title="{{ art['title'] }}">
+        {{ art['title'] }}
+      </h1>
+      <div id="art-date-field" class="date-field">
+        {{ art['edited'] }}
+      </div>
+      <div class="text-block entity-text-block">
+        {{ art['html']|safe }}
+      </div>
+      <div id="admin-sign-block">
+        <img alt="avatar" src="{{ url_for(
+        'ava', username=art['author'], size=32)}}">{{ art.author}} 
+      </div>
+    </div>
+  {%- else -%}
+    <div id="idef" class="alert alert-warning page-block {% if flashed -%}
+                next-block{%- endif -%}">
+      <div class="today-field">some</div>
+      <div class="empty-message">
+        Сайт в стадии разработки, пропробуйте зайти позже.
+      </div>
+    </div>
+  {%- endif -%}
+{%- endblock page_body -%}
 
 {%- block scripts -%}
   {{- super() -}}
@@ -394,7 +415,6 @@
             'js/check-mc.js',
             'js/render-tf.js',
             'js/close-topflashed.js',
-            'js/show-index.js',
             'js/login.js',
             'js/reg.js',
             'js/slide-page.js',
@@ -412,6 +432,11 @@
             'js/reset-passwd.js',
             'js/reset-pwd.js',
             'js/change-email.js',
+            'js/format-datetime.js',
+            'js/adjust-frame.js',
+            'js/set-margin.js',
+            'js/adjust-image.js',
+            'js/click-image.js',
             'js/main/index.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}
