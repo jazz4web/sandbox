@@ -6,6 +6,7 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showAnnounces(page, dt);
   if (window.localStorage.getItem('token')) {
+    $('body').on('blur', '#body', blurBodyAn);
     $('body').on('click', '.entity-text-block img', clickImage);
     $('body').on('click', '.page-link', function(event) {
       event.preventDefault();

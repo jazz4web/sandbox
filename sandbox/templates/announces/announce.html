@@ -13,6 +13,9 @@
              'css/ann.css',
              'css/aoptions.css',
              'css/next-block.css',
+             'css/inline-form.css',
+             'css/length-marker.css',
+             'css/errors.css',
              'css/pygments.css' -%}
     <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
   {%- endassets -%}
@@ -27,7 +30,7 @@
       {%- else -%}
       {{ show_announce(link=False) }}
       {%- endif -%}
-      <div class="editor-forms-block content-block to-be-hidden next-block">
+      <div class="editor-forms-block entity-block to-be-hidden next-block">
         <div id="text-editor" class="form-form to-be-hidden">
           <div class="length-marker">
             Осталось: <span
@@ -48,7 +51,7 @@
             </button>
           </div>
         </div>
-        <div id="headline-editor" class="form-form to-be-hidden">
+        <div id="headline-editor" class="entity-block to-be-hidden">
           <table class="inline-form-table">
             <tbody>
               <tr>
@@ -71,7 +74,7 @@
             </tbody>
           </table>
         </div>
-        <div id="remove-button-form" class="form-form to-be-hidden">
+        <div id="remove-button-form" class="entity-block to-be-hidden">
           <div class="form-group">
             <button id="remove-button"
                     type="button"
@@ -144,6 +147,13 @@
              'js/adjust-frame.js',
              'js/set-margin.js',
              'js/adjust-image.js',
+             'js/click-image.js',
+             'js/scroll-panel.js',
+             'js/mark-input-error.js',
+             'js/track-marker.js',
+             'js/blur-body-an.js',
+             'js/change-ann.js',
+             'js/show-error.js',
              'js/announces/announce.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}
