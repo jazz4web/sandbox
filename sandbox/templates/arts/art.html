@@ -17,6 +17,7 @@
              'css/next-block.css',
              'css/public.css',
              'css/art.css',
+             'css/art-announce.css',
              'css/pygments.css' -%}
     <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
   {%- endassets -%}
@@ -148,9 +149,9 @@
       </div>
     </div>
     <% #anns %>
-    <div class="content-block announce-block">
-      <div class="block-header slidable">
-        <h3 class="panel-title"><% headline %></h3>
+    <div class="announce-block">
+      <div class="slidable">
+        <h3>Объявление: <% headline %></h3>
       </div>
       <div class="block-body announce-body">
         <div class="entity-text-block"><%{ html }%></div>
@@ -290,6 +291,7 @@
              'js/follow.js',
              'js/undress-links.js',
              'js/censor-this.js',
+             'js/slide-block.js',
              'js/arts/art.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}

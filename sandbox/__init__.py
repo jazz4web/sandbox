@@ -16,7 +16,7 @@ from .announces.views import show_announce, show_announces
 from .aliases.views import show_aliases
 from .api.main import Captcha, Index
 from .api.aliases import Aliases
-from .api.announces import Announce, Announces
+from .api.announces import Announce, Announces, Broadcast
 from .api.arts import (
     Alabels, Art, Arts, CArt, Dislike, CArts, LCArts, Lenta, Like, LLenta)
 from .api.auth import (
@@ -163,7 +163,8 @@ app = StApp(
             Route('/cart', CArt, name='acart'),
             Route('/aliases', Aliases, name='aaliases'),
             Route('/announces', Announces, name='aannounces'),
-            Route('/announce', Announce, name='aannounce')
+            Route('/announce', Announce, name='aannounce'),
+            Route('/broadcast', Broadcast, name='abroadcast')
             ]),
         Mount('/arts', name='arts', routes=[
             Route('/', show_arts, name='arts'),

@@ -10,5 +10,6 @@ $(function() {
   $('.entity-text-block iframe').each(adjustFrame);
   $('.entity-text-block').children().each(setMargin);
   $('.entity-text-block img').each(adjustImage);
-  $('.entity-text-block img').on('click', clickImage);
+  showAnns(suffix);
+  $('body').on('click', '.entity-text-block img', clickImage);
 });

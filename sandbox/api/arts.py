@@ -8,9 +8,9 @@ from ..common.flashed import set_flashed
 from ..common.pg import get_conn
 from ..drafts.attri import status
 from .pg import (
-    check_article, check_cart, check_last, check_rel, select_arts,
-    select_carts, select_followed, select_labeled_arts, select_labeled_carts,
-    select_labeled_f)
+    check_article, check_cart, check_last, check_rel,
+    select_arts, select_broadcast, select_carts, select_followed,
+    select_labeled_arts, select_labeled_carts, select_labeled_f)
 
 
 class CArt(HTTPEndpoint):
@@ -217,7 +217,7 @@ class Art(HTTPEndpoint):
                              permissions.ADMINISTER not in art['author_perms']
             res['follower'] = rel['follower']
         res['art'] = art
-#       res['anns'] = await select_broadcast(conn, art.get('author_id'))
+        res['anns'] = await select_broadcast(conn, art.get('author_id'))
         await conn.close()
         return JSONResponse(res)
 
