@@ -63,19 +63,23 @@ $(function() {
     let crt = parseHash(window.location.hash, '#request-password');
     if (crt) {
       requestPasswd(crt);
+      renderTF('.today-field', dt);
     }
     let rst = parseHash(window.location.hash, '#reset-password');
     if (rst) {
       resetPasswd(rst);
+      renderTF('.today-field', dt);
     }
   });
   let crt = parseHash(window.location.hash, '#request-password');
   if (crt) {
     requestPasswd(crt);
+    renderTF('.today-field', dt);
   }
   let rst = parseHash(window.location.hash, '#reset-password');
   if (rst) {
     resetPasswd(rst);
+    renderTF('.today-field', dt);
   }
   let chem = parseHash(window.location.hash, '#change-email')
   if (chem) {
