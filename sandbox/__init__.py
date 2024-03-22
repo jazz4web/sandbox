@@ -12,6 +12,7 @@ from starlette.types import Receive, Scope, Send
 from webassets import Environment as AssetsEnvironment
 from webassets.ext.jinja2 import assets
 
+from .admin.views import show_log
 from .announces.views import show_announce, show_announces
 from .aliases.views import show_aliases
 from .api.main import Captcha, Index
@@ -115,6 +116,8 @@ app = StApp(
         Route('/captcha/{suffix}', show_captcha, name='captcha'),
         Route('/picture/{suffix}', show_picture, name='picture'),
         Route('/public/{slug}', show_public, name='public'),
+        Mount('/admin', name='admin', routes=[
+            Route('/logs/{log}', show_log, name='logs')]),
         Mount('/announces', name='announces', routes=[
             Route('/', show_announces, name='announces'),
             Route('/{suffix}', show_announce, name='announce')
