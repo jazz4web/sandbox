@@ -15,7 +15,7 @@ from webassets.ext.jinja2 import assets
 from .admin.views import show_log, show_tools
 from .announces.views import show_announce, show_announces
 from .aliases.views import show_aliases
-from .api.admin import Admin
+from .api.admin import Admin, DUPerms, IndexPage, Robots
 from .api.aliases import Aliases
 from .api.announces import Announce, Announces, Broadcast
 from .api.arts import (
@@ -171,6 +171,9 @@ app = StApp(
             Route('/announce', Announce, name='aannounce'),
             Route('/broadcast', Broadcast, name='abroadcast'),
             Route('/admin-tools', Admin, name='aadmin'),
+            Route('/chperms', DUPerms, name='adperms'),
+            Route('/chrobots', Robots, name='arobots'),
+            Route('/chindex', IndexPage, name='aindex'),
             ]),
         Mount('/arts', name='arts', routes=[
             Route('/', show_arts, name='arts'),
