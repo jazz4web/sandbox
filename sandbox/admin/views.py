@@ -5,6 +5,16 @@ from starlette.responses import FileResponse, PlainTextResponse
 
 from ..auth.attri import get_group, groups
 from ..auth.cu import getcu
+from ..common.flashed import get_flashed
+
+
+async def show_tools(request):
+    cu = await getcu(request)
+    return request.app.jinja.TemplateResponse(
+        'admin/tools.html',
+        {'request': request,
+         'cu': cu,
+         'flashed': await get_flashed(request)})
 
 
 async def show_log(request):

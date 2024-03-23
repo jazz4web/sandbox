@@ -12,10 +12,10 @@ from starlette.types import Receive, Scope, Send
 from webassets import Environment as AssetsEnvironment
 from webassets.ext.jinja2 import assets
 
-from .admin.views import show_log
+from .admin.views import show_log, show_tools
 from .announces.views import show_announce, show_announces
 from .aliases.views import show_aliases
-from .api.main import Captcha, Index
+from .api.admin import Admin
 from .api.aliases import Aliases
 from .api.announces import Announce, Announces, Broadcast
 from .api.arts import (
@@ -26,6 +26,7 @@ from .api.auth import (
     RequestPasswd, ResetPasswd)
 from .api.blogs import Authors, Blog, LBlog
 from .api.drafts import Draft, Drafts, Labels, Paragraph
+from .api.main import Captcha, Index
 from .api.people import People, Profile, Relation
 from .api.pictures import Album, Albums, Albumstat, Picstat, Search, Ustat
 from .api.tasks import check_swapped
@@ -117,6 +118,7 @@ app = StApp(
         Route('/picture/{suffix}', show_picture, name='picture'),
         Route('/public/{slug}', show_public, name='public'),
         Mount('/admin', name='admin', routes=[
+            Route('/', show_tools, name='tools'),
             Route('/logs/{log}', show_log, name='logs')]),
         Mount('/announces', name='announces', routes=[
             Route('/', show_announces, name='announces'),
@@ -167,7 +169,8 @@ app = StApp(
             Route('/aliases', Aliases, name='aaliases'),
             Route('/announces', Announces, name='aannounces'),
             Route('/announce', Announce, name='aannounce'),
-            Route('/broadcast', Broadcast, name='abroadcast')
+            Route('/broadcast', Broadcast, name='abroadcast'),
+            Route('/admin-tools', Admin, name='aadmin'),
             ]),
         Mount('/arts', name='arts', routes=[
             Route('/', show_arts, name='arts'),

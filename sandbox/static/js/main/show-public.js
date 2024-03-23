@@ -12,4 +12,5 @@ $(function() {
   $('.entity-text-block img').each(adjustImage);
   showAnns(suffix);
   $('body').on('click', '.entity-text-block img', clickImage);
+  pingUser();
 });
