@@ -1,3 +1,18 @@
 .form-group {
   margin: 4px 0 0;
 }
+
+#default-perms-editor .form-group {
+  font-size: 0.9em;
+  margin: 0;
+}
+
+#default-perms-editor .permission-group {
+  margin-left: 25%;
+  margin-right: 25%;
+}
+
+#reditor, #li-edit {
+  text-align: justify;
+  font-size: 12pt;
+}

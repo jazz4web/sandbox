@@ -6,7 +6,6 @@ function showTools(dt) {
     url: '/api/admin-tools',
     headers: tee,
     success: function(data) {
-      console.log(data);
       if (token) {
         if (!data.cu || data.cu.brkey != checkBrowser()) {
           window.localStorage.removeItem('token');
