@@ -21,6 +21,7 @@ async def show_art(request):
         'arts/art.html',
         {'request': request,
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'slug': request.path_params.get('slug'),
          'flashed': await get_flashed(request)})
 
@@ -52,6 +53,7 @@ async def show_labeled_f(request):
         'arts/llenta.html',
         {'request': request,
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'page': await parse_page(request),
          'label': request.path_params.get('label'),
          'flashed': await get_flashed(request)})
@@ -64,6 +66,7 @@ async def show_followed(request):
         {'request': request,
          'page': await parse_page(request),
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'flashed': await get_flashed(request)})
 
 
@@ -86,6 +89,7 @@ async def show_labeled_arts(request):
         'arts/labeled-arts.html',
         {'request': request,
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'page': await parse_page(request),
          'label': request.path_params.get('label'),
          'flashed': await get_flashed(request)})
@@ -97,5 +101,6 @@ async def show_arts(request):
         'arts/arts.html',
         {'request': request,
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'page': await parse_page(request),
          'flashed': await get_flashed(request)})

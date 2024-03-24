@@ -6,6 +6,26 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showTools(dt);
   if (window.localStorage.getItem('token')) {
+    $('body').on('click', '#li-submit', function() {
+      $(this).blur();
+      $.ajax({
+        method: 'PUT',
+        url: '/api/setcounter',
+        data: {
+          auth: window.localStorage.getItem('token'),
+          value: $('#li-edit').val()
+        },
+        success: function(data) {
+          if (data.done) {
+            window.location.reload();
+          } else {
+            showError('.editor-forms-block', data);
+            $('.editor-forms-block').addClass('next-block');
+          }
+        },
+        dataType: 'json'
+      });
+    });
     $('body').on('click', '#ipage-submit', function() {
       $(this).blur();
       $.ajax({

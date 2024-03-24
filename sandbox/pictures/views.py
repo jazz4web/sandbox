@@ -11,6 +11,7 @@ async def show_album(request):
         {'request': request,
          'suffix': request.path_params.get('suffix'),
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'page': await parse_page(request),
          'status': status,
          'flashed': await get_flashed(request)})
@@ -22,6 +23,7 @@ async def show_albums(request):
         'pictures/albums.html',
         {'request': request,
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'status': status,
          'page': await parse_page(request),
          'flashed': await get_flashed(request)})

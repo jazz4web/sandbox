@@ -10,6 +10,7 @@ async def show_blog_l(request):
         {'request': request,
          'cu': cu,
          'page': await parse_page(request),
+         'counters': await request.app.rc.get('li:counter'),
          'label': request.path_params.get('label'),
          'username': request.path_params.get('username'),
          'flashed': await get_flashed(request)})
@@ -21,6 +22,7 @@ async def show_blog(request):
         'blogs/blog.html',
         {'request': request,
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'page': await parse_page(request),
          'username': request.path_params.get('username'),
          'flashed': await get_flashed(request)})
@@ -32,5 +34,6 @@ async def show_blogs(request):
         'blogs/authors.html',
         {'request': request,
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'page': await parse_page(request),
          'flashed': await get_flashed(request)})

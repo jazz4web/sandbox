@@ -21,7 +21,6 @@
       {%- endassets -%}
     {%- endblock styles -%}
     {%- block templates -%}
-      <!-- templates -->
       <script id="ealertt" type="text/template">
         <div id="ealert" class="alert alert-danger to-be-hidden">
           <%{ message }%>
@@ -30,6 +29,9 @@
     {%- endblock templates -%}
   </head>
   <body>
+    {%- if counters %}
+      <div id="counters">{{ counters|safe }}</div>
+    {%- endif -%}
     <nav id="navigation" class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">

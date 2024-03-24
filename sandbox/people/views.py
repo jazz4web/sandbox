@@ -9,6 +9,7 @@ async def show_people(request):
         'people/people.html',
         {'request': request,
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'page': await parse_page(request),
          'flashed': await get_flashed(request)})
 
@@ -20,6 +21,7 @@ async def show_profile(request):
         'people/profile.html',
         {'request': request,
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'username': request.path_params.get('username'),
          'interval': interval,
          'flashed': await get_flashed(request)})

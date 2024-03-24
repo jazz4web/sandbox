@@ -9,5 +9,6 @@ async def show_aliases(request):
         'aliases/aliases.html',
         {'request': request,
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'page': await parse_page(request),
          'flashed': await get_flashed(request)})

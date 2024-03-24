@@ -12,6 +12,28 @@ from ..common.pg import get_conn
 from ..drafts.attri import status
 
 
+class Counter(HTTPEndpoint):
+    async def put(self, request):
+        res = {'done': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.ADMINISTER not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        val = d.get('value', '')
+        if val:
+            await request.app.rc.set('li:counter', val)
+            await set_flashed(request, 'Счётчики установлены.')
+        else:
+            await request.app.rc.delete('li:counter')
+            await set_flashed(request, 'Счётчики удалёны.')
+        res['done'] = True
+        return JSONResponse(res)
+
+
 class IndexPage(HTTPEndpoint):
     async def put(self, request):
         res = {'done': None}

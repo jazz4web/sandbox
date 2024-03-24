@@ -20,6 +20,7 @@ async def show_draft(request):
         'drafts/draft.html',
         {'request': request,
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'slug': request.path_params.get('slug'),
          'flashed': await get_flashed(request)})
 
@@ -30,5 +31,6 @@ async def show_drafts(request):
         'drafts/drafts.html',
         {'request': request,
          'cu': cu,
+         'counters': await request.app.rc.get('li:counter'),
          'page': await parse_page(request),
          'flashed': await get_flashed(request)})

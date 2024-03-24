@@ -37,6 +37,7 @@ async def show_public(request):
     return request.app.jinja.TemplateResponse(
         'main/show-public.html',
         {'request': request,
+         'counters': await request.app.rc.get('li:counter'),
          'topic': topic})
 
 
@@ -187,6 +188,7 @@ async def show_index(request):
         {'request': request,
          'cu': cu,
          'art': art,
+         'counters': await request.app.rc.get('li:counter'),
          'interval': interval,
          'flashed': await get_flashed(request)})
 
