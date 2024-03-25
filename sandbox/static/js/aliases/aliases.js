@@ -6,6 +6,7 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showAliases(page, dt);
   if (window.localStorage.getItem('token')) {
+    checkIncomming();
     $('body').on('click', '.remove-button', function() {
       $(this).blur();
       let p = page;

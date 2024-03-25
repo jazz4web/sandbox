@@ -22,4 +22,5 @@ $(function() {
     let p = parseInt(event.data.page.trim()) - 1;
     window.location.assign('/blogs/?page=' + p);
   });
+  if (window.localStorage.getItem('token')) checkIncomming();
 });

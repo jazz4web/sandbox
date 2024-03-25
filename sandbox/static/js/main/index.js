@@ -11,6 +11,7 @@ $(function() {
   $('.entity-text-block img').each(adjustImage);
   $('.entity-text-block img').on('click', clickImage);
   if (window.localStorage.getItem('token')) {
+    checkIncomming();
     if (window.location.hash === '#logout') {
       logout();
     }

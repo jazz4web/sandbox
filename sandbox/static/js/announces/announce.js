@@ -6,6 +6,7 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showAnnounce(suffix, dt);
   if (window.localStorage.getItem('token')) {
+    checkIncomming();
     $('body').on('click', '#remove-button', function() {
       $(this).blur();
       $.ajax({

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{%- block title_part -%}Index{%- endblock title_part -%}
+{%- block title_part -%}
+  Сайт для ведения текстовых блогов
+{%- endblock title_part -%}
 
 {%- block metas -%}
   {{- super() -}}
@@ -438,6 +440,7 @@
             'js/set-margin.js',
             'js/adjust-image.js',
             'js/click-image.js',
+            'js/check-incomming.js',
             'js/main/index.js' -%}
     <script src="{{ ASSET_URL }}"></script>
   {%- endassets -%}

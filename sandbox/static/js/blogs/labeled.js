@@ -34,4 +34,5 @@ $(function() {
       '/blogs/' + event.data.username + '/t/' +
       event.data.label + '?page=' + p);
   });
+  if (window.localStorage.getItem('token')) checkIncomming();
 });

@@ -9,6 +9,7 @@ $(function() {
   $('body').on('click', '.entity-text-block img', clickImage);
   $('body').on('click', '#move-screen-up', moveScreenUp);
   if (window.localStorage.getItem('token')) {
+    checkIncomming();
     $('body').on('click', '.slidable', slideBlock);
     $('body').on('click', '#tape-out', {slug: slug}, follow);
     $('body').on('click', '#tape-in', {slug: slug}, follow);

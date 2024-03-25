@@ -6,6 +6,7 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showLabeledDrafts('/api/labels', page, label, dt);
   if (window.localStorage.getItem('token')) {
+    checkIncomming();
     $('body').on('click', '.entity-alias a', function(event) {
       event.preventDefault();
     });

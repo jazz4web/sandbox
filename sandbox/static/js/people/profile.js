@@ -8,6 +8,7 @@ $(function() {
   showProfile(dt);
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   if (window.localStorage.getItem('token')) {
+    checkIncomming();
     $('body').on('click', '.slidable', slideBlock);
     $('body').on('click', '#pm-message', function() {
       $(this).blur();

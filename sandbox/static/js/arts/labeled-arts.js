@@ -25,4 +25,5 @@ $(function() {
     let p = parseInt(event.data.page.trim()) - 1;
     window.location.assign('/arts/t/' + event.data.label + '?page=' + p);
   });
+  if (window.localStorage.getItem('token')) checkIncomming();
 });

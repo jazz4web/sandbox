@@ -6,6 +6,7 @@ $(function() {
   $('body').on('click', '.close-top-flashed', closeTopFlashed);
   showDraft(slug, dt);
   if (window.localStorage.getItem('token')) {
+    checkIncomming();
     $('body').on('change', '#select-status', {slug: slug}, function(event) {
       changeDraft('state', $('#select-status').val(), event.data.slug);
     });

@@ -29,6 +29,7 @@ from .api.drafts import Draft, Drafts, Labels, Paragraph
 from .api.main import Captcha, Index
 from .api.people import People, Profile, Relation
 from .api.pictures import Album, Albums, Albumstat, Picstat, Search, Ustat
+from .api.pm import Conversation, Conversations
 from .api.tasks import check_swapped
 from .arts.views import (
     show_art, show_arts, show_author, show_cart, show_carts, show_followed,
@@ -44,6 +45,7 @@ from .main.views import (
     show_picture, show_public, show_robots, show_sitemap)
 from .people.views import show_people, show_profile
 from .pictures.views import show_album, show_albums
+from .pm.views import show_conversation
 
 try:
     from .tuning import SITE_NAME, SITE_DESCRIPTION, SECRET_KEY, MAIL_PASSWORD
@@ -175,6 +177,8 @@ app = StApp(
             Route('/chrobots', Robots, name='arobots'),
             Route('/chindex', IndexPage, name='aindex'),
             Route('/setcounter', Counter, name='alic'),
+            Route('/conv', Conversation, name='aconv'),
+            Route('/convs', Conversations, name='aconvs'),
             ]),
         Mount('/arts', name='arts', routes=[
             Route('/', show_arts, name='arts'),
@@ -205,6 +209,8 @@ app = StApp(
         Mount('/pictures', name='pictures', routes=[
             Route('/', show_albums, name='albums'),
             Route('/{suffix}', show_album, name='album')]),
+        Mount('/pm', name='pm', routes=[
+            Route('/{username}', show_conversation, name='conversation')]),
         Mount('/static', app=StaticFiles(directory=static), name='static')],
     on_startup=[run_before],
     middleware=middleware,
