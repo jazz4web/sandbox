@@ -8,8 +8,23 @@ from ..common.flashed import set_flashed
 from ..common.pg import get_conn
 from .pg import (
     check_last, check_outgoing, check_postponed, check_rel,
-    edit_pm, receive_incomming, select_m, send_message)
+    edit_pm, receive_incomming, select_conversations, select_m,
+    send_message)
 
+CONVS = '''SELECT DISTINCT ON (u.username)
+               u.username, m.sent, m.received, m.recipient_id, m.sender_id
+             FROM users AS u, messages AS m
+               WHERE (m.sender_id = $1
+                 AND  removed_by_sender = false
+                 AND  u.id = m.recipient_id) OR
+                (m.recipient_id = $1
+                 AND removed_by_recipient = false
+                 AND postponed = false
+                 AND u.id = m.sender_id)
+            ORDER BY u.username ASC, m.sent DESC'''
+CONVS_NUM = f'''SELECT count(*) FROM ({CONVS}) AS cs'''
+CONVS_Q = f'''SELECT * FROM ({CONVS}) AS cs
+                ORDER BY received DESC LIMIT $2 OFFSET $3'''
 USERNAME = 'SELECT username FROM users WHERE id = $1'
 REM = '''UPDATE messages SET received = null, postponed = false,
                              removed_by_sender = false,
@@ -19,6 +34,38 @@ REM = '''UPDATE messages SET received = null, postponed = false,
 
 
 class Conversations(HTTPEndpoint):
+    async def get(sefl, request):
+        res = {'cu': await checkcu(
+            request, request.headers.get('x-auth-token'))}
+        cu = res['cu']
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.PM not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        page = await parse_page(request)
+        conn = await get_conn(request.app.config)
+        last = await check_last(
+            conn, page,
+            request.app.config.get('PM_PER_PAGE', cast=int, default=3),
+            CONVS_NUM, cu.get('id'))
+        if page > last:
+            res['message'] = f'Всего страниц: {last}.'
+            await conn.close()
+            return JSONResponse(res)
+        res['pagination'] = dict()
+        await select_conversations(
+            conn, cu.get('id'), CONVS_Q, res['pagination'], page,
+            request.app.config.get('PM_PER_PAGE', cast=int, default=3), last)
+        if res['pagination']:
+            if res['pagination']['next'] or res['pagination']['prev']:
+                res['pv'] = request.app.jinja.get_template(
+                    'pictures/pv.html').render(
+                    request=request, pagination=res['pagination'])
+        await conn.close()
+        return JSONResponse(res)
+
     async def post(self, request):
         res = {'pm': 0}
         d = await request.form()

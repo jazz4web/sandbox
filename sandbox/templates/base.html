@@ -187,6 +187,13 @@
                       Профиль
                     </a>
                   </li>
+                  {%- if permissions.PM in cu['permissions'] -%}
+                    <li>
+                      <a href="{{ url_for('pm:conversations') }}">
+                        Приваты
+                      </a>
+                    </li>
+                  {%- endif -%}
                   <li role="separator" class="divider"></li>
                   <li>
                     <a id="logout" href="/#logout">Выйти</a>

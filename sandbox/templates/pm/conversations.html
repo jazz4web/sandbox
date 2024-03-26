@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{%- block title_part -%}Ваши приваты{%- endblock title_part %}
+
+{%- block styles -%}
+  {{- super() -}}
+  {%- assets filters='cssmin', output='generic/css/pm/conversations.css',
+             'css/base.css',
+             'css/listed-mc.css',
+             'css/content-block.css',
+             'css/entity-block.css',
+             'css/next-block.css',
+             'css/conversations.css',
+             'css/pagination.css' -%}
+    <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
+  {%- endassets -%}
+{%- endblock styles -%}
+
+{%- block templates -%}
+  {{ super() }}
+  <script id="convst" type="text/template">
+    <div class="content-block entity-block {% if flashed %}next-block
+                                           {%- endif %}">
+      <h1>Ваши приваты с другими пользователями сервиса</h1>
+      <div class="block-body friends-block">
+        <table class="friends-table">
+          <tbody>
+            <tr>
+              <th>С кем</th>
+              <th>Есть входящие</th>
+              <th>Есть исходящие</th>
+            </tr>
+            <% #pagination.conversations %>
+              <tr class="<% #new_output %>
+                           new-output
+                         <% /new_output %>
+                         <% #new_input %>
+                           new-input
+                         <% /new_input %>
+                         <% #bordered %>
+                           bordered
+                         <% /bordered %>">
+                <td>
+                  <a href="/pm/<% company %>"><% company %></a>
+                </td>
+                <td>
+                  <% #new_input %>
+                    <span class="glyphicon glyphicon-flag"
+                          aria-hidden="true"></span>
+                  <% /new_input %>
+                  <% ^new_input %>
+                    <span class="glyphicon glyphicon-option-horizontal"
+                          aria-hidden="true"></span>
+                  <% /new_input %>
+                </td>
+                <td>
+                  <% #new_output %>
+                    <span class="glyphicon glyphicon-flag"
+                          aria-hidden="true"></span>
+                  <% /new_output %>
+                  <% ^new_output %>
+                    <span class="glyphicon glyphicon-option-horizontal"
+                          aria-hidden="true"></span>
+                  <% /new_output %>
+                </td>
+              </tr>
+            <% /pagination.conversations %>
+          </tbody>
+        </table>
+        <% ^pagination.conversations %>
+          <div class="alert alert-warning next-block">
+            <div class="today-field"></div>
+            <div class="message-text">
+              На текущий момент у вас нет открытых приватов...
+            </div>
+          </div>
+        <% /pagination.conversations %>
+      </div>
+    </div>
+    <% #pv %>
+      <div class="entity-pagination next-block text-center">
+        <%{ pv }%>
+      </div>
+    <% /pv %>
+  </script>
+{%- endblock templates -%}
+
+{%- block scripts -%}
+  {{- super() -}}
+  <script>let page="{{ page }}";let cu="{{ cu.username }}";</script>
+  {%- assets filters='rjsmin', output='generic/js/pm/conversations.js',
+             'js/show-conversations.js',
+             'js/format-footer.js',
+             'js/close-topflashed.js',
+             'js/slide-page.js',
+             'js/render-tf.js',
+             'js/check-browser.js',
+             'js/check-mc.js',
+             'js/pm/conversations.js' -%}
+    <script src="{{ ASSET_URL }}"></script>
+  {%- endassets -%}
+{%- endblock scripts -%}

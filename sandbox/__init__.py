@@ -45,7 +45,7 @@ from .main.views import (
     show_picture, show_public, show_robots, show_sitemap)
 from .people.views import show_people, show_profile
 from .pictures.views import show_album, show_albums
-from .pm.views import show_conversation
+from .pm.views import show_conversation, show_conversations
 
 try:
     from .tuning import SITE_NAME, SITE_DESCRIPTION, SECRET_KEY, MAIL_PASSWORD
@@ -210,6 +210,7 @@ app = StApp(
             Route('/', show_albums, name='albums'),
             Route('/{suffix}', show_album, name='album')]),
         Mount('/pm', name='pm', routes=[
+            Route('/', show_conversations, name='conversations'),
             Route('/{username}', show_conversation, name='conversation')]),
         Mount('/static', app=StaticFiles(directory=static), name='static')],
     on_startup=[run_before],
