@@ -19,6 +19,108 @@ NOT_RECEIVED = '''SELECT id FROM messages WHERE sender_id = $1
                     AND received IS NULL'''
 
 
+async def can_answer(conn, art, cu, author):
+    if cu and cu.get('id') != author.get('id'):
+        artrel = await check_rel(conn, art.get('author_id'), cu.get('id'))
+        authrel = await check_rel(conn, author.get('id'), cu.get('id'))
+        if (permissions.COMMENT in cu.get('permissions') and
+            (not artrel['blocker'] and not artrel['blocked']) and
+            (not authrel['blocker'] and not authrel['blocked'])) or \
+           permissions.ADMINISTER in cu.get('permissions') or \
+           (permissions.COMMENT in cu.get('permissions') and
+            cu.get('id') == art.get('author_id')):
+            return True
+    return False
+
+
+async def can_remove(art, cu, author):
+    if cu and art.get('commented'):
+        if cu.get('id') == author.get('id'):
+            return True
+        else:
+            if cu.get('id') == art.get('author_id'):
+                return True
+            if permissions.BLOCK in cu.get('permissions') or \
+                    permissions.CHUROLE in cu.get('permissions') or \
+                    permissions.ADMINISTER in cu.get('permissions'):
+                return True
+    return False
+
+
+async def select_children(request, conn, art, cu, parent, n):
+    branch = n + 1
+    query = await conn.fetch(
+        '''SELECT u.id AS uid, u.username AS username, u.permissions AS perms,
+                  c.id AS cid, c.created AS created, c.deleted AS deleted,
+                  c.html AS html
+             FROM commentaries AS c, users AS u
+               WHERE c.parent_id = $1
+                 AND c.article_id = $2
+                 AND u.id = c.author_id
+               ORDER BY created ASC''',
+        parent, art.get('id'))
+    if query:
+        res = list()
+        for record in query:
+            author = {'id': record.get('uid'),
+                      'permissions': record.get('perms'),
+                      'username': record.get('username'),
+                      'ava': request.url_for(
+                          'ava', username=record.get('username'),
+                          size=48)._url}
+            co = {'author': author,
+                  'branch-len': branch,
+                  'id': record.get('cid'),
+                  'created': f'{record.get("created").isoformat()}Z',
+                  'deleted': record.get('deleted'),
+                  'html': record.get('html'),
+                  'children': await select_children(
+                      request, conn, art, cu, record.get('cid'), branch),
+                  'rem': await can_remove(art, cu, author),
+                  'answer': await can_answer(
+                      conn, art, cu, author) and branch < 11}
+            co['tools'] = co.get('rem') or co.get('answer')
+            res.append(co)
+        return res
+
+
+async def select_commentaries(request, conn, art, cu):
+    branch = 0
+    query = await conn.fetch(
+        '''SELECT u.id AS uid, u.username AS username, u.permissions AS perms,
+                  c.id AS cid, c.created AS created, c.deleted AS deleted,
+                  c.html AS html
+             FROM commentaries AS c, users AS u
+               WHERE parent_id IS NULL
+                 AND u.id = c.author_id
+                 AND article_id = $1
+               ORDER BY created ASC''', art.get('id'))
+    if query:
+        res = list()
+        for record in query:
+            author = {'id': record.get('uid'),
+                      'permissions': record.get('perms'),
+                      'username': record.get('username'),
+                      'ava': request.url_for(
+                          'ava', username=record.get('username'),
+                          size=48)._url}
+            co = {'author': author,
+                  'branch-len': branch,
+                  'id': record.get('cid'),
+                  'created': f'{record.get("created").isoformat()}Z',
+                  'deleted': record.get('deleted'),
+                  'html': record.get('html'),
+                  'children': await select_children(
+                      request, conn, art, cu,
+                      record.get('cid'), branch),
+                  'rem': await can_remove(art, cu, author),
+                  'answer': await can_answer(
+                      conn, art, cu, author) and branch < 11}
+            co['tools'] = co.get('rem') or co.get('answer')
+            res.append(co)
+        return res
+
+
 async def send_comment(conn, text, sender, art, parent):
     loop = asyncio.get_running_loop()
     html = await loop.run_in_executor(

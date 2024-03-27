@@ -5,10 +5,22 @@ from ..auth.attri import permissions
 from ..auth.cu import checkcu
 from ..common.flashed import set_flashed
 from ..common.pg import get_conn
-from .pg import check_art, check_rel, send_comment
+from .pg import check_art, check_rel, select_commentaries, send_comment
 
 
 class Comment(HTTPEndpoint):
+    async def get(self, request):
+        res = {'commentaries': None}
+        cu = await checkcu(
+            request, request.headers.get('x-auth-token'))
+        slug = request.query_params.get('slug')
+        conn = await get_conn(request.app.config)
+        art = await check_art(conn, slug)
+        res = {'commentaries': await select_commentaries(
+            request, conn, art, cu)}
+        await conn.close()
+        return JSONResponse(res)
+
     async def post(self, request):
         res = {'done': None}
         d = await request.form()

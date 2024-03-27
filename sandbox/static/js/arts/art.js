@@ -133,4 +133,10 @@ $(function() {
       undressLinks(event.data.slug);
     });
   }
+  let interval = setInterval(function() {
+    if ($('.comments-options').length) {
+      showCommentaries(slug);
+      clearInterval(interval);
+    }
+  }, 20);
 });
