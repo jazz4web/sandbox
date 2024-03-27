@@ -8,6 +8,7 @@
              'css/content-block.css',
              'css/entity-attributes.css',
              'css/entity-details.css',
+             'css/entity-block.css',
              'css/personal-details.css',
              'css/avatar.css',
              'css/common-details.css',
@@ -244,7 +245,7 @@
     <div class="next-block comments-options">
       <div class="comment-header">
         <% #art.commented %>
-          Комментарии:
+          Комментарии: (<% art.commentaries %>)
         <% /art.commented %>
         <% ^art.commented %>
           Комментарии закрыты...
@@ -264,6 +265,33 @@
       <div class="footer-bottom"></div>
     </div>
     <div id="entity-commentaries" class="next-block to-be-hidden"></div>
+  </script>
+  <script id="scommentt" type="text/template">
+    <% #perm %>
+      <div class="entity-block next-block new-comment-block to-be-hidden">
+        <div class="new-comment-form">
+          <div class="form-group">
+            <textarea id="comment-editor"
+                      class="form-control"
+                      placeholder="введите текст комментария"
+                      rows="8"></textarea>
+          </div>
+          <div class="form-group submit-group">
+            <button class="btn btn-primary"
+                    type="button"
+                    id="comment-submit"
+                    data-aid="<% article_id %>">
+              Отправить
+            </button>
+          </div>
+        </div>
+      </div>
+    <% /perm %>
+    <% ^perm %>
+      <div class="alert alert-danger to-be-hidden next-block comment-alert">
+        <% message %>
+      </div>
+    <% /perm %>
   </script>
 
 {%- endblock templates -%}
@@ -291,6 +319,7 @@
              'js/follow.js',
              'js/undress-links.js',
              'js/censor-this.js',
+             'js/show-error.js',
              'js/slide-block.js',
              'js/check-incomming.js',
              'js/arts/art.js' -%}

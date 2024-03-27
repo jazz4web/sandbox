@@ -10,13 +10,49 @@ from ..common.aparsers import (
     iter_pages, parse_pic_filename, parse_title, parse_units, parse_url)
 from ..common.random import get_unique_s
 from ..drafts.attri import status
-from .md import check_text, html_ann, parse_md
+from .md import check_text, html_ann, html_comm, parse_md
 from .parse import parse_art_query, parse_arts_query
 from .slugs import check_max, make, parse_match
 
 NOT_RECEIVED = '''SELECT id FROM messages WHERE sender_id = $1
                     AND recipient_id = $2 AND postponed = false
                     AND received IS NULL'''
+
+
+async def send_comment(conn, text, sender, art, parent):
+    loop = asyncio.get_running_loop()
+    html = await loop.run_in_executor(
+        None, functools.partial(html_comm, text))
+    now = datetime.utcnow()
+    c = await conn.fetchval(
+        '''SELECT id FROM commentaries
+             WHERE author_id IS NULL
+               AND article_id IS NULL
+               AND parent_id IS NULL''')
+    if c:
+        await conn.execute(
+            '''UPDATE commentaries
+                 SET created = $1, html = $2, author_id = $3,
+                     article_id = $4, parent_id = $5, admined = false
+                 WHERE id = $6''',
+            now, html, sender, art, parent, c)
+    else:
+        await conn.execute(
+            '''INSERT INTO commentaries
+                 (created, html, author_id, article_id, parent_id)
+                 VALUES($1, $2, $3, $4, $5)''',
+            now, html, sender, art, parent)
+
+
+async def check_art(conn, slug):
+    return await conn.fetchrow(
+        '''SELECT a.id, a.author_id, a.commented, u.permissions
+             FROM articles AS a, users AS u
+             WHERE a.slug = $1
+               AND u.id = a.author_id
+               AND a.commented = true
+               AND a.state IN ($2, $3, $4)''',
+        slug, status.pub, status.priv, status.ffo)
 
 
 async def select_conversations(conn, uid, query, target, page, per_page, last):

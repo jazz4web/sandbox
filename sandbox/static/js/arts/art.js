@@ -8,9 +8,73 @@ $(function() {
   $('body').on('click', '.copy-link', showCopyForm);
   $('body').on('click', '.entity-text-block img', clickImage);
   $('body').on('click', '#move-screen-up', moveScreenUp);
+  $('body').on('click', '.slidable', slideBlock);
+  $('body').on('click', '#new-comment-add', function() {
+    $(this).blur();
+    let nab = $('.new-answer-block');
+    if (nab.length) nab.remove();
+    let form = $('.new-comment-block');
+    if (form.length) {
+      if (form.is(':hidden')) {
+        form.slideDown('slow', function() {
+          scrollPanel($('.comments-options'));
+        });
+      } else {
+        form.slideUp('slow');
+      }
+    } else {
+      $.ajax({
+        method: 'POST',
+        url: '/api/art',
+        data: {
+          auth: window.localStorage.getItem('token'),
+          slug: slug
+        },
+        success: function(data) {
+          let html = Mustache.render($('#scommentt').html(), data);
+          let al = $('.comment-alert');
+          if (al.length) al.remove();
+          let ncb = $('.new-comment-block');
+          if (ncb.length) ncb.remove();
+          $('.comments-options').after(html);
+          if (data.perm) {
+            $('.new-comment-block').slideDown('slow', function() {
+              scrollPanel($('.comments-options'));
+            });
+          } else {
+            $('.comment-alert').slideDown('slow');
+          }
+        },
+        dataType: 'json'
+      });
+    }
+  });
   if (window.localStorage.getItem('token')) {
     checkIncomming();
-    $('body').on('click', '.slidable', slideBlock);
+    $('body').on('click', '#comment-submit', function() {
+      $(this).blur();
+      let text = $('#comment-editor').val();
+      if (text) {
+        $.ajax({
+          method: 'POST',
+          url: '/api/comment',
+          data: {
+            slug: slug,
+            auth: window.localStorage.getItem('token'),
+            text: text
+          },
+          success: function(data) {
+            if (data.done) {
+              window.location.reload();
+            } else {
+              showError('.new-comment-block', data);
+              $('#ealert').addClass('next-block');
+            }
+          },
+          dataType: 'json'
+        });
+      }
+    });
     $('body').on('click', '#tape-out', {slug: slug}, follow);
     $('body').on('click', '#tape-in', {slug: slug}, follow);
     $('body').on('click', '#dislike-button', {slug: slug}, function(event) {

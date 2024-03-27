@@ -8,7 +8,7 @@ from ..common.flashed import set_flashed
 from ..common.pg import get_conn
 from ..drafts.attri import status
 from .pg import (
-    check_article, check_cart, check_last, check_rel,
+    check_art, check_article, check_cart, check_last, check_rel,
     select_arts, select_broadcast, select_carts, select_followed,
     select_labeled_arts, select_labeled_carts, select_labeled_f)
 
@@ -218,6 +218,32 @@ class Art(HTTPEndpoint):
             res['follower'] = rel['follower']
         res['art'] = art
         res['anns'] = await select_broadcast(conn, art.get('author_id'))
+        await conn.close()
+        return JSONResponse(res)
+
+    async def post(self, request):
+        res = {'perm': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Нужно зарегистрироваться и авторизоваться.'
+            return JSONResponse(res)
+        if permissions.COMMENT not in cu['permissions']:
+            res['message'] = 'Вам закрыта возможность оставить комментарий.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        target = await check_art(conn, d.get('slug', ''))
+        if target is None:
+            res['message'] = 'Запрос содержит неверные параметры.'
+            await conn.close()
+            return JSONResponse(res)
+        rel = await check_rel(conn, target.get('author_id'), cu.get('id'))
+        if rel['blocker'] or rel['blocked']:
+            res['message'] = 'Увы, вы не можете комментировать этот блог.'
+            await conn.close()
+            return JSONResponse(res)
+        res['perm'] = True
+        res['article_id'] = target.get('id')
         await conn.close()
         return JSONResponse(res)
 
