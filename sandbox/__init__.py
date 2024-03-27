@@ -25,7 +25,7 @@ from .api.auth import (
     Login, Logout, LogoutAll, RequestEm,
     RequestPasswd, ResetPasswd)
 from .api.blogs import Authors, Blog, LBlog
-from .api.comments import Comment
+from .api.comments import Answer, Comment
 from .api.drafts import Draft, Drafts, Labels, Paragraph
 from .api.main import Captcha, Index
 from .api.people import People, Profile, Relation
@@ -181,6 +181,7 @@ app = StApp(
             Route('/conv', Conversation, name='aconv'),
             Route('/convs', Conversations, name='aconvs'),
             Route('/comment', Comment, name='acomment'),
+            Route('/answer', Answer, name='aanswer'),
             ]),
         Mount('/arts', name='arts', routes=[
             Route('/', show_arts, name='arts'),

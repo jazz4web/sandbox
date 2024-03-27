@@ -353,6 +353,38 @@
       <% /deleted %>
     </div>
   </script>
+  <script id="sanswert" type= "text/template">
+    <% #perm %>
+      <div class="entity-block new-answer-block to-be-hidden">
+        <div class="new-answer-form">
+          <div class="form-group">
+            <textarea id="answer-editor"
+                      class="form-control"
+                      placeholder="введите текст комментария"
+                      rows="8"></textarea>
+          </div>
+          <div class="form-group submit-group">
+            <button class="btn btn-primary"
+                    type="button"
+                    id="answer-submit"
+                    data-pid="<% parent_id %>">
+              Отправить
+            </button>
+            <button class="btn btn-default"
+                    type="button"
+                    id="cancel-answer">
+              Отменить
+            </button>
+          </div>
+        </div>
+      </div>
+    <% /perm %>
+    <% ^perm %>
+      <div class="alert alert-danger to-be-hidden next-block comment-alert">
+        <% message %>
+      </div>
+    <% /perm %>
+  </script>
 
 {%- endblock templates -%}
 
@@ -382,6 +414,7 @@
              'js/show-error.js',
              'js/slide-block.js',
              'js/check-incomming.js',
+             'js/show-hide-button.js',
              'js/show-commentaries.js',
              'js/show-children.js',
              'js/arts/art.js' -%}

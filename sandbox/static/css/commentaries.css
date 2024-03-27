@@ -1,4 +1,4 @@
-#comment-editor {
+#comment-editor, #answer-editor {
   text-align: justify;
   font-size: 12pt;
 }
@@ -20,6 +20,7 @@
 }
 
 .deleted-root-commentary {
+  margin: 6px 0 0;
   text-align: left;
   text-shadow: 0 0 3px lightgray;
   font-style: italic;
@@ -54,4 +55,8 @@
 
 .commentary-options {
   margin: 0;
+}
+
+.new-answer-block {
+  margin: 6px 0 0;
 }
