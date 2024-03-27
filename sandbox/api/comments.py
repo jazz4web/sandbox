@@ -139,8 +139,9 @@ class Comment(HTTPEndpoint):
         slug = request.query_params.get('slug')
         conn = await get_conn(request.app.config)
         art = await check_art(conn, slug)
-        res = {'commentaries': await select_commentaries(
-            request, conn, art, cu)}
+        if art:
+            res = {'commentaries': await select_commentaries(
+                request, conn, art, cu)}
         await conn.close()
         return JSONResponse(res)
 
