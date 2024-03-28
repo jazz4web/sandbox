@@ -3,11 +3,51 @@ from starlette.responses import JSONResponse
 
 from ..auth.attri import permissions
 from ..auth.cu import checkcu
+from ..common.aparsers import parse_page
 from ..common.flashed import set_flashed
 from ..common.pg import get_conn
 from .pg import (
-    can_remove, check_art, check_rel, delete_commentary,
-    select_commentaries, send_comment)
+    can_remove, check_art, check_last, check_rel,
+    delete_commentary, select_commentaries, select_comments, send_comment)
+
+
+class Comments(HTTPEndpoint):
+    async def get(self, request):
+        res = {'cu': await checkcu(
+            request, request.headers.get('x-auth-token'))}
+        cu = res['cu']
+        if cu is None:
+            res['message'] = 'Доступ ограничен, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.BLOCK not in cu['permissions'] and \
+                permissions.CHUROLE not in cu['permissions']:
+            res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
+            return JSONResponse(res)
+        page = await parse_page(request)
+        conn = await get_conn(request.app.config)
+        last = await check_last(
+            conn, page,
+            request.app.config.get('COMMENTS_PER_PAGE', cast=int, default=3),
+            '''SELECT count(*) FROM commentaries
+                 WHERE article_id IS NOT NULL
+                   AND admined = false
+                   AND author_id IS NOT NULL''')
+        if page > last:
+            res['message'] = f'Всего страниц: {last}.'
+            await conn.close()
+            return JSONResponse(res)
+        res['pagination'] = dict()
+        await select_comments(
+            request, conn, res['pagination'], page,
+            request.app.config.get('COMMENTS_PER_PAGE', cast=int, default=3),
+            last)
+        if res['pagination']:
+            if res['pagination']['next'] or res['pagination']['prev']:
+                res['pv'] = request.app.jinja.get_template(
+                    'pictures/pv.html').render(
+                    request=request, pagination=res['pagination'])
+        await conn.close()
+        return JSONResponse(res)
 
 
 class Answer(HTTPEndpoint):
@@ -174,4 +214,30 @@ class Comment(HTTPEndpoint):
         res['done'] = True
         await set_flashed(request, 'Комментарий добавлен.')
         await conn.close()
+        return JSONResponse(res)
+
+    async def put(self, request):
+        res = {'done': None}
+        d = await request.form()
+        cu = await checkcu(request, d.get('auth'))
+        if cu is None:
+            res['message'] = 'Действие ограничено, требуется авторизация.'
+            return JSONResponse(res)
+        if permissions.BLOCK not in cu['permissions'] and \
+                permissions.CHUROLE not in cu['permissions']:
+            res['message'] = 'Действие ограничено, у вас недостаточно прав.'
+            return JSONResponse(res)
+        conn = await get_conn(request.app.config)
+        co = await conn.fetchrow(
+            '''SELECT id, admined FROM commentaries
+                 WHERE id = $1
+                   AND article_id IS NOT NULL
+                   AND admined = false''', int(d.get('id', '0')))
+        if co:
+            await conn.execute(
+                'UPDATE commentaries SET admined = true WHERE id = $1',
+                co.get('id'))
+        await conn.close()
+        res['done'] = True
+        await set_flashed(request, 'Комментарий проверен.')
         return JSONResponse(res)

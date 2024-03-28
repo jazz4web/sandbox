@@ -25,7 +25,7 @@ from .api.auth import (
     Login, Logout, LogoutAll, RequestEm,
     RequestPasswd, ResetPasswd)
 from .api.blogs import Authors, Blog, LBlog
-from .api.comments import Answer, Comment
+from .api.comments import Answer, Comment, Comments
 from .api.drafts import Draft, Drafts, Labels, Paragraph
 from .api.main import Captcha, Index
 from .api.people import People, Profile, Relation
@@ -38,6 +38,7 @@ from .arts.views import (
 from .auth.attri import groups, permissions
 from .blogs.views import show_blog, show_blogs, show_blog_l
 from .captcha.views import show_captcha
+from .comments.views import show_comments
 from .dirs import base, static, templates, settings
 from .drafts.views import show_draft, show_drafts, show_labeled
 from .errors import show_error
@@ -125,8 +126,7 @@ app = StApp(
             Route('/logs/{log}', show_log, name='logs')]),
         Mount('/announces', name='announces', routes=[
             Route('/', show_announces, name='announces'),
-            Route('/{suffix}', show_announce, name='announce')
-            ]),
+            Route('/{suffix}', show_announce, name='announce')]),
         Mount('/aliases', name='aliases', routes=[
             Route('/', show_aliases, name='aliases')]),
         Mount('/api', name='api', routes=[
@@ -182,7 +182,7 @@ app = StApp(
             Route('/convs', Conversations, name='aconvs'),
             Route('/comment', Comment, name='acomment'),
             Route('/answer', Answer, name='aanswer'),
-            ]),
+            Route('/comments', Comments, name='acomments')]),
         Mount('/arts', name='arts', routes=[
             Route('/', show_arts, name='arts'),
             Route('/{slug}', show_art, name='art'),
@@ -194,21 +194,20 @@ app = StApp(
             Route('/c/t/{label}', show_labeled_c, name='lcarts'),
             Route('/l/', show_followed, name='lenta'),
             Route('/l/t/{label}', show_labeled_f, name='llenta'),
-            Route('/t/{label}', show_labeled_arts, name='labeled-arts'),
-            ]),
+            Route('/t/{label}', show_labeled_arts, name='labeled-arts')]),
         Mount('/blogs', name='blogs', routes=[
             Route('/', show_blogs, name='blogs'),
             Route('/{username}', show_blog, name='blog'),
-            Route('/{username}/t/{label}', show_blog_l, name='blog-l')
-            ]),
+            Route('/{username}/t/{label}', show_blog_l, name='blog-l')]),
+        Mount('/comments', name='comments', routes=[
+            Route('/', show_comments, name='comments')]),
         Mount('/drafts', name='drafts', routes=[
             Route('/', show_drafts, name='drafts'),
             Route('/{slug}', show_draft, name='draft'),
             Route('/t/{label}', show_labeled, name='show-labeled')]),
         Mount('/people', name='people', routes=[
             Route('/', show_people, name='people'),
-            Route('/{username}', show_profile, name='profile')
-            ]),
+            Route('/{username}', show_profile, name='profile')]),
         Mount('/pictures', name='pictures', routes=[
             Route('/', show_albums, name='albums'),
             Route('/{suffix}', show_album, name='album')]),

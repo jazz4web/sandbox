@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{%- block title_part -%}Непроверенные комментарии{%- endblock title_part -%}
+
+{%- block styles -%}
+  {{- super() -}}
+  {%- assets filters='cssmin', output='generic/css/comments/comments.css',
+             'css/base.css',
+             'css/listed-mc.css',
+             'css/today-field.css',
+             'css/empty-message.css',
+             'css/entity-block.css',
+             'css/entity-attributes.css',
+             'css/next-block.css',
+             'css/commentaries.css',
+             'css/avatar.css',
+             'css/pagination.css' -%}
+    <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
+  {%- endassets -%}
+{%- endblock styles -%}
+
+{%- block templates -%}
+  {{- super() -}}
+  <script id="commentst" type="text/template">
+    <% #pagination.comments %>
+      <div class="entity-block {% if flashed %}next-block{%- endif -%}">
+        <div class="commentary-head">
+          <div class="commentary-author-avatar avatar"
+               style="background: url(<% ava %>)"></div>
+        </div>
+        <div class="commentary-attributes entity-info">
+          <h4 class="commentary-author-name">
+            <a class="author-profile-link"
+               href="/people/<% username %>"><% username %></a>
+          </h4>
+          <div class="commentary-info-line date-field">
+            <% created %>
+          </div>
+        </div>
+        <div class="footer-bottom"></div>
+        <div class="commentary-body entity-text-block">
+          <%{ html }%>
+        </div>
+        <div class="commentary-options">
+          <button type="button"
+                  title="<% art %>"
+                  data-art="<% art %>"
+                  class="btn btn-xs btn-primary link-button">
+           <span class="glyphicon glyphicon-link"
+                 aria-hidden="true"></span>
+          </button>
+          <button type="button"
+                  title="отметить просмотренным"
+                  data-id="<% id %>"
+                  class="btn btn-xs btn-success checked-button">
+            <span class="glyphicon glyphicon-ok-sign"
+                  aria-hidden="true"></span>
+          </button>
+          <% #rem %>
+            <button type="button"
+                    title="удалить"
+                    class="btn btn-xs btn-default trash-button">
+              <span class="glyphicon glyphicon-trash"
+                    aria-hidden="true"></span>
+            </button>
+            <button type="button"
+                    title="удалить безвозвратно"
+                    data-id="<% id %>"
+                    class="btn btn-xs btn-danger to-be-hidden remove-button">
+             <span class="glyphicon glyphicon-trash"
+                   aria-hidden="true"></span>
+            </button>
+          <% /rem %>
+        </div>
+      </div>
+    <% /pagination.comments %>
+    <% ^pagination.comments %>
+      <div class="alert alert-warning {% if flashed %}next-block{%- endif -%}">
+        <div class="today-field"></div>
+        <div class="empty-message">
+          Новых комментариев пока нет.
+        </div>
+      </div>
+    <% /pagination.comments %>
+    <% #pv %>
+      <div class="entity-pagination next-block text-center">
+        <%{ pv }%>
+      </div>
+    <% /pv %>
+  </script>
+{% endblock templates %}
+
+{%- block scripts -%}
+  {{- super() -}}
+  <script>let page="{{ page }}";let cu="{{ cu.username }}";</script>
+  {%- assets filters='rjsmin', output='generic/js/comments/comments.js',
+             'js/show-comments.js',
+             'js/format-footer.js',
+             'js/close-topflashed.js',
+             'js/check-browser.js',
+             'js/check-next.js',
+             'js/format-datetime.js',
+             'js/adjust-frame.js',
+             'js/set-margin.js',
+             'js/adjust-image.js',
+             'js/check-mc.js',
+             'js/show-hide-button.js',
+             'js/show-error.js',
+             'js/render-tf.js',
+             'js/slide-page.js',
+             'js/comments/comments.js' -%}
+    <script src="{{ ASSET_URL }}"></script>
+  {%- endassets -%}
+{%- endblock scripts -%}

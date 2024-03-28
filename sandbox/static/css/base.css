@@ -18,9 +18,11 @@ body {
 
 #navigation {
   margin: 2px 4px 0;
-  border: 1px solid linen;
-  background-image: linear-gradient(to top, ghostwhite, ivory);
-  box-shadow: 0 0 4px gainsboro;
+  border: 1px solid gainsboro;
+  background-image: linear-gradient(to top, lightyellow, cornsilk);
+  box-shadow: 0 0 4px silver;
+/*  background-image: linear-gradient(to top, ghostwhite, ivory);
+  box-shadow: 0 0 4px gainsboro;*/
   font-size: 12pt;
   color: gainsboro;
 }
@@ -46,7 +48,10 @@ body {
   bottom: 0;
   width: 100%;
   height: 100px;
-  background-image: linear-gradient(to bottom, gray, dimgray);
+  background-color: lightslategray;
+  background-image: linear-gradient(to bottom, lightslategray, darkslategray);
+/*  background-color: gray;
+  background-image: linear-gradient(to bottom, gray, dimgray);*/
 }
 
 .footer-block {
