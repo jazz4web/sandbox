@@ -4,11 +4,10 @@ html {
 }
 
 body {
-/*  font-family: Tahoma, Geneva, sans-serif;*/
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14pt;
   color: dimgray;
-  background-color: beige;
+  background-color: whitesmoke;
   margin-bottom: 100px;
 }
 
@@ -19,10 +18,9 @@ body {
 #navigation {
   margin: 2px 4px 0;
   border: 1px solid gainsboro;
-  background-image: linear-gradient(to top, lightyellow, cornsilk);
+  background-color: ivory;
+  background-image: linear-gradient(to top, ivory, lightyellow);
   box-shadow: 0 0 4px silver;
-/*  background-image: linear-gradient(to top, ghostwhite, ivory);
-  box-shadow: 0 0 4px gainsboro;*/
   font-size: 12pt;
   color: gainsboro;
 }
@@ -48,10 +46,8 @@ body {
   bottom: 0;
   width: 100%;
   height: 100px;
-  background-color: lightslategray;
-  background-image: linear-gradient(to bottom, lightslategray, darkslategray);
-/*  background-color: gray;
-  background-image: linear-gradient(to bottom, gray, dimgray);*/
+  background-color: gray;
+  background-image: linear-gradient(to bottom, gray, slategray);
 }
 
 .footer-block {

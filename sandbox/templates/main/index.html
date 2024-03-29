@@ -383,8 +383,8 @@
 
 {%- block page_body -%}
   {%- if art -%}
-    <div id="topic" class="content-block {% if flashed %}next-block
-                                         {%- endif -%}">
+    <div id="topic" class="content-block
+                           {% if flashed %}next-block {%- endif -%}">
       <h1 title="{{ art['title'] }}">
         {{ art['title'] }}
       </h1>
