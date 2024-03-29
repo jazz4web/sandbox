@@ -1,8 +1,8 @@
 .entity-pagination {
   border: 1px solid gainsboro;
-  box-shadow: 0 0 4px silver;
+  box-shadow: 0 0 4px burlywood;
   background-color: ivory;
-  background-image: linear-gradient(to top, ivory, lightyellow);
+  background-image: linear-gradient(to top, ivory, ivory);
   border-radius: 4px;
 }
 

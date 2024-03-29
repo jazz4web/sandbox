@@ -8,7 +8,6 @@
   margin-right: auto;
   border-radius: 6px;
   border: 1px solid gainsboro;
-  background-color: ivory;
-  background-image: linear-gradient(to top, ivory, lightyellow);
-  box-shadow: 0 0 10px gainsboro;
+  background-image: linear-gradient(to top, ivory, ivory);
+  box-shadow: 0 0 4px burlywood;
 }
