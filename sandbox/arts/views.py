@@ -3,6 +3,7 @@ from starlette.responses import RedirectResponse
 from ..auth.cu import getcu
 from ..common.aparsers import parse_page
 from ..common.flashed import get_flashed
+from ..common.redi import get_rc
 
 
 async def show_cart(request):
@@ -17,11 +18,14 @@ async def show_cart(request):
 
 async def show_art(request):
     cu = await getcu(request)
+    rc = await get_rc(request.app.config)
+    counters = await rc.get('li:counter')
+    await rc.aclose()
     return request.app.jinja.TemplateResponse(
         'arts/art.html',
         {'request': request,
          'cu': cu,
-         'counters': await request.app.rc.get('li:counter'),
+         'counters': counters,
          'slug': request.path_params.get('slug'),
          'flashed': await get_flashed(request)})
 
@@ -49,11 +53,14 @@ async def show_carts(request):
 
 async def show_labeled_f(request):
     cu = await getcu(request)
+    rc = await get_rc(request.app.config)
+    counters = await rc.get('li:counter')
+    await rc.aclose()
     return request.app.jinja.TemplateResponse(
         'arts/llenta.html',
         {'request': request,
          'cu': cu,
-         'counters': await request.app.rc.get('li:counter'),
+         'counters': counters,
          'page': await parse_page(request),
          'label': request.path_params.get('label'),
          'flashed': await get_flashed(request)})
@@ -61,12 +68,15 @@ async def show_labeled_f(request):
 
 async def show_followed(request):
     cu = await getcu(request)
+    rc = await get_rc(request.app.config)
+    counters = await rc.get('li:counter')
+    await rc.aclose()
     return request.app.jinja.TemplateResponse(
         'arts/lenta.html',
         {'request': request,
          'page': await parse_page(request),
          'cu': cu,
-         'counters': await request.app.rc.get('li:counter'),
+         'counters': counters,
          'flashed': await get_flashed(request)})
 
 
@@ -85,11 +95,14 @@ async def show_author(request):
 
 async def show_labeled_arts(request):
     cu = await getcu(request)
+    rc = await get_rc(request.app.config)
+    counters = await rc.get('li:counter')
+    await rc.aclose()
     return request.app.jinja.TemplateResponse(
         'arts/labeled-arts.html',
         {'request': request,
          'cu': cu,
-         'counters': await request.app.rc.get('li:counter'),
+         'counters': counters,
          'page': await parse_page(request),
          'label': request.path_params.get('label'),
          'flashed': await get_flashed(request)})
@@ -97,10 +110,13 @@ async def show_labeled_arts(request):
 
 async def show_arts(request):
     cu = await getcu(request)
+    rc = await get_rc(request.app.config)
+    counters = await rc.get('li:counter')
+    await rc.aclose()
     return request.app.jinja.TemplateResponse(
         'arts/arts.html',
         {'request': request,
          'cu': cu,
-         'counters': await request.app.rc.get('li:counter'),
+         'counters': counters,
          'page': await parse_page(request),
          'flashed': await get_flashed(request)})

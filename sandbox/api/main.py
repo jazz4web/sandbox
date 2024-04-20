@@ -12,7 +12,7 @@ class Captcha(HTTPEndpoint):
         captcha = await conn.fetchrow(
             'SELECT val, suffix FROM captchas ORDER BY random() LIMIT 1')
         res = await assign_cache(
-            request.app.rc, 'captcha:',
+            request.app.config, 'captcha:',
             captcha.get('suffix'), captcha.get('val'), 180)
         url = request.url_for('captcha', suffix=captcha.get('suffix'))._url
         return JSONResponse({'captcha': res, 'url': url})

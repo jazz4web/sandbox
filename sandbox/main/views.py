@@ -9,6 +9,7 @@ from starlette.responses import (
 from ..auth.cu import getcu
 from ..common.flashed import get_flashed
 from ..common.pg import get_conn
+from ..common.redi import get_rc
 from ..dirs import static
 from ..errors import E404
 from ..pictures.attri import status
@@ -17,9 +18,11 @@ from .tools import resize
 
 
 async def show_robots(request):
-    text = await request.app.rc.get('robots:page') or \
+    rc = await get_rc(request.app.config)
+    text = await rc.get('robots:page') or \
             request.app.jinja.get_template(
                     'main/robots.txt').render(request=request)
+    await rc.aclose()
     return PlainTextResponse(text)
 
 
@@ -34,10 +37,13 @@ async def show_public(request):
     if not topic:
         raise HTTPException(
             status_code=404, detail='Такой страницы у нас нет.')
+    rc = await get_rc(request.app.config)
+    counters = rc.get('li:counter')
+    await rc.aclose()
     return request.app.jinja.TemplateResponse(
         'main/show-public.html',
         {'request': request,
-         'counters': await request.app.rc.get('li:counter'),
+         'counters': counters,
          'topic': topic})
 
 
@@ -168,7 +174,10 @@ async def show_index(request):
     cu = await getcu(request)
     interval = request.app.config.get('REQUEST_INTERVAL', cast=float)
     art = None
-    suffix = await request.app.rc.get('index:page')
+    rc = await get_rc(request.app.config)
+    suffix = await rc.get('index:page')
+    counters = await rc.get('li:counter')
+    await rc.aclose()
     if suffix:
         conn = await get_conn(request.app.config)
         art = await conn.fetchrow(
@@ -188,7 +197,7 @@ async def show_index(request):
         {'request': request,
          'cu': cu,
          'art': art,
-         'counters': await request.app.rc.get('li:counter'),
+         'counters': counters,
          'interval': interval,
          'flashed': await get_flashed(request)})
 

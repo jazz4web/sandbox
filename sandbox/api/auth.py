@@ -14,6 +14,7 @@ from ..auth.cu import checkcu
 from ..auth.pg import check_username
 from ..common.flashed import set_flashed
 from ..common.pg import get_conn
+from ..common.redi import get_rc
 from .avas import check_img
 from .pg import check_account, check_address, filter_user
 from .redi import assign_uid, extract_cache
@@ -329,7 +330,7 @@ class GetPasswd(HTTPEndpoint):
         if not cache:
             res['message'] = BADCAPTCHA
             return JSONResponse(res)
-        suffix, val = await extract_cache(request.app.rc, cache)
+        suffix, val = await extract_cache(request.app.config, cache)
         if captcha != val:
             res['message'] = BADCAPTCHA
             asyncio.ensure_future(
@@ -363,7 +364,9 @@ class LogoutAll(HTTPEndpoint):
         if token:
             cache = await check_token(request.app.config, token)
             if cache:
-                uid = await request.app.rc.hget(cache.get('cache'), 'id')
+                rc = await get_rc(request.app.config)
+                uid = await rc.hget(cache.get('cache'), 'id')
+                await rc.aclose()
                 cu = await checkcu(request, token)
                 if cu.get('id') == int(uid):
                     asyncio.ensure_future(
@@ -381,16 +384,18 @@ class Logout(HTTPEndpoint):
         if token:
             cache = await check_token(request.app.config, token)
             if cache:
-                uid = await request.app.rc.hget(cache.get('cache'), 'id')
+                rc = await get_rc(request.app.config)
+                uid = await rc.hget(cache.get('cache'), 'id')
                 cu = await checkcu(request, token)
                 if cu.get('id') == int(uid):
-                    await request.app.rc.delete(cache.get('cache'))
+                    await rc.delete(cache.get('cache'))
                     del request.session['_uid']
                     asyncio.ensure_future(
                         rem_current_session(
                             request.app.config,
                             cache.get('cache'), cu.get('id')))
                 res['result'] = True
+                await rc.aclose()
                 await set_flashed(request, f'Пока, {cu["username"]}!')
         return JSONResponse(res)
 
@@ -406,7 +411,7 @@ class Login(HTTPEndpoint):
         if not cache:
             res['message'] = BADCAPTCHA
             return JSONResponse(res)
-        suffix, val = await extract_cache(request.app.rc, cache)
+        suffix, val = await extract_cache(request.app.config, cache)
         if captcha != val:
             res['message'] = BADCAPTCHA
             asyncio.ensure_future(

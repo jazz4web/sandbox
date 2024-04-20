@@ -10,6 +10,7 @@ from ..auth.pg import create_user_record
 from ..captcha.common import check_val
 from ..captcha.picturize.picture import generate_image
 from ..common.pg import get_conn
+from ..common.redi import get_rc
 from .pg import define_acc, get_acc
 from .tokens import get_request_token
 from .tools import define_target_url
@@ -137,10 +138,12 @@ async def rem_all_sessions(request, uid):
     sessions = await conn.fetchval(
         'SELECT sessions FROM users WHERE id = $1', uid) or list()
     if sessions:
+        rc = await get_rc(request.app.config)
         for each in range(len(sessions)):
-            if await request.app.rc.exists(sessions[each]):
-                await request.app.rc.delete(sessions[each])
-        await request.app.rc.delete(f'data:{uid}')
+            if await rc.exists(sessions[each]):
+                await rc.delete(sessions[each])
+        await rc.delete(f'data:{uid}')
+        await rc.aclose()
         await conn.execute(
             'UPDATE users SET sessions = $1 WHERE id = $2', list(), uid)
     await conn.close()
@@ -164,8 +167,10 @@ async def rem_old_session(request, cache, username):
     sessions.append(cache)
     if len(sessions) > 3:
         old = sessions[0]
-        if await request.app.rc.exists(old):
-            await request.app.rc.delete(old)
+        rc = await get_rc(request.app.config)
+        if await rc.exists(old):
+            await rc.delete(old)
+        await rc.aclose()
         del sessions[0]
     await conn.execute(
         'UPDATE users SET sessions = $1 WHERE username = $2',

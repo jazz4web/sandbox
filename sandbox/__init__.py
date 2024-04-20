@@ -1,7 +1,6 @@
 import jinja2
 import typing
 
-from redis import asyncio as aioredis
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.routing import Mount, Route
@@ -90,8 +89,6 @@ class StApp(Starlette):
         scope["app"] = self
         self.config = settings
         self.jinja = J2Templates(directory=templates)
-        self.rc = aioredis.from_url(
-            settings.get('REDI'), decode_responses=True)
         if self.middleware_stack is None:
             self.middleware_stack = self.build_middleware_stack()
         await self.middleware_stack(scope, receive, send)

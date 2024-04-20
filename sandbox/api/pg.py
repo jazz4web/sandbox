@@ -9,6 +9,7 @@ from ..auth.attri import get_group, permissions
 from ..common.aparsers import (
     iter_pages, parse_pic_filename, parse_title, parse_units, parse_url)
 from ..common.random import get_unique_s
+from ..common.redi import get_rc
 from ..drafts.attri import status
 from .md import check_text, html_ann, html_comm, parse_md
 from .parse import parse_art_query, parse_arts_query
@@ -825,9 +826,11 @@ async def change_draft(request, conn, did, field, value):
                 await conn.execute(
                     'UPDATE users SET last_published = $1 WHERE id = $2',
                     now, published.get('author_id'))
-                await request.app.rc.hset(
+                rc = await get_rc(request.app.config)
+                await rc.hset(
                     f'data:{published.get("author_id")}',
                     'last_published', f'{now.isoformat()}Z')
+                await rc.aclose()
     elif field == 'summary':
         value = value.strip()[:512]
         await conn.execute(q, value, did)

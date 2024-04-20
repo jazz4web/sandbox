@@ -218,12 +218,12 @@ class Profile(HTTPEndpoint):
                 await conn.execute(
                     chquery, [permissions.NOLOGIN], target['username'])
                 await change_udata(
-                    request.app.rc, data, [permissions.NOLOGIN])
+                    request.app.config, data, [permissions.NOLOGIN])
             elif int(d.get('administer', '0')):
                 await conn.execute(
                     chquery, roots, target['username'])
                 await change_udata(
-                    request.app.rc, data, roots)
+                    request.app.config, data, roots)
             else:
                 extra = await fix_extra_permissions(
                     cu, target['permissions'])
@@ -240,7 +240,7 @@ class Profile(HTTPEndpoint):
                     chquery, assigned or [permissions.NOLOGIN],
                     target['username'])
                 await change_udata(
-                    request.app.rc, data,
+                    request.app.config, data,
                     assigned or [permissions.NOLOGIN])
                 if permissions.FOLLOW not in assigned:
                     await conn.execute(

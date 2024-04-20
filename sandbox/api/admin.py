@@ -9,6 +9,7 @@ from ..auth.cu import checkcu
 from ..auth.pg import check_username, create_user
 from ..common.flashed import set_flashed
 from ..common.pg import get_conn
+from ..common.redi import get_rc
 from ..drafts.attri import status
 
 
@@ -24,12 +25,14 @@ class Counter(HTTPEndpoint):
             res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
             return JSONResponse(res)
         val = d.get('value', '')
+        rc = await get_rc(request.app.config)
         if val:
-            await request.app.rc.set('li:counter', val)
+            await rc.set('li:counter', val)
             await set_flashed(request, 'Счётчики установлены.')
         else:
-            await request.app.rc.delete('li:counter')
+            await rc.delete('li:counter')
             await set_flashed(request, 'Счётчики удалёны.')
+        await rc.aclose()
         res['done'] = True
         return JSONResponse(res)
 
@@ -46,6 +49,7 @@ class IndexPage(HTTPEndpoint):
             res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
             return JSONResponse(res)
         val = d.get('value', '')
+        rc = await get_rc(request.app.config)
         if val:
             conn = await get_conn(request.app.config)
             d = await conn.fetchval(
@@ -53,12 +57,13 @@ class IndexPage(HTTPEndpoint):
                      WHERE suffix = $1 AND author_id = $2 AND state = $3''',
                 val, cu.get('id'), status.draft)
             if d:
-                await request.app.rc.set('index:page', d)
+                await rc.set('index:page', d)
             else:
                 res['message'] = 'Ничего не найдено по суффиксу.'
                 return JSONResponse(res)
         else:
-            await request.app.rc.delete('index:page')
+            await rc.delete('index:page')
+        await rc.aclose()
         res['done'] = True
         return JSONResponse(res)
 
@@ -75,10 +80,12 @@ class Robots(HTTPEndpoint):
             res['message'] = 'Доступ ограничен, у вас недостаточно прав.'
             return JSONResponse(res)
         val = d.get('value', '')
+        rc = await get_rc(request.app.config)
         if val:
-            await request.app.rc.set('robots:page', val)
+            await rc.set('robots:page', val)
         else:
-            await request.app.rc.delete('robots:page')
+            await rc.delete('robots:page')
+        await rc.aclose()
         res['done'] = True
         return JSONResponse(res)
 
@@ -127,11 +134,13 @@ class Admin(HTTPEndpoint):
             [key for key in initials])
         res['perms'] = request.app.jinja.get_template(
             'admin/perms.html').render(request=request, permissions=perms)
-        res['robots'] = await request.app.rc.get('robots:page') or \
+        rc = await get_rc(request.app.config)
+        res['robots'] = await rc.get('robots:page') or \
                 request.app.jinja.get_template(
                 'main/robots.txt').render(request=request)
-        res['index'] = await request.app.rc.get('index:page')
-        res['li_counter'] = await request.app.rc.get('li:counter')
+        res['index'] = await rc.get('index:page')
+        res['li_counter'] = await rc.get('li:counter')
+        await rc.aclose()
         await conn.close()
         return JSONResponse(res)
 

@@ -1,9 +1,12 @@
 from ..common.random import randomize
+from ..common.redi import get_rc
 
 
-async def change_udata(rc, data, permissions):
+async def change_udata(config, data, permissions):
+    rc = await get_rc(config)
     if await rc.exists(data):
         await rc.hset(data, key='permissions', value=','.join(permissions))
+    await rc.aclose()
 
 
 async def assign_uid(request, prefix, remember_me, user, brkey):
@@ -11,12 +14,13 @@ async def assign_uid(request, prefix, remember_me, user, brkey):
         expiration = request.app.config.get('SESSION_LIFETIME')
     else:
         expiration = 2 * 60 * 60
-    cache = await get_unique(request.app.rc, prefix, 9)
-    await request.app.rc.hmset(cache, {'id': user.get('id'), 'brkey': brkey})
-    await request.app.rc.expire(cache, expiration)
+    rc = await get_rc(request.app.config)
+    cache = await get_unique(rc, prefix, 9)
+    await rc.hmset(cache, {'id': user.get('id'), 'brkey': brkey})
+    await rc.expire(cache, expiration)
     data = f'data:{user.get("id")}'
-    existed = await request.app.rc.exists(data)
-    await request.app.rc.hmset(
+    existed = await rc.exists(data)
+    await rc.hmset(
         data, {'id': user.get('id'),
                'username': user.get('username'),
                'registered': f"{user.get('registered').isoformat()}Z",
@@ -25,21 +29,24 @@ async def assign_uid(request, prefix, remember_me, user, brkey):
                'permissions': ','.join(user.get('permissions')),
                'many': 0})
     if existed:
-        await request.app.rc.hset(data, key='many', value=1)
+        await rc.hset(data, key='many', value=1)
         if remember_me:
-            await request.app.rc.persist(data)
-            await request.app.rc.expire(data, expiration)
+            await rc.persist(data)
+            await rc.expire(data, expiration)
         else:
-            if await request.app.rc.ttl(data) < expiration:
-                await request.app.rc.persist(data)
-                await request.app.rc.expire(data, expiration)
+            if await rc.ttl(data) < expiration:
+                await rc.persist(data)
+                await rc.expire(data, expiration)
     else:
-        await request.app.rc.expire(data, expiration)
+        await rc.expire(data, expiration)
+    await rc.aclose()
     return cache
 
 
-async def extract_cache(rc, cache):
+async def extract_cache(config, cache):
+    rc = await get_rc(config)
     suffix, val = await rc.hmget(cache, 'suffix', 'val')
+    await rc.aclose()
     return suffix, val
 
 
@@ -51,8 +58,10 @@ async def get_unique(conn, prefix, num):
         return res
 
 
-async def assign_cache(rc, prefix, suffix, val, expiration):
+async def assign_cache(config, prefix, suffix, val, expiration):
+    rc = await get_rc(config)
     cache = await get_unique(rc, prefix, 6)
     await rc.hmset(cache, {'suffix': suffix, 'val': val})
     await rc.expire(cache, expiration)
+    await rc.aclose()
     return cache
