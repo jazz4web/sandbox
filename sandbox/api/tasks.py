@@ -138,12 +138,12 @@ async def rem_all_sessions(request, uid):
     sessions = await conn.fetchval(
         'SELECT sessions FROM users WHERE id = $1', uid) or list()
     if sessions:
-        rc = await get_rc(request.app.config)
+        rc = await get_rc(request)
         for each in range(len(sessions)):
             if await rc.exists(sessions[each]):
                 await rc.delete(sessions[each])
         await rc.delete(f'data:{uid}')
-        await rc.aclose()
+        await rc.close()
         await conn.execute(
             'UPDATE users SET sessions = $1 WHERE id = $2', list(), uid)
     await conn.close()
@@ -167,10 +167,10 @@ async def rem_old_session(request, cache, username):
     sessions.append(cache)
     if len(sessions) > 3:
         old = sessions[0]
-        rc = await get_rc(request.app.config)
+        rc = await get_rc(request)
         if await rc.exists(old):
             await rc.delete(old)
-        await rc.aclose()
+        await rc.close()
         del sessions[0]
     await conn.execute(
         'UPDATE users SET sessions = $1 WHERE username = $2',

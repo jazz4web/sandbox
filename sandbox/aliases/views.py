@@ -6,9 +6,9 @@ from ..common.redi import get_rc
 
 async def show_aliases(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('li:counter')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'aliases/aliases.html',
         {'request': request,

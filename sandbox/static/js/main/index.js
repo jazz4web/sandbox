@@ -1,5 +1,6 @@
 $(function() {
   "use strict";
+  if (cu && !window.localStorage.getItem('token')) ping();
   if (!cu) window.localStorage.removeItem('token');
   let dt = luxon.DateTime.now();
   formatFooter(dt);
@@ -87,4 +88,5 @@ $(function() {
     changeEmail(chem);
   }
   checkMC(860);
+  pingUser();
 });

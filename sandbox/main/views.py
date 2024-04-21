@@ -18,11 +18,11 @@ from .tools import resize
 
 
 async def show_robots(request):
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     text = await rc.get('robots:page') or \
             request.app.jinja.get_template(
                     'main/robots.txt').render(request=request)
-    await rc.aclose()
+    await rc.close()
     return PlainTextResponse(text)
 
 
@@ -37,9 +37,9 @@ async def show_public(request):
     if not topic:
         raise HTTPException(
             status_code=404, detail='Такой страницы у нас нет.')
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = rc.get('li:counter')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'main/show-public.html',
         {'request': request,
@@ -72,8 +72,6 @@ async def jump(request):
             suffix)
         if alias and alias.get('author_id'):
             cu = await getcu(request)
-#           cu = int((await request.app.rc.hgetall(
-#               request.session.get('_uid', 'empty'))).get('id', '0'))
             jumps = request.session.get('jumps', list())
             if suffix not in jumps and \
                     (not cu or cu.get('id') != alias.get('author_id')):
@@ -174,10 +172,10 @@ async def show_index(request):
     cu = await getcu(request)
     interval = request.app.config.get('REQUEST_INTERVAL', cast=float)
     art = None
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     suffix = await rc.get('index:page')
     counters = await rc.get('li:counter')
-    await rc.aclose()
+    await rc.close()
     if suffix:
         conn = await get_conn(request.app.config)
         art = await conn.fetchrow(

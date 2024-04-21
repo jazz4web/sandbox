@@ -6,9 +6,9 @@ from ..common.redi import get_rc
 
 async def show_blog_l(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('li:counters')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'blogs/labeled.html',
         {'request': request,
@@ -22,9 +22,9 @@ async def show_blog_l(request):
 
 async def show_blog(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('li:counters')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'blogs/blog.html',
         {'request': request,
@@ -37,9 +37,9 @@ async def show_blog(request):
 
 async def show_blogs(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('li:counters')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'blogs/authors.html',
         {'request': request,

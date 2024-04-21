@@ -826,11 +826,11 @@ async def change_draft(request, conn, did, field, value):
                 await conn.execute(
                     'UPDATE users SET last_published = $1 WHERE id = $2',
                     now, published.get('author_id'))
-                rc = await get_rc(request.app.config)
+                rc = await get_rc(request)
                 await rc.hset(
                     f'data:{published.get("author_id")}',
                     'last_published', f'{now.isoformat()}Z')
-                await rc.aclose()
+                await rc.close()
     elif field == 'summary':
         value = value.strip()[:512]
         await conn.execute(q, value, did)

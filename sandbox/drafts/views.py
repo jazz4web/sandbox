@@ -17,9 +17,9 @@ async def show_labeled(request):
 
 async def show_draft(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('li:counter')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'drafts/draft.html',
         {'request': request,
@@ -31,9 +31,9 @@ async def show_draft(request):
 
 async def show_drafts(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('li:counter')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'drafts/drafts.html',
         {'request': request,

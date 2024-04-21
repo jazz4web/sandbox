@@ -18,9 +18,9 @@ async def show_cart(request):
 
 async def show_art(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('li:counter')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'arts/art.html',
         {'request': request,
@@ -53,9 +53,9 @@ async def show_carts(request):
 
 async def show_labeled_f(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('li:counter')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'arts/llenta.html',
         {'request': request,
@@ -68,9 +68,9 @@ async def show_labeled_f(request):
 
 async def show_followed(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('li:counter')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'arts/lenta.html',
         {'request': request,
@@ -95,9 +95,9 @@ async def show_author(request):
 
 async def show_labeled_arts(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('li:counter')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'arts/labeled-arts.html',
         {'request': request,
@@ -110,9 +110,9 @@ async def show_labeled_arts(request):
 
 async def show_arts(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('li:counter')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'arts/arts.html',
         {'request': request,

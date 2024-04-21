@@ -7,9 +7,9 @@ from .attri import status
 
 async def show_album(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('index:page')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'pictures/album.html',
         {'request': request,
@@ -23,9 +23,9 @@ async def show_album(request):
 
 async def show_albums(request):
     cu = await getcu(request)
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     counters = await rc.get('index:page')
-    await rc.aclose()
+    await rc.close()
     return request.app.jinja.TemplateResponse(
         'pictures/albums.html',
         {'request': request,

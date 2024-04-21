@@ -330,7 +330,7 @@ class GetPasswd(HTTPEndpoint):
         if not cache:
             res['message'] = BADCAPTCHA
             return JSONResponse(res)
-        suffix, val = await extract_cache(request.app.config, cache)
+        suffix, val = await extract_cache(request, cache)
         if captcha != val:
             res['message'] = BADCAPTCHA
             asyncio.ensure_future(
@@ -364,9 +364,9 @@ class LogoutAll(HTTPEndpoint):
         if token:
             cache = await check_token(request.app.config, token)
             if cache:
-                rc = await get_rc(request.app.config)
+                rc = await get_rc(request)
                 uid = await rc.hget(cache.get('cache'), 'id')
-                await rc.aclose()
+                await rc.close()
                 cu = await checkcu(request, token)
                 if cu.get('id') == int(uid):
                     asyncio.ensure_future(
@@ -384,7 +384,7 @@ class Logout(HTTPEndpoint):
         if token:
             cache = await check_token(request.app.config, token)
             if cache:
-                rc = await get_rc(request.app.config)
+                rc = await get_rc(request)
                 uid = await rc.hget(cache.get('cache'), 'id')
                 cu = await checkcu(request, token)
                 if cu.get('id') == int(uid):
@@ -395,7 +395,7 @@ class Logout(HTTPEndpoint):
                             request.app.config,
                             cache.get('cache'), cu.get('id')))
                 res['result'] = True
-                await rc.aclose()
+                await rc.close()
                 await set_flashed(request, f'Пока, {cu["username"]}!')
         return JSONResponse(res)
 
@@ -411,7 +411,7 @@ class Login(HTTPEndpoint):
         if not cache:
             res['message'] = BADCAPTCHA
             return JSONResponse(res)
-        suffix, val = await extract_cache(request.app.config, cache)
+        suffix, val = await extract_cache(request, cache)
         if captcha != val:
             res['message'] = BADCAPTCHA
             asyncio.ensure_future(

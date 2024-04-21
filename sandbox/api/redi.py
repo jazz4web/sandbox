@@ -14,7 +14,7 @@ async def assign_uid(request, prefix, remember_me, user, brkey):
         expiration = request.app.config.get('SESSION_LIFETIME')
     else:
         expiration = 2 * 60 * 60
-    rc = await get_rc(request.app.config)
+    rc = await get_rc(request)
     cache = await get_unique(rc, prefix, 9)
     await rc.hmset(cache, {'id': user.get('id'), 'brkey': brkey})
     await rc.expire(cache, expiration)
@@ -39,14 +39,14 @@ async def assign_uid(request, prefix, remember_me, user, brkey):
                 await rc.expire(data, expiration)
     else:
         await rc.expire(data, expiration)
-    await rc.aclose()
+    await rc.close()
     return cache
 
 
-async def extract_cache(config, cache):
-    rc = await get_rc(config)
+async def extract_cache(request, cache):
+    rc = await get_rc(request)
     suffix, val = await rc.hmget(cache, 'suffix', 'val')
-    await rc.aclose()
+    await rc.close()
     return suffix, val
 
 
@@ -58,10 +58,10 @@ async def get_unique(conn, prefix, num):
         return res
 
 
-async def assign_cache(config, prefix, suffix, val, expiration):
-    rc = await get_rc(config)
+async def assign_cache(request, prefix, suffix, val, expiration):
+    rc = await get_rc(request)
     cache = await get_unique(rc, prefix, 6)
     await rc.hmset(cache, {'suffix': suffix, 'val': val})
     await rc.expire(cache, expiration)
-    await rc.aclose()
+    await rc.close()
     return cache
