@@ -366,16 +366,18 @@ class LogoutAll(HTTPEndpoint):
             if cache:
                 rc = await get_rc(request)
                 uid = await rc.hget(cache.get('cache'), 'id')
-                await rc.close()
                 cu = await checkcu(request, token)
                 if cu is None:
                     res['result'] = True
                 if cu and cu.get('id') == int(uid):
+                    if d := request.session.get('_uid'):
+                        await rc.delete(d)
+                        request.session.pop('_uid')
                     asyncio.ensure_future(
                         rem_all_sessions(request, cu.get('id')))
-                    del request.session['_uid']
                     res['result'] = True
                     await set_flashed(request, f'Пока, {cu["username"]}!')
+                await rc.close()
         return JSONResponse(res)
 
 
@@ -391,7 +393,7 @@ class Logout(HTTPEndpoint):
                 cu = await checkcu(request, token)
                 if cu and cu.get('id') == int(uid):
                     await rc.delete(cache.get('cache'))
-                    del request.session['_uid']
+                    request.session.pop('_uid')
                     asyncio.ensure_future(
                         rem_current_session(
                             request.app.config,
